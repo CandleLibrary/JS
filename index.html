@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="/cfw/wick"></script>
+		<script src="/cfw/js"></script>
+	</head>
+	<body>
+		<div id="a"></div>
+		<div id="b"></div>
+		<script type="text/javascript"> 
+			async function start(){
+				const m = wick.model({doug:[{name:"pate"}, {name:"mary"}]});
+				
+				class D extends wick{
+				
+				constructor(){
+					super(`<div><textarea value="((data))">temp</textarea>((output))<br/>((rendered))</div>`)
+				}
+
+				data(data){
+					console.clear();
+					const c = js.parse(data);
+					output = JSON.stringify(c);
+					rendered = c.render();
+				}
+			}
+				let a = new D;
+
+				a.mount(document.getElementById("b"),{custom:js});
+			}
+			start();
+		</script>
+	</body>
+</html>

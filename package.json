@@ -1,0 +1,54 @@
+{
+  "name": "@candlefw/js",
+  "version": "0.0.1",
+  "description": "ECMASCRIPT Parser",
+  "main": "source/ecma.mjs",
+  "scripts": {
+    "test": "mocha test/test.js -r esm",
+    "test.watch": "mocha test/test.js -r esm --watch",
+    "build": "rollup --config ./build/config/config.js",
+    "build.watch": "rollup --config  ./build/config/config.js --watch",
+    "build.ui.watch": "rollup --config  ./build/config/ui.config.js --watch",
+    "compile": "hydrocarbon compile --unattended -u -o ./source/parser -e ./source/parser/env.mjs -t mjs ./source/grammar/ecmascript.hcg",
+    "compile.mount": "hydrocarbon compile -d -e ./source/parser/env.mjs -m ./source/grammar/ecmascripthcg",
+    "prepare": "npm run build && npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/candlefw/js.git"
+  },
+  "keywords": [
+    "ECMASCRIPT",
+    "ecma",
+    "javascript",
+    "Parser"
+  ],
+  "author": "Anthony Weathersby",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/candlefw/js/issues"
+  },
+  "homepage": "https://github.com/candlefw/js#readme",
+  "dependencies": {
+    "@candlefw/color": "latest",
+    "@candlefw/ll": "latest",
+    "@candlefw/math": "latest",
+    "@candlefw/url": "latest",
+    "@candlefw/whind": "latest"
+  },
+  "devDependencies": {
+    "@candlefw/hydrocarbon": "0.0.1-a",
+    "chai": "^4.2.0",
+    "esm": "^3.0.84",
+    "jsdom": "^13.0.0",
+    "mocha": "^5.2.0",
+    "rollup": "^0.62.0",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-node-resolve": "^3.4.0",
+    "rollup-plugin-resolve": "0.0.1-predev.1"
+  },
+  "jshintConfig": {
+    "esversion": 6,
+    "unused": true
+  }
+}
