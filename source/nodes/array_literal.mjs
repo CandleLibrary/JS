@@ -1,7 +1,7 @@
 import base from "./base.mjs";
 import types from "./types.mjs";
 
-export default class extends base {
+export default class array_literal extends base {
     constructor(sym) {
         super(sym[0] || []);
     }

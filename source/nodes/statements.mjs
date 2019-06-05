@@ -3,7 +3,7 @@
 import base from "./base.mjs";
 
 import types from "./types.mjs";
-export default class stmts extends base {
+export default class statements extends base {
     constructor(sym) {
 
         if (sym[0].length == 1)
@@ -29,7 +29,7 @@ export default class stmts extends base {
         yield * super.traverseDepthFirst(p, this.vals[0]);
     }
 
-    get type() { return types.stmts }
+    get type() { return types.statements }
 
     render() { 
         return this.stmts.map(s=>(s.render())).join("") ;

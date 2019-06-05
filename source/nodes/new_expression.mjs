@@ -15,7 +15,7 @@ export default class new_expression extends call_expression {
 
     render() { 
         const
-            args_str = this.args.map(e => e.render()).join(",");
+            args_str = this.args.render();
 
         return `new ${this.id.render()}(${args_str})`;
     }

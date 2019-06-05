@@ -171,21 +171,21 @@
 				(EXC τlet \[ ) expression 
 				│ τvar variable_declaration_list ↦r {$sym2}
 				)? ; expression? ; expression? \) ↦{ env.ASI = true;} statement  												
-																									↦return{ (new env.functions.for_statement($sym_3, $sym_5, $sym_7, $sym_9)) }	
+																									↦return{ (new env.functions.for_statement($$sym3, $$sym5, $$sym7, $$sym9)) }	
 
-			│ τfor \( lexical_declaration expression? ; expression? \) statement   			 		↦return{ (new env.functions.for_statement($sym_3, $sym_4, $sym_6, $sym_8)) }																			
+			│ τfor \( lexical_declaration expression? ; expression? \) statement   			 		↦return{ (new env.functions.for_statement($$sym3, $$sym4, $$sym6, $$sym8)) }																			
 																																																																				
 			│ τfor \( (
 					(EXC τlet \[ ) left_hand_side_expression
 					│ τvar for_binding ↦r {$sym2}
 					│ for_declaration
-				) τin expression \) statement 			↦return{ (new env.functions.for_in_statement($sym_3, $sym_5, $sym_7)) }
+				) τin expression \) statement 			↦return{ (new env.functions.for_in_statement($$sym3, $$sym5, $$sym7)) }
 
 			│ τfor τawait? \( (
 					(EXC τlet \[ ) left_hand_side_expression
 					│ τvar for_binding ↦r {$sym2}
 					│ for_declaration
-				) τof expression \) statement 			↦return{ (new env.functions.for_of_statement($sym_2, $sym_4, $sym_6, $sym_8)) }
+				) τof expression \) statement 			↦return{ (new env.functions.for_of_statement($$sym2, $$sym4, $$sym6, $$sym8)) }
 
 		<> for_declaration → let_or_const for_binding
 
@@ -319,7 +319,7 @@
 
 		<> function_expression → function_declaration
 
-		<> function_declaration →  τfunction binding_identifier? \( formal_parameters? \) { function_body? } 		↦return{ new fn.function_declaration($sym_2, $sym_4, $sym_7) }
+		<> function_declaration →  τfunction binding_identifier? \( formal_parameters? \) { function_body? } 		↦return{ new fn.function_declaration($$sym2, $$sym4, $$sym7) }
 
 
 		<> unique_formal_parameters → formal_parameters
@@ -364,7 +364,7 @@
 		<> async_concise_body → (EXC { ) assignment_expression 
 			│ { function_statement_list }												↦return{ $sym2 }
 
-		<> cover_call_expression_and_async_arrow_head → member_expression arguments 	↦c ^call_expr
+		<> cover_call_expression_and_async_arrow_head → member_expression arguments 	↦c ^call_expression
 
 ## CLASSES
 	
@@ -435,7 +435,7 @@
 
 	<> meta_property → new_target
 
-	<> new_target → τnew . τtarget									↦c ^new_target_expr
+	<> new_target → τnew . τtarget									↦c ^new_target_expression
 
 	<> call_expression → call_expression . identifier_name 			↦c ^member_expression
 		│ super_call
@@ -446,9 +446,9 @@
 
 	<> super_call → τsuper arguments
 
-	<> arguments → \( argument_list? ,? \)							↦r { new fn.argument_list($sym_2) }
+	<> arguments → \( argument_list? ,? \)							↦r { new fn.argument_list($$sym2) }
 
-	<> argument_list → ( assignment_expression │ ... assignment_expression ↦c ^spread_operator )(+,)  						
+	<> argument_list → ( assignment_expression │ ... assignment_expression ↦c ^spread_element )(+,)  						
 
 
 ##############################################################################################################
@@ -478,7 +478,7 @@
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-object-initializer
 ##############################################################################################################
 
-	<> object_literal →  { property_definition(*,) ,? }				↦return{ $sym_2 }
+	<> object_literal →  { property_definition(*,) ,? }				↦return{ $$sym2 }
 
 	<> property_definition →  cover_initialized_name 				
 		│ identifier_reference 										
@@ -504,7 +504,7 @@
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-array-initializer
 ##############################################################################################################
 
-	<> array_literal → \[ element_list? elision? \] 				↦return{ $sym_2 }
+	<> array_literal → \[ element_list? elision? \] 				↦return{ $$sym2 }
 
 	<> element_list →
 		assignment_expression 										↦return{ [sym[0]] }
@@ -592,10 +592,10 @@
 	##############################################################################################################
 
 		<> relational_expression → shift_expression 
-			│ relational_expression < shift_expression				↦c ^less_than_expression
-			│ relational_expression >  shift_expression				↦c ^greater_than_expression
-			│ relational_expression <= shift_expression				↦c ^less_equal_expression	
-			│ relational_expression >= shift_expression				↦c ^greater_equal_expression
+			│ relational_expression < shift_expression				↦c ^equality_expression
+			│ relational_expression >  shift_expression				↦c ^equality_expression
+			│ relational_expression <= shift_expression				↦c ^equality_expression	
+			│ relational_expression >= shift_expression				↦c ^equality_expression
 			│ relational_expression τinstanceof shift_expression	↦c ^instanceof_expression
 			│ relational_expression τin shift_expression			↦c ^in_expression	
 

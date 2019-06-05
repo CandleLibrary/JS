@@ -1,7 +1,7 @@
 import _function from "./function_declaration.mjs";
 import types from "./types.mjs";
 
-export default class extends _function {
+export default class arrow_function_declaration extends _function {
     constructor(...sym) {
         super(...sym);
     }

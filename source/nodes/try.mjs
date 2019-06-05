@@ -2,7 +2,7 @@
 
 import base from "./base.mjs";
 import types from "./types.mjs";
-export default class extends base {
+export default class try_statement extends base {
     constructor(body, _catch, _finally) {
         super(body, _catch, _finally);
 
@@ -26,5 +26,5 @@ export default class extends base {
         if (this.finally) yield* this.finally.traverseDepthFirst(p);
     }
 
-    get type() { return types.try }
+    get type() { return types.try_statement }
 }

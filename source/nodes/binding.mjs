@@ -10,6 +10,7 @@ export default class extends base {
 
     get id() { return this.vals[0] }
     get init() { return this.vals[1] }
+    get type(){return types.binding}
 
     getRootIds(ids, closure) {
         this.id.getRootIds(closure, closure);

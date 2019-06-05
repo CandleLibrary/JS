@@ -1,9 +1,9 @@
 import base from "./base.mjs";
 import types from "./types.mjs";
 
-export default class call extends base {
+export default class call_expression extends base {
     constructor(sym) {
-        super(sym[0], (Array.isArray(sym[1])) ? sym[1] : [sym[1]]);
+        super(sym[0],sym[1]);
     }
 
     get id() { return this.vals[0] }
@@ -15,9 +15,9 @@ export default class call extends base {
     }
 
     get name() { return this.id.name }
-    get type() { return types.call }
+    get type() { return types.call_expression }
 
     render() { 
-        return `${this.id.render()}(${this.args.map(a=>a.render()).join(",")})` 
+        return `${this.id.render()}(${this.args.render()})` 
     }
 }

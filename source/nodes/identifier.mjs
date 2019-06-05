@@ -2,7 +2,7 @@
 
 import base from "./base.mjs";
 import types from "./types.mjs";
-export default class id extends base {
+export default class identifier extends base {
     constructor(sym) {
         super(sym[0]);
         this.root = true;
@@ -19,7 +19,7 @@ export default class id extends base {
 
     get name() { return this.val }
 
-    get type() { return types.id }
+    get type() { return types.identifier }
 
     render() { return this.val }
 }

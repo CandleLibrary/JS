@@ -2,7 +2,7 @@
 
 import base from "./base.mjs";
 import types from "./types.mjs";
-export default class extends base {
+export default class for_statement extends base {
 
     get init() { return this.vals[0] }
     get bool() { return this.vals[1] }
@@ -28,7 +28,7 @@ export default class extends base {
         yield this;
     }
 
-    get type() { return types.for }
+    get type() { return types.for_statement }
 
     render() {
         let init, bool, iter, body;

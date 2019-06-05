@@ -4,7 +4,7 @@ import operator from "./operator.mjs";
 
 import types from "./types.mjs";
 
-export default class extends operator {
+export default class assignment_expression extends operator {
     constructor(sym) {
         super(sym);
         this.op = sym[1];
@@ -12,5 +12,5 @@ export default class extends operator {
     }
     get id() { return this.vals[0] }
     get expr() { return this.vals[2] }
-    get type() { return types.assign }
+    get type() { return types.assignment_expression }
 }

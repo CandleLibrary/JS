@@ -3,7 +3,7 @@
 import base from "./base.mjs";
 import types from "./types.mjs";
 
-export default class extends base {
+export default class debugger_statement extends base {
     constructor() {
         super();
     }
@@ -17,7 +17,7 @@ export default class extends base {
         yield this;
     }
 
-    get type() { return types.debugger }
+    get type() { return types.debugger_statement }
 
     render() { return `debugger` }
 }

@@ -3,7 +3,7 @@
 import base from "./base.mjs";
 import types from "./types.mjs";
 
-export default class expr_stmt extends base {
+export default class expression_statement extends base {
 
     constructor(sym) {
         super(sym[0]);

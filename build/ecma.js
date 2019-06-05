@@ -2,65 +2,63 @@ var js = (function (exports) {
 	'use strict';
 
 	var types = {
-			number:1,
-			string:2,
-			id:3,
-			object:4,
-			null:5,
-			stmts:6,
-			for:7,
-			lex:8,
-			var:9,
-			const:10,
-			try:11,
-			catch:12,
-			finally:13,
-			while:14,
-			do:15,
-			add:16,
-			sub:17,
-			mult:18,
-			div:19,
-			mod:20,
-			strict_eq:21,
-			exp:22,
-			shift_r:23,
-			shift_l:24,
-			shift_l_fill:25,
-			array:26,
-			function:27,
-			bool:28,
-			label:29,
-			new:30,
-			lt:31,
-			gt:32,
-			lte:33,
-			gte:34,
-			assign:35,
-			assignment:35,
-			equal:36,
-			or:37,
-			and:38,
-			bit_or:39,
-			bit_and:40,
-			member:41,
-			call:42,
-			return:43,
-			if:44,
-			post_inc:45,
-			post_dec:46,
-			pre_inc:47,
-			pre_dec:48,
-			condition:49,
-			class:50,
-			negate:51,
-			array_literal:52,
-			this_expr:53,
-			prop_bind:54,
-			function_declaration:55,
-			debugger:56,
-			expression_list:57,
-			new_member:58
+	add_expression:1,
+	and_expression:2,
+	array_literal:3,
+	arrow_function_declaration:4,
+	assignment_expression:5,
+	await_expression:6,
+	binding:7,
+	block_statement:8,
+	bool_literal:9,
+	call_expression:10,
+	catch_statement:11,
+	condition_expression:12,
+	debugger_statement:13,
+	delete_expression:14,
+	divide_expression:15,
+	equality_expression:16,
+	exponent_expression:17,
+	expression_list:18,
+	expression_statement:19,
+	for_statement:20,
+	function_declaration:21,
+	identifier:22,
+	if_statement:23,
+	in_expression:24,
+	instanceof_expression:25,
+	left_shift_expression:26,
+	lexical_declaration:27,
+	member_expression:28,
+	modulo_expression:29,
+	multiply_expression:30,
+	negate_expression:31,
+	new_expression:32,
+	null_literal:33,
+	numeric_literal:34,
+	object_literal:35,
+	or_expression:36,
+	plus_expression:37,
+	post_decrement_expression:38,
+	post_increment_expression:39,
+	pre_decrement_expression:40,
+	pre_increment_expression:41,
+	property_binding:42,
+	right_shift_expression:43,
+	right_shift_fill_expression:44,
+	return_statement:45,
+	spread_element:46,
+	statements:47,
+	string:48,
+	subtract_expression:49,
+	this_literal:50,
+	try_statement:51,
+	typeof_expression:52,
+	unary_not_expression:53,
+	unary_or_expression:54,
+	unary_xor_expression:55,
+	void_expression:56,
+	argument_list:57,
 		};
 
 	class base {
@@ -135,272 +133,6 @@ var js = (function (exports) {
 	    }
 	}
 
-	/** FOR **/
-	class for_statement extends base {
-
-	    get init() { return this.vals[0] }
-	    get bool() { return this.vals[1] }
-	    get iter() { return this.vals[2] }
-	    get body() { return this.vals[3] }
-
-	    getRootIds(ids, closure) {
-
-	        closure = new Set([...closure.values()]);
-
-	        if (this.bool) this.bool.getRootIds(ids, closure);
-	        if (this.iter) this.iter.getRootIds(ids, closure);
-	        if (this.body) this.body.getRootIds(ids, closure);
-	    }
-
-	    * traverseDepthFirst(p) {
-	        this.parent = p;
-	        yield this;
-	        if (this.init) yield* this.init.traverseDepthFirst(this);
-	        if (this.bool) yield* this.bool.traverseDepthFirst(this);
-	        if (this.iter) yield* this.iter.traverseDepthFirst(this);
-	        if (this.body) yield* this.body.traverseDepthFirst(this);
-	        yield this;
-	    }
-
-	    get type() { return types.for }
-
-	    render() {
-	        let init, bool, iter, body;
-
-	        if (this.init) init = this.init.render();
-	        if (this.bool) bool = this.bool.render();
-	        if (this.iter) iter = this.iter.render();
-	        if (this.body) body = this.body.render();
-
-	        return `for(${init};${bool};${iter})${body}`;
-	    }
-	}
-
-	class call extends base {
-	    constructor(sym) {
-	        super(sym[0], (Array.isArray(sym[1])) ? sym[1] : [sym[1]]);
-	    }
-
-	    get id() { return this.vals[0] }
-	    get args() { return this.vals[1] }
-
-	    getRootIds(ids, closure) {
-	        this.id.getRootIds(ids, closure);
-	        this.args.getRootIds(ids, closure);
-	    }
-
-	    get name() { return this.id.name }
-	    get type() { return types.call }
-
-	    render() { 
-	        return `${this.id.render()}(${this.args.map(a=>a.render()).join(",")})` 
-	    }
-	}
-
-	/** IDENTIFIER **/
-	class id extends base {
-	    constructor(sym) {
-	        super(sym[0]);
-	        this.root = true;
-	    }
-
-	    get val() { return this.vals[0] }
-
-	    getRootIds(ids, closuere) { if (!closuere.has(this.val)) ids.add(this.val); }
-
-	    * traverseDepthFirst(p) {
-	        this.parent = p;
-	        yield this;
-	    }
-
-	    get name() { return this.val }
-
-	    get type() { return types.id }
-
-	    render() { return this.val }
-	}
-
-	/** CATCH **/
-	class catch_statement extends base {
-	    constructor(sym) {
-	        super(sym[2], sym[4]);
-	    }
-
-	    get param() { return this.vals[0] }
-	    get body() { return this.vals[1] }
-
-	    getRootIds(ids, closure) {
-	        if (this.body) this.body.getRootIds(ids, closure);
-	    }
-
-	    * traverseDepthFirst(p) {
-	        this.parent = p;
-	        yield this;
-	        yield* this.param.traverseDepthFirst(this);
-	        yield* this.body.traverseDepthFirst(this);
-	    }
-
-	    get type() { return types.catch }
-	}
-
-	/** TRY **/
-	class try_statement extends base {
-	    constructor(body, _catch, _finally) {
-	        super(body, _catch, _finally);
-
-
-	    }
-	    get catch() { return this.vals[0] }
-	    get body() { return this.vals[1] }
-	    get finally() { return this.vals[2] }
-
-	    getRootIds(ids, clsr) {
-	        this.body.getRootIds(ids, clsr);
-	        if (this.catch) this.catch.getRootIds(ids, clsr);
-	        if (this.finally) this.finally.getRootIds(ids, clsr);
-	    }
-
-	    * traverseDepthFirst(p) {
-	        this.parent = p;
-	        yield this;
-	        if (this.body) yield* this.body.traverseDepthFirst(p);
-	        if (this.catch) yield* this.catch.traverseDepthFirst(p);
-	        if (this.finally) yield* this.finally.traverseDepthFirst(p);
-	    }
-
-	    get type() { return types.try }
-	}
-
-	/** STATEMENTS **/
-	class stmts extends base {
-	    constructor(sym) {
-
-	        if (sym[0].length == 1)
-	            return sym[0][0];
-	        
-	        super(sym[0]);
-	    }
-
-	    get stmts() { return this.vals[0] }
-
-	    getRootIds(ids, closure) {
-	        this.stmts.forEach(s => s.getRootIds(ids, closure));
-	    }
-
-	    replaceNode(original, _new = null) {
-	        let index = -1;
-	        if ((index = super.replaceNode(original, _new, this.vals[0])) > -1) {
-	            this.vals[0].splice(index, 1);
-	        }
-	    }
-
-	    * traverseDepthFirst(p) {
-	        yield * super.traverseDepthFirst(p, this.vals[0]);
-	    }
-
-	    get type() { return types.stmts }
-
-	    render() { 
-	        return this.stmts.map(s=>(s.render())).join("") ;
-	    }
-	}
-
-	/** BLOCK **/
-	class block_statement extends stmts {
-
-	    constructor(sym) {
-	        if (!(sym[1] instanceof stmts))
-	            return sym[1];
-
-	        super(sym[1].vals);
-	    }
-
-	    getRootIds(ids, closure) {
-	        super.getRootIds(ids, new Set([...closure.values()]));
-	    }
-
-	    get type() { return types.block_statement }
-
-	    render() { return `{${super.render()}}` }
-	}
-
-	/** LEXICAL DECLARATION **/
-	class lexical extends base {
-	    constructor(sym) {
-	        super(sym[1]);
-	        this.mode = sym[0];
-	    }
-
-	    get bindings() { return this.vals[0] }
-
-	    getRootIds(ids, closure) {
-	        this.bindings.forEach(b => b.getRootIds(ids, closure));
-	    }
-
-	    get type() { return types.lex }
-
-	    render() { return `${this.mode} ${this.bindings.map(b=>b.render()).join(",")};` }
-	}
-
-	/** BINDING DECLARATION **/
-	class binding extends base {
-	    constructor(sym) {
-	        super(sym[0], sym[1] || null);
-	        this.id.root = false;
-	    }
-
-	    get id() { return this.vals[0] }
-	    get init() { return this.vals[1] }
-
-	    getRootIds(ids, closure) {
-	        this.id.getRootIds(closure, closure);
-	        if (this.init) this.init.getRootIds(ids, closure);
-	    }
-
-	    * traverseDepthFirst(p) {
-	        this.parent = p;
-	        yield this;
-	        yield* this.id.traverseDepthFirst(this);
-	        yield* this.init.traverseDepthFirst(this);
-	    }
-
-	    render() { return `${this.id}${this.init ? ` = ${this.init.render()}` : ""}` }
-	}
-
-	/** MEMBER **/
-
-	class mem extends base {
-	    constructor(sym) { super(sym[0], sym[2]);
-	        this.root = true;
-	        this.mem.root = false;
-	    }
-
-	    get id() { return this.vals[0] }
-	    get mem() { return this.vals[1] }
-
-	    getRootIds(ids, closuere) {
-	        this.id.getRootIds(ids, closuere);
-	    }
-
-	    * traverseDepthFirst(p) {
-	        this.parent = p;
-	        yield this;
-	        yield* this.id.traverseDepthFirst(this);
-	        yield* this.mem.traverseDepthFirst(this);
-	    }
-
-	    get name() { return this.id.name }
-	    get type() { return types.member }
-
-	    render() { 
-	        if(this.mem instanceof mem || this.mem instanceof id){
-	            return `${this.id.render()}.${this.mem.render()}`;
-	        }else{
-	            return `${this.id.render()}[${this.mem.render()}]`;
-	        }
-	    }
-	}
-
 	/** OPERATOR **/
 	class operator extends base {
 
@@ -423,19 +155,6 @@ var js = (function (exports) {
 	    render() { return `${this.left.render()} ${this.op} ${this.right.render()}` }
 	}
 
-	/** ASSIGNEMENT EXPRESSION **/
-
-	class assignment_expression extends operator {
-	    constructor(sym) {
-	        super(sym);
-	        this.op = sym[1];
-	        this.id.root = false;
-	    }
-	    get id() { return this.vals[0] }
-	    get expr() { return this.vals[2] }
-	    get type() { return types.assign }
-	}
-
 	/** ADD **/
 	class add_expression extends operator {
 
@@ -447,223 +166,15 @@ var js = (function (exports) {
 	    get type() { return types.add_expression }
 	}
 
-	/** EXPONENT **/
-	class exponent_expression extends operator {
+	/** AND **/
+	class and_expression extends operator {
 
 	    constructor(sym) {
 	        super(sym);
-	        this.op = "**";
+	        this.op = "&&";
 	    }
 
-	    get type() { return types.exp }
-	}
-
-	/** SUBTRACT **/
-	class subtract_expression extends operator {
-
-	    constructor(sym) {
-	        super(sym);
-	        this.op = "-";
-	    }
-
-	    get type () { return types.sub }
-	}
-
-	/** MULTIPLY **/
-	class divide_expression extends operator {
-
-	    constructor(sym) {
-	        super(sym);
-	        this.op = "/";
-	    }
-
-	    get type () { return types.div }
-	}
-
-	/** MULTIPLY **/
-	class multiply_expression extends operator {
-
-	    constructor(sym) {
-	        super(sym);
-	        this.op = "*";
-	    }
-
-	    get type () { return types.mult }
-
-	    
-	}
-
-	/** OBJECT **/
-
-	class object extends base {
-	    constructor(sym) {
-	        super(sym[0] || []);
-	    }
-
-	    get props() { return this.vals[0] }
-
-	    * traverseDepthFirst(p) {
-	        this.parent = p;
-	        yield this;
-	        for (const prop of this.props)
-	            yield* prop.traverseDepthFirst(this);
-	    }
-
-	    get type() { return types.object }
-
-	    render() { return `{${this.props.map(p=>p.render()).join(",")}}` }
-	}
-
-	/** DEBUGGER STATEMENT  **/
-
-	class debugger_statement extends base {
-	    constructor() {
-	        super();
-	    }
-
-	    getRootIds(ids, closure) {
-	        if (this.expr) this.expr.getRootIds(ids, closure);
-	    }
-
-	    * traverseDepthFirst(p) {
-	        this.parent = p;
-	        yield this;
-	    }
-
-	    get type() { return types.debugger }
-
-	    render() { return `debugger` }
-	}
-
-	/** STRING **/
-
-	class string extends base {
-	    constructor(sym) { super(sym.length === 3 ? sym[1]: ""); }
-
-	    get val() { return this.vals[0] }
-
-	    getRootIds(ids, closuere) { if (!closuere.has(this.val)) ids.add(this.val); }
-
-	    * traverseDepthFirst(p) {
-	        this.parent = p;
-	        yield this;
-	    }
-
-
-	    get type() { return types.string }
-
-	    render() { return `"${this.val}"` }
-	}
-
-	/** NULL **/
-	class null_literal extends base {
-	    constructor() { super(); }
-	    get type() { return types.null }
-	    render() { return "null" }
-	}
-
-	/** NUMBER **/
-	class number extends base {
-	    constructor(sym) { super(parseFloat(sym)); }
-	    get val() { return this.vals[0] }
-	    get type() { return types.number }
-	    render() { return this.val + "" }
-	    * traverseDepthFirst(p) {
-	        this.parent = p;
-	        yield this;
-	    }
-	}
-
-	/** BOOLEAN **/
-
-	class bool extends base {
-	    constructor(sym) { super(sym[0]); }
-
-	    get type() { return types.bool }
-
-	    * traverseDepthFirst(p) {
-	        this.parent = p;
-	        yield this;
-	    }
-	}
-
-	/** OPERATOR **/
-	class unary_pre extends base {
-
-	    constructor(sym) {
-	        super(sym[1]);
-	        this.op = "";
-	    }
-
-	    get expr() { return this.vals[0] }
-
-	    render() { return `${this.op}${this.expr.render()}` }
-	}
-
-	/** NEGATE **/
-
-	class negate_expression extends unary_pre {
-	    constructor(sym) { super(sym);
-	        this.op = "-";
-	    }
-	    get type() { return types.negate }
-	}
-
-	/** RETURN STATMENT  **/
-
-
-
-	class return_stmt extends base {
-	    constructor(sym) {
-	        super((sym.length > 2) ? sym[1] : null);
-	    }
-
-	    get expr() { return this.vals[0] }
-
-	    getRootIds(ids, closure) {
-	        if (this.expr) this.expr.getRootIds(ids, closure);
-	    }
-
-	    get type() { return types.return }
-
-	    render() {
-	        let expr_str = "";
-	        if (this.expr) {
-	            if (Array.isArray(this.expr)) {
-	                expr_str = this.expr.map(e=>e.render()).join(",");
-	            } else
-	                expr_str = this.expr.render();
-	        }
-	        return `return ${expr_str};`;
-	    }
-	}
-
-	/** CONDITION EXPRESSIONS **/
-	class condition_expression extends base {
-	    constructor(sym) {
-	        super(sym[0], sym[2], sym[4]);
-	    }
-
-	    get bool() { return this.vals[0] }
-	    get left() { return this.vals[1] }
-	    get right() { return this.vals[2] }
-
-	    getRootIds(ids, closure) {
-	        this.bool.getRootIds(ids, closure);
-	        this.left.getRootIds(ids, closure);
-	        this.right.getRootIds(ids, closure);
-	    }
-
-	    get type() { return types.condition }
-
-	    render() {
-	        const
-	            bool = this.bool.render(),
-	            left = this.left.render(),
-	            right = this.right.render();
-
-	        return `${bool} ? ${left} : ${right}`;
-	    }
+	    get type() { return types.and_expression }
 	}
 
 	class array_literal extends base {
@@ -705,29 +216,6 @@ var js = (function (exports) {
 	    get type() { return types.array_literal }
 
 	    render() { return `[${this.exprs.map(a=>a.render()).join(",")}]` }
-	}
-
-	/** THIS LITERAL  **/
-
-	class this_literal extends base {
-	    constructor() {
-	        super();
-	        this.root = false;
-	    }
-
-	    get name() { return "this" }
-	    get type() { return types.this_literal }
-
-	    render() { return `this` }
-	}
-
-	/** PROPERTY BINDING DECLARATION **/
-	class property_binding extends binding {
-	    constructor(sym) {
-	        super([sym[0], sym[2]]);
-	    }
-	    get type( ){return types.prop_bind}
-	    render() { return `${this.id.type > 4 ? `[${this.id.render()}]` : this.id.render()} : ${this.init.render()}` }
 	}
 
 	class function_declaration extends base {
@@ -817,6 +305,269 @@ var js = (function (exports) {
 	    }
 	}
 
+	/** ASSIGNEMENT EXPRESSION **/
+
+	class assignment_expression extends operator {
+	    constructor(sym) {
+	        super(sym);
+	        this.op = sym[1];
+	        this.id.root = false;
+	    }
+	    get id() { return this.vals[0] }
+	    get expr() { return this.vals[2] }
+	    get type() { return types.assignment_expression }
+	}
+
+	/** OPERATOR **/
+	class unary_pre extends base {
+
+	    constructor(sym) {
+	        super(sym[1]);
+	        this.op = "";
+	    }
+
+	    get expr() { return this.vals[0] }
+
+	    render() { return `${this.op}${this.expr.render()}` }
+	}
+
+	/** VOID **/
+
+	class await_expression extends unary_pre {
+
+	    constructor(sym) {
+	        super(sym);
+	        this.op = "await";
+	    }
+
+	    get type() { return types.await_expression }
+	}
+
+	/** BINDING DECLARATION **/
+	class binding extends base {
+	    constructor(sym) {
+	        super(sym[0], sym[1] || null);
+	        this.id.root = false;
+	    }
+
+	    get id() { return this.vals[0] }
+	    get init() { return this.vals[1] }
+	    get type(){return types.binding}
+
+	    getRootIds(ids, closure) {
+	        this.id.getRootIds(closure, closure);
+	        if (this.init) this.init.getRootIds(ids, closure);
+	    }
+
+	    * traverseDepthFirst(p) {
+	        this.parent = p;
+	        yield this;
+	        yield* this.id.traverseDepthFirst(this);
+	        yield* this.init.traverseDepthFirst(this);
+	    }
+
+	    render() { return `${this.id}${this.init ? ` = ${this.init.render()}` : ""}` }
+	}
+
+	/** STATEMENTS **/
+	class statements extends base {
+	    constructor(sym) {
+
+	        if (sym[0].length == 1)
+	            return sym[0][0];
+	        
+	        super(sym[0]);
+	    }
+
+	    get stmts() { return this.vals[0] }
+
+	    getRootIds(ids, closure) {
+	        this.stmts.forEach(s => s.getRootIds(ids, closure));
+	    }
+
+	    replaceNode(original, _new = null) {
+	        let index = -1;
+	        if ((index = super.replaceNode(original, _new, this.vals[0])) > -1) {
+	            this.vals[0].splice(index, 1);
+	        }
+	    }
+
+	    * traverseDepthFirst(p) {
+	        yield * super.traverseDepthFirst(p, this.vals[0]);
+	    }
+
+	    get type() { return types.statements }
+
+	    render() { 
+	        return this.stmts.map(s=>(s.render())).join("") ;
+	    }
+	}
+
+	/** BLOCK **/
+	class block_statement extends statements {
+
+	    constructor(sym) {
+	        if (!(sym[1] instanceof statements))
+	            return sym[1];
+
+	        super(sym[1].vals);
+	    }
+
+	    getRootIds(ids, closure) {
+	        super.getRootIds(ids, new Set([...closure.values()]));
+	    }
+
+	    get type() { return types.block_statement }
+
+	    render() { return `{${super.render()}}` }
+	}
+
+	/** BOOLEAN **/
+
+	class bool_literal extends base {
+	    constructor(sym) { super(sym[0]); }
+
+	    get type() { return types.bool_literal }
+
+	    * traverseDepthFirst(p) {
+	        this.parent = p;
+	        yield this;
+	    }
+	}
+
+	class call_expression extends base {
+	    constructor(sym) {
+	        super(sym[0],sym[1]);
+	    }
+
+	    get id() { return this.vals[0] }
+	    get args() { return this.vals[1] }
+
+	    getRootIds(ids, closure) {
+	        this.id.getRootIds(ids, closure);
+	        this.args.getRootIds(ids, closure);
+	    }
+
+	    get name() { return this.id.name }
+	    get type() { return types.call_expression }
+
+	    render() { 
+	        return `${this.id.render()}(${this.args.render()})` 
+	    }
+	}
+
+	/** CATCH **/
+	class catch_statement extends base {
+	    constructor(sym) {
+	        super(sym[2], sym[4]);
+	    }
+
+	    get param() { return this.vals[0] }
+	    get body() { return this.vals[1] }
+
+	    getRootIds(ids, closure) {
+	        if (this.body) this.body.getRootIds(ids, closure);
+	    }
+
+	    * traverseDepthFirst(p) {
+	        this.parent = p;
+	        yield this;
+	        yield* this.param.traverseDepthFirst(this);
+	        yield* this.body.traverseDepthFirst(this);
+	    }
+
+	    get type() { return types.catch_statement }
+	}
+
+	/** CONDITION EXPRESSIONS **/
+	class condition_expression extends base {
+	    constructor(sym) {
+	        super(sym[0], sym[2], sym[4]);
+	    }
+
+	    get bool() { return this.vals[0] }
+	    get left() { return this.vals[1] }
+	    get right() { return this.vals[2] }
+
+	    getRootIds(ids, closure) {
+	        this.bool.getRootIds(ids, closure);
+	        this.left.getRootIds(ids, closure);
+	        this.right.getRootIds(ids, closure);
+	    }
+
+	    get type() { return types.condition_expression }
+
+	    render() {
+	        const
+	            bool = this.bool.render(),
+	            left = this.left.render(),
+	            right = this.right.render();
+
+	        return `${bool} ? ${left} : ${right}`;
+	    }
+	}
+
+	/** DEBUGGER STATEMENT  **/
+
+	class debugger_statement extends base {
+	    constructor() {
+	        super();
+	    }
+
+	    getRootIds(ids, closure) {
+	        if (this.expr) this.expr.getRootIds(ids, closure);
+	    }
+
+	    * traverseDepthFirst(p) {
+	        this.parent = p;
+	        yield this;
+	    }
+
+	    get type() { return types.debugger_statement }
+
+	    render() { return `debugger` }
+	}
+
+	/** POSTFIX INCREMENT **/
+
+	class delete_expression extends unary_pre {
+
+	    constructor(sym) {
+	        super(sym);
+	        this.op = "delete";
+	    }
+
+	    get type() { return types.delete_expression }
+	}
+
+	/** DIVIDE EXPRESSION **/
+	class divide_expression extends operator {
+
+	    constructor(sym) {
+	        super(sym);
+	        this.op = "/";
+	    }
+
+	    get type () { return types.divide_expression }
+	}
+
+	/** EQ **/
+	class equality_expression extends operator {
+	    constructor(sym) {super(sym); this.op = sym[1]; }
+	    get type() { return types.equality_expression }
+	}
+
+	/** EXPONENT **/
+	class equality_expression$1 extends operator {
+
+	    constructor(sym) {
+	        super(sym);
+	        this.op = "**";
+	    }
+
+	    get type() { return types.equality_expression }
+	}
+
 	/** EXPRESSION_LIST **/
 
 	class expression_list extends base {
@@ -850,9 +601,104 @@ var js = (function (exports) {
 	    render() { return `(${this.expressions.map(s=>s.render()).join(",")})` }
 	}
 
+	/** EXPRESSION_LIST **/
+
+	class expression_statement extends base {
+
+	    constructor(sym) {
+	        super(sym[0]);
+	    }
+
+	    get expression() { return this.vals[0] }
+
+	    getRootIds(ids, closure) {
+	        this.expression.getRootIds(ids, closure);
+	    }
+
+	    replaceNode(original, _new = null) {
+	        if(!super.replaceNode(original, _new, this.vals[0]))
+	            this.replace();
+	    }
+
+	    * traverseDepthFirst(p) {
+	        this.parent = p;
+	        yield this;
+	        yield* this.expression.traverseDepthFirst(this);
+
+	    }
+
+	    get type() { return types.expression_statement }
+
+	    render() { return this.expression.render() + ";" }
+	}
+
+	/** FOR **/
+	class for_statement extends base {
+
+	    get init() { return this.vals[0] }
+	    get bool() { return this.vals[1] }
+	    get iter() { return this.vals[2] }
+	    get body() { return this.vals[3] }
+
+	    getRootIds(ids, closure) {
+
+	        closure = new Set([...closure.values()]);
+
+	        if (this.bool) this.bool.getRootIds(ids, closure);
+	        if (this.iter) this.iter.getRootIds(ids, closure);
+	        if (this.body) this.body.getRootIds(ids, closure);
+	    }
+
+	    * traverseDepthFirst(p) {
+	        this.parent = p;
+	        yield this;
+	        if (this.init) yield* this.init.traverseDepthFirst(this);
+	        if (this.bool) yield* this.bool.traverseDepthFirst(this);
+	        if (this.iter) yield* this.iter.traverseDepthFirst(this);
+	        if (this.body) yield* this.body.traverseDepthFirst(this);
+	        yield this;
+	    }
+
+	    get type() { return types.for_statement }
+
+	    render() {
+	        let init, bool, iter, body;
+
+	        if (this.init) init = this.init.render();
+	        if (this.bool) bool = this.bool.render();
+	        if (this.iter) iter = this.iter.render();
+	        if (this.body) body = this.body.render();
+
+	        return `for(${init};${bool};${iter})${body}`;
+	    }
+	}
+
+	/** IDENTIFIER **/
+	class identifier extends base {
+	    constructor(sym) {
+	        super(sym[0]);
+	        this.root = true;
+	    }
+
+	    get val() { return this.vals[0] }
+
+	    getRootIds(ids, closuere) { if (!closuere.has(this.val)) ids.add(this.val); }
+
+	    * traverseDepthFirst(p) {
+	        this.parent = p;
+	        yield this;
+	    }
+
+	    get name() { return this.val }
+
+	    get type() { return types.identifier }
+
+	    render() { return this.val }
+	}
+
 	/** STATEMENTS **/
 
-	class if_stmt extends base {
+	class if_statement extends base {
 	    constructor(sym) {
 	        const expr = sym[2],
 	            stmt = sym[4],
@@ -885,7 +731,7 @@ var js = (function (exports) {
 	            yield* this.else_stmt.traverseDepthFirst(this);
 	    }
 
-	    get type() { return types.if }
+	    get type() { return types.if_statement }
 
 	    render() {
 	        const
@@ -894,6 +740,203 @@ var js = (function (exports) {
 	            _else = (this.else_stmt) ? " else " + this.else_stmt.render() : "";
 	        return `if(${expr})${stmt}${_else}`;
 	    }
+	}
+
+	/** IN **/
+	class in_expression extends operator {
+
+	    constructor(sym) {
+	        super(sym);
+	        this.op = "in";
+	    }
+
+	    get type() { return types.in_expression }
+	}
+
+	/** INSTANCEOF **/
+	class instanceof_expression extends operator {
+
+	    constructor(sym) {
+	        super(sym);
+	        this.op = "instanceof";
+	    }
+
+	    get type() { return types.instanceof_expression }
+	}
+
+	/** LEFT_SHIFT **/
+	class left_shift_expression extends operator {
+
+	    constructor(sym) {
+	        super(sym);
+	        this.op = "<<";
+	    }
+
+	    get type() { return types.left_shift_expression }
+	}
+
+	/** LEXICAL DECLARATION **/
+	class lexical_declaration extends base {
+	    constructor(sym) {
+	        super(sym[1]);
+	        this.mode = sym[0];
+	    }
+
+	    get bindings() { return this.vals[0] }
+
+	    getRootIds(ids, closure) {
+	        this.bindings.forEach(b => b.getRootIds(ids, closure));
+	    }
+
+	    get type() { return types.lexical_declaration }
+
+	    render() { return `${this.mode} ${this.bindings.map(b=>b.render()).join(",")};` }
+	}
+
+	/** MEMBER **/
+
+	class member_expression extends base {
+	    constructor(sym) { super(sym[0], sym[2]);
+	        this.root = true;
+	        this.mem.root = false;
+	    }
+
+	    get id() { return this.vals[0] }
+	    get mem() { return this.vals[1] }
+
+	    getRootIds(ids, closuere) {
+	        this.id.getRootIds(ids, closuere);
+	    }
+
+	    * traverseDepthFirst(p) {
+	        this.parent = p;
+	        yield this;
+	        yield* this.id.traverseDepthFirst(this);
+	        yield* this.mem.traverseDepthFirst(this);
+	    }
+
+	    get name() { return this.id.name }
+	    get type() { return types.member_expression }
+
+	    render() { 
+	        if(this.mem.type == types.member_expression || this.mem.type == types.identifier){
+	            return `${this.id.render()}.${this.mem.render()}`;
+	        }else{
+	            return `${this.id.render()}[${this.mem.render()}]`;
+	        }
+	    }
+	}
+
+	/** MODULO **/
+	class modulo_expression extends operator {
+
+	    constructor(sym) {
+	        super(sym);
+	        this.op = "%";
+	    }
+
+	    get type() { return types.modulo_expression }
+	}
+
+	/** MULTIPLY **/
+	class multiply_expression extends operator {
+
+	    constructor(sym) {
+	        super(sym);
+	        this.op = "*";
+	    }
+
+	    get type () { return types.multiply_expression }
+
+	    
+	}
+
+	/** NEGATE **/
+
+	class negate_expression extends unary_pre {
+	    constructor(sym) { super(sym);
+	        this.op = "-";
+	    }
+	    get type() { return types.negate_expression }
+	}
+
+	/** NEW EXPRESSION **/
+
+	class new_expression extends call_expression {
+	    constructor(id, args) { 
+	        super([id, args]);
+	        this.root = false;
+	        this.id.root = false;
+	    }
+
+	    get type(){return types.new_expression}
+
+	    render() { 
+	        const
+	            args_str = this.args.render();
+
+	        return `new ${this.id.render()}(${args_str})`;
+	    }
+	}
+
+	/** NULL **/
+	class null_literal extends base {
+	    constructor() { super(); }
+	    get type() { return types.null_literal }
+	    render() { return "null" }
+	}
+
+	/** NUMBER **/
+	class numeric_literal extends base {
+	    constructor(sym) { super(parseFloat(sym)); }
+	    get val() { return this.vals[0] }
+	    get type() { return types.numeric_literal }
+	    render() { return this.val + "" }
+	    * traverseDepthFirst(p) {
+	        this.parent = p;
+	        yield this;
+	    }
+	}
+
+	/** OBJECT **/
+
+	class object_literal extends base {
+	    constructor(sym) {
+	        super(sym[0] || []);
+	    }
+
+	    get props() { return this.vals[0] }
+
+	    * traverseDepthFirst(p) {
+	        this.parent = p;
+	        yield this;
+	        for (const prop of this.props)
+	            yield* prop.traverseDepthFirst(this);
+	    }
+
+	    get type() { return types.object_literal }
+
+	    render() { return `{${this.props.map(p=>p.render()).join(",")}}` }
+	}
+
+	/** OR **/
+	class or_expression extends operator {
+
+	    constructor(sym) {
+	        super(sym);
+	        this.op = "||";
+	    }
+
+	    get type() { return types.or_expression }
+	}
+
+	/** PLUS **/
+
+	class plus_expression extends unary_pre {
+	    constructor(sym) { super(sym);
+	        this.op = "+";
+	    }
+	    get type() { return types.plus_expression }
 	}
 
 	/** OPERATOR **/
@@ -911,19 +954,6 @@ var js = (function (exports) {
 
 	/** POSTFIX INCREMENT **/
 
-	class post_increment_expression extends unary_post {
-
-	    constructor(sym) {
-	        super(sym);
-	        this.op = "++";
-	    }
-
-	    get type() { return types.post_inc }
-
-	}
-
-	/** POSTFIX INCREMENT **/
-
 	class post_decrement_expression extends unary_post {
 
 	    constructor(sym) {
@@ -931,141 +961,423 @@ var js = (function (exports) {
 	        this.op = "--";
 	    }
 
-	    get type() { return types.post_dec }
+	    get type() { return types.post_decrement_expression }
 	}
 
-	/** EXPRESSION_LIST **/
+	/** POSTFIX INCREMENT **/
 
-	class expr_stmt extends base {
+	class post_increment_expression extends unary_post {
 
 	    constructor(sym) {
-	        super(sym[0]);
+	        super(sym);
+	        this.op = "++";
 	    }
 
-	    get expression() { return this.vals[0] }
+	    get type() { return types.post_increment_expression }
+
+	}
+
+	/** UNARY NOT **/
+
+	class pre_decrement_expression extends unary_pre {
+
+	    constructor(sym) {
+	        super(sym);
+	        this.op = "--";
+	    }
+
+	    get type() { return types.pre_decrement_expression }
+	}
+
+	/** UNARY NOT **/
+
+	class pre_increment_expression extends unary_pre {
+
+	    constructor(sym) {
+	        super(sym);
+	        this.op = "--";
+	    }
+
+	    get type() { return types.pre_increment_expression }
+	}
+
+	/** PROPERTY BINDING DECLARATION **/
+	class property_binding extends binding {
+	    constructor(sym) {
+	        super([sym[0], sym[2]]);
+	    }
+	    get type( ){return types.property_binding}
+	    render() { return `${this.id.type > 4 ? `[${this.id.render()}]` : this.id.render()} : ${this.init.render()}` }
+	}
+
+	/** RIGHT SHIFT **/
+	class right_shift_expression extends operator {
+
+	    constructor(sym) {
+	        super(sym);
+	        this.op = ">>";
+	    }
+
+	    get type() { return types.right_shift_expression }
+	}
+
+	/** RIGHT SHIFT **/
+	class right_shift_fill_expression extends operator {
+
+	    constructor(sym) {
+	        super(sym);
+	        this.op = ">>>";
+	    }
+
+	    get type() { return types.right_shift_fill_expression }
+	}
+
+	/** RETURN STATMENT  **/
+
+
+
+	class return_statement extends base {
+	    constructor(sym) {
+	        super((sym.length > 2) ? sym[1] : null);
+	    }
+
+	    get expr() { return this.vals[0] }
 
 	    getRootIds(ids, closure) {
-	        this.expression.getRootIds(ids, closure);
+	        if (this.expr) this.expr.getRootIds(ids, closure);
 	    }
 
-	    replaceNode(original, _new = null) {
-	        if(!super.replaceNode(original, _new, this.vals[0]))
-	            this.replace();
-	    }
+	    get type() { return types.return_statement }
 
-	    * traverseDepthFirst(p) {
-	        this.parent = p;
-	        yield this;
-	        yield* this.expression.traverseDepthFirst(this);
-
-	    }
-
-	    get type() { return types.expression_statement }
-
-	    render() { return this.expression.render() + ";" }
-	}
-
-	/** OR **/
-	class or_expression extends operator {
-
-	    constructor(sym) {
-	        super(sym);
-	        this.op = "||";
-	    }
-
-	    get type() { return types.or }
-	}
-
-	/** AND **/
-	class and_expression extends operator {
-
-	    constructor(sym) {
-	        super(sym);
-	        this.op = "&&";
-	    }
-
-	    get type() { return types.and }
-	}
-
-	/** NOT **/
-
-	class node extends unary_pre {
-
-	    constructor(sym) {
-	        super(sym);
-	        this.op = "!";
-	    }
-
-	    get type() { return types.node }
-
-	}
-
-	/** MEMBER **/
-
-	class mem$1 extends call {
-	    constructor(sym) { super([sym[1], sym[2]]);  }
-
-	    get id() { return this.vals[0] }
-	    get args() { return this.vals[1] }
-
-	    getRootIds(ids, closuere) {
-	        this.id.getRootIds(ids, closuere);
-	    }
-
-	    get name() { return this.id.name }
-	    get type() { return types.new_member }
-
-	    render() { 
-	        const
-	            args_str = this.args.map(e => e.render()).join(",");
-
-	        return `new ${this.id.render()}(${args_str})`;
+	    render() {
+	        let expr_str = "";
+	        if (this.expr) {
+	            if (Array.isArray(this.expr)) {
+	                expr_str = this.expr.map(e=>e.render()).join(",");
+	            } else
+	                expr_str = this.expr.render();
+	        }
+	        return `return ${expr_str};`;
 	    }
 	}
 
 	/** SPREAD **/
 
-	class node$1 extends unary_pre {
+	class spread_element extends unary_pre {
 
 	    constructor(sym) {
 	        super(sym);
 	        this.op = "...";
 	    }
 
-	    get type() { return types.spread }
+	    get type() { return types.spread_element }
 
 	}
 
-	/** EQ **/
-	class equality_expression extends operator {
-	    constructor(sym) {super(sym); this.op = sym[1]; }
-	    get type() { return types.equal }
+	/** STRING **/
+
+	class string extends base {
+	    constructor(sym) { super(sym.length === 3 ? sym[1]: ""); }
+
+	    get val() { return this.vals[0] }
+
+	    getRootIds(ids, closuere) { if (!closuere.has(this.val)) ids.add(this.val); }
+
+	    * traverseDepthFirst(p) {
+	        this.parent = p;
+	        yield this;
+	    }
+
+
+	    get type() { return types.string }
+
+	    render() { return `"${this.val}"` }
 	}
 
-	/** GREATER **/
-	class greater extends operator {
-	    constructor(sym) {super(sym);this.op = ">";}
-	    get type() { return types.greater }
+	/** SUBTRACT **/
+	class subtract_expression extends operator {
+
+	    constructor(sym) {
+	        super(sym);
+	        this.op = "-";
+	    }
+
+	    get type () { return types.subtract_expression }
 	}
 
-	/** GREATER THAN EQ **/
-	class greater_eq extends operator {
-	    constructor(sym) {super(sym);this.op = ">=";}
-	    get type() { return types.greater_eq }
+	/** THIS LITERAL  **/
+
+	class this_literal extends base {
+	    constructor() {
+	        super();
+	        this.root = false;
+	    }
+
+	    get name() { return "this" }
+	    get type() { return types.this_literal }
+
+	    render() { return `this` }
 	}
 
-	/** LESS **/
-	class less extends operator {
-	    constructor(sym) {super(sym);this.op = "<";}
-	    get type() { return types.less }
+	/** TRY **/
+	class try_statement extends base {
+	    constructor(body, _catch, _finally) {
+	        super(body, _catch, _finally);
+
+
+	    }
+	    get catch() { return this.vals[0] }
+	    get body() { return this.vals[1] }
+	    get finally() { return this.vals[2] }
+
+	    getRootIds(ids, clsr) {
+	        this.body.getRootIds(ids, clsr);
+	        if (this.catch) this.catch.getRootIds(ids, clsr);
+	        if (this.finally) this.finally.getRootIds(ids, clsr);
+	    }
+
+	    * traverseDepthFirst(p) {
+	        this.parent = p;
+	        yield this;
+	        if (this.body) yield* this.body.traverseDepthFirst(p);
+	        if (this.catch) yield* this.catch.traverseDepthFirst(p);
+	        if (this.finally) yield* this.finally.traverseDepthFirst(p);
+	    }
+
+	    get type() { return types.try_statement }
 	}
 
-	/** LESS THAN EQUAL **/
+	/** TYPEOF **/
 
-	class less_eq extends operator {
-	    constructor(sym) {super(sym);this.op = "<=";}
-	    get type() { return types.less_eq }
+	class typeof_expression extends unary_pre {
+
+	    constructor(sym) {
+	        super(sym);
+	        this.op = "typeof";
+	    }
+
+	    get type() { return types.typeof_expression }
 	}
+
+	/** UNARY NOT **/
+
+	class unary_not_expression extends unary_pre {
+	    constructor(sym) {
+	        super(sym);
+	        this.op = "!";
+	    }
+	    get type() { return types.unary_not_expression }
+	}
+
+	/** UNARY BIT OR **/
+
+	class unary_or_expression extends unary_pre {
+
+	    constructor(sym) {
+	        super(sym);
+	        this.op = "|";
+	    }
+
+	    get type() { return types.unary_or_expression }
+	}
+
+	/** UNARY BIT XOR **/
+
+	class unary_xor_expression extends unary_pre {
+
+	    constructor(sym) {
+	        super(sym);
+	        this.op = "~";
+	    }
+
+	    get type() { return types.unary_xor_expression }
+	}
+
+	/** VOID **/
+
+	class void_expression extends unary_pre {
+
+	    constructor(sym) {
+	        super(sym);
+	        this.op = "void";
+	    }
+
+	    get type() { return types.void_expression }
+	}
+
+	/** ARGUMENT_LIST **/
+	class argument_list extends base {
+	    constructor(sym) {
+
+	        //if (sym && sym.length == 1)
+	        //    return sym[0];
+	        
+	        super(sym || []);
+	    }
+
+	    get args() { return this.vals[0] }
+
+	    getRootIds(ids, closure) {
+	        this.args.forEach(s => s.getRootIds(ids, closure));
+	    }
+
+	    replaceNode(original, _new = null) {
+	        let index = -1;
+	        if ((index = super.replaceNode(original, _new, this.vals[0])) > -1) {
+	            this.vals[0].splice(index, 1);
+	        }
+	    }
+
+	    * traverseDepthFirst(p) {
+	        yield * super.traverseDepthFirst(p, this.vals[0]);
+	    }
+
+	    get type() { return types.argument_list }
+
+	    render() { 
+	        return this.args.map(s=>(s.render())).join(",") ;
+	    }
+	}
+
+	//continue_statement
+	//break_statement
+	//return_statement
+	//throw_statement
+	//with_statement
+	//switch_statement
+	//label_statement
+	//finally_statement
+	//variable_statement
+	//class_statement
+
+
+	const env = {
+	    table: {},
+	    ASI: true,
+	    functions: {
+
+	        //JS
+	        plus_expression,
+	        add_expression,
+	        and_expression,
+	        array_literal,
+	        arrow_function_declaration,
+	        assignment_expression,
+	        await_expression,
+	        await_expression,
+	        binding,
+	        //bit_and_expression,
+	        //bit_or_expression,
+	        //bit_xor_expression,
+	        block_statement,
+	        bool_literal,
+	        call_expression,
+	        catch_statement,
+	        condition_expression,
+	        debugger_statement,
+	        delete_expression,
+	        divide_expression,
+	        equality_expression,
+	        exponent_expression: equality_expression$1,
+	        expression_list,
+	        expression_statement,
+	        for_statement,
+	        function_declaration,
+	        identifier,
+	        if_statement,
+	        in_expression,
+	        instanceof_expression,
+	        left_shift_expression,
+	        lexical: lexical_declaration,
+	        member_expression,
+	        modulo_expression,
+	        multiply_expression,
+	        negate_expression,
+	        new_expression,
+	        null_literal,
+	        numeric_literal,
+	        object_literal,
+	        or_expression,
+	        post_decrement_expression,
+	        post_increment_expression,
+	        pre_decrement_expression,
+	        pre_increment_expression,
+	        property_binding,
+	        return_statement,
+	        right_shift_expression,
+	        right_shift_fill_expression,
+	        spread_element,
+	        statements,
+	        string_literal: string,
+	        subtract_expression,
+	        this_literal,
+	        try_statement,
+	        typeof_expression,
+	        unary_not_expression,
+	        unary_not_expression,
+	        unary_or_expression,
+	        void_expression,
+	        argument_list,
+	        while_stmt: function(sym) {
+	            this.bool = sym[1];
+	            this.body = sym[3];
+	        },
+	        var_stmt: function(sym) { this.declarations = sym[1]; },
+	        unary_plus: function(sym) {
+	            this.expr = sym[1];
+	            this.ty = "PRE INCR";
+	        },
+	        unary_minus: function(sym) {
+	            this.expr = sym[1];
+	            this.ty = "PRE INCR";
+	        },
+	        pre_inc_expr: function(sym) {
+	            this.expr = sym[1];
+	            this.ty = "PRE INCR";
+	        },
+	        pre_dec_expr: function(sym) {
+	            this.expr = sym[1];
+	            this.ty = "PRE DEC";
+	        },
+
+	        label_stmt: function(sym) {
+	            this.label = sym[0];
+	            this.stmt = sym[1];
+	        },
+
+	        defaultError: (tk, env, output, lex, prv_lex, ss, lu) => {
+	            /*USED for ASI*/
+
+	            if (env.ASI && lex.tx !== ")" && !lex.END) {
+
+	                if (lex.tx == "</") // As in "<script> script body => (</)script>"
+	                    return lu.get(";");
+
+	                let ENCOUNTERED_END_CHAR = (lex.tx == "}" || lex.END || lex.tx == "</");
+
+	                while (!ENCOUNTERED_END_CHAR && !prv_lex.END && prv_lex.off < lex.off) {
+	                    prv_lex.next();
+	                    if (prv_lex.ty == prv_lex.types.nl)
+	                        ENCOUNTERED_END_CHAR = true;
+	                }
+
+	                if (ENCOUNTERED_END_CHAR)
+	                    return lu.get(";");
+	            }
+
+	            if (lex.END)
+	                return lu.get(";");
+	        }
+	    },
+
+	    options: {
+	        integrate: false,
+	        onstart: () => {
+	            env.table = {};
+	            env.ASI = true;
+	        }
+	    }
+	};
 
 	let fn = {}; const 
 	/************** Maps **************/
@@ -3341,7 +3653,7 @@ var js = (function (exports) {
 	()=>(1274),
 	()=>(1278),
 	()=>(1294),
-	(...v)=>(rednv(85003,fn.call_expr,2,0,...v)),
+	(...v)=>(rednv(85003,fn.call_expression,2,0,...v)),
 	(...v)=>(redv(99339,R0_new_expression,2,0,...v)),
 	()=>(1310),
 	(...v)=>(redv(166923,R0_string_literal35307_group_list,2,0,...v)),
@@ -3403,10 +3715,10 @@ var js = (function (exports) {
 	(...v)=>(rednv(130063,fn.bit_xor_expression,3,0,...v)),
 	(...v)=>(rednv(131087,fn.bit_and_expression,3,0,...v)),
 	(...v)=>(rednv(132111,fn.equality_expression,3,0,...v)),
-	(...v)=>(rednv(133135,fn.less_than_expression,3,0,...v)),
-	(...v)=>(rednv(133135,fn.greater_than_expression,3,0,...v)),
-	(...v)=>(rednv(133135,fn.less_equal_expression,3,0,...v)),
-	(...v)=>(rednv(133135,fn.greater_equal_expression,3,0,...v)),
+	(...v)=>(rednv(133135,fn.equality_expression,3,0,...v)),
+	(...v)=>(rednv(133135,fn.equality_expression,3,0,...v)),
+	(...v)=>(rednv(133135,fn.equality_expression,3,0,...v)),
+	(...v)=>(rednv(133135,fn.equality_expression,3,0,...v)),
 	(...v)=>(rednv(133135,fn.instanceof_expression,3,0,...v)),
 	(...v)=>(rednv(133135,fn.in_expression,3,0,...v)),
 	(...v)=>(rednv(134159,fn.left_shift_expression,3,0,...v)),
@@ -3448,7 +3760,7 @@ var js = (function (exports) {
 	()=>(1758),
 	(...v)=>(rednv(100367,fn.member_expression,3,0,...v)),
 	(...v)=>(redv(100367,R1_member_expression,3,0,...v)),
-	(...v)=>(rednv(103439,fn.new_target_expr,3,0,...v)),
+	(...v)=>(rednv(103439,fn.new_expression,3,0,...v)),
 	(...v)=>(rednv(158735,fn.string_literal,3,0,...v)),
 	(...v)=>(redv(155659,R0_string_literal35307_group_list,2,0,...v)),
 	(...v)=>(redv(157707,R0_string_literal35307_group_list,2,0,...v)),
@@ -3538,7 +3850,7 @@ var js = (function (exports) {
 	()=>(2062),
 	(...v)=>(redv(106511,R0_arguments,3,0,...v)),
 	(...v)=>(redv(106511,R1_arguments,3,0,...v)),
-	(...v)=>(rednv(107531,fn.spread_operator,2,0,...v)),
+	(...v)=>(rednv(107531,fn.spread_element,2,0,...v)),
 	(...v)=>(rednv(100371,fn.member_expression,4,0,...v)),
 	(...v)=>(redv(141331,R0_iteration_statement7412_group,4,0,...v)),
 	(...v)=>(redv(141331,R1_cover_parenthesized_expression_and_arrow_parameter_list,4,0,...v)),
@@ -4500,437 +4812,6 @@ var js = (function (exports) {
 	    return o[0];
 	}
 
-	/** VOID **/
-
-	class await_expression extends unary_pre {
-
-	    constructor(sym) {
-	        super(sym);
-	        this.op = "await";
-	    }
-
-	    get type() { return types.await_expression }
-	}
-
-	/** POSTFIX INCREMENT **/
-
-	class delete_expression extends unary_pre {
-
-	    constructor(sym) {
-	        super(sym);
-	        this.op = "delete";
-	    }
-
-	    get type() { return types.delete_expression }
-	}
-
-	/** IN **/
-	class in_expression extends operator {
-
-	    constructor(sym) {
-	        super(sym);
-	        this.op = "in";
-	    }
-
-	    get type() { return types.in_expression }
-	}
-
-	/** INSTANCEOF **/
-	class add_expression$1 extends operator {
-
-	    constructor(sym) {
-	        super(sym);
-	        this.op = "instanceof";
-	    }
-
-	    get type() { return types.instanceof_expression }
-	}
-
-	/** LEFT_SHIFT **/
-	class left_shift_expression extends operator {
-
-	    constructor(sym) {
-	        super(sym);
-	        this.op = "<<";
-	    }
-
-	    get type() { return types.left_shift_expression }
-	}
-
-	/** MODULO **/
-	class modulo_expression extends operator {
-
-	    constructor(sym) {
-	        super(sym);
-	        this.op = "%";
-	    }
-
-	    get type() { return types.modulo_expression }
-	}
-
-	/** NEW EXPRESSION **/
-
-	class new_expression extends call {
-	    constructor(id, args) { 
-	        super([id, args]);
-	        this.root = false;
-	        this.id.root = false;
-	    }
-
-	    get type(){return types.new_expression}
-
-	    render() { 
-	        const
-	            args_str = this.args.map(e => e.render()).join(",");
-
-	        return `new ${this.id.render()}(${args_str})`;
-	    }
-	}
-
-	/** PLUS **/
-
-	class plus_expression extends unary_pre {
-	    constructor(sym) { super(sym);
-	        this.op = "+";
-	    }
-	    get type() { return types.plus_expression }
-	}
-
-	/** UNARY NOT **/
-
-	class pre_decrement_expression extends unary_pre {
-
-	    constructor(sym) {
-	        super(sym);
-	        this.op = "--";
-	    }
-
-	    get type() { return types.pre_decrement_expression }
-	}
-
-	/** UNARY NOT **/
-
-	class pre_increment_expression extends unary_pre {
-
-	    constructor(sym) {
-	        super(sym);
-	        this.op = "--";
-	    }
-
-	    get type() { return types.pre_increment_expression }
-	}
-
-	/** RIGHT SHIFT **/
-	class right_shift_expression extends operator {
-
-	    constructor(sym) {
-	        super(sym);
-	        this.op = ">>";
-	    }
-
-	    get type() { return types.right_shift_expression }
-	}
-
-	/** RIGHT SHIFT **/
-	class right_shift_fill_expression extends operator {
-
-	    constructor(sym) {
-	        super(sym);
-	        this.op = ">>>";
-	    }
-
-	    get type() { return types.right_shift_fill_expression }
-	}
-
-	/** TYPEOF **/
-
-	class typeof_expression extends unary_pre {
-
-	    constructor(sym) {
-	        super(sym);
-	        this.op = "typeof";
-	    }
-
-	    get type() { return types.typeof_expression }
-	}
-
-	/** UNARY NOT **/
-
-	class unary_not_expression extends unary_pre {
-
-	    constructor(sym) {
-	        super(sym);
-	        this.op = "!";
-	    }
-
-	    get type() { return types.unary_not_expression }
-	}
-
-	/** UNARY BIT OR **/
-
-	class unary_or_expression extends unary_pre {
-
-	    constructor(sym) {
-	        super(sym);
-	        this.op = "|";
-	    }
-
-	    get type() { return types.unary_or_expression }
-	}
-
-	/** UNARY BIT XOR **/
-
-	class unary_xor_expression extends unary_pre {
-
-	    constructor(sym) {
-	        super(sym);
-	        this.op = "~";
-	    }
-
-	    get type() { return types.unary_xor_expression }
-	}
-
-	/** VOID **/
-
-	class void_expression extends unary_pre {
-
-	    constructor(sym) {
-	        super(sym);
-	        this.op = "void";
-	    }
-
-	    get type() { return types.void_expression }
-	}
-
-	/** ARGUMENT_LIST **/
-	class argument_list extends base {
-	    constructor(sym) {
-
-	        //if (sym && sym.length == 1)
-	        //    return sym[0];
-	        
-	        super(sym || []);
-	    }
-
-	    get args() { return this.vals[0] }
-
-	    getRootIds(ids, closure) {
-	        this.args.forEach(s => s.getRootIds(ids, closure));
-	    }
-
-	    replaceNode(original, _new = null) {
-	        let index = -1;
-	        if ((index = super.replaceNode(original, _new, this.vals[0])) > -1) {
-	            this.vals[0].splice(index, 1);
-	        }
-	    }
-
-	    * traverseDepthFirst(p) {
-	        yield * super.traverseDepthFirst(p, this.vals[0]);
-	    }
-
-	    get type() { return types.argument_list }
-
-	    render() { 
-	        return this.args.map(s=>(s.render())).join(",") ;
-	    }
-	}
-
-	//continue_statement
-	//break_statement
-	//return_statement
-	//throw_statement
-	//with_statement
-	//switch_statement
-	//label_statement
-	//finally_statement
-	//variable_statement
-	//class_statement
-
-
-	const env = {
-	    table: {},
-	    ASI: true,
-	    functions: {
-
-	        //JS
-	        plus_expression,
-	        add:add_expression,
-	        add_expression,
-	        and: and_expression,
-	        and_expression,
-	        array_literal,
-	        arrow: arrow_function_declaration,
-	        arrow_function_declaration,
-	        assign: assignment_expression,
-	        assignment_expression,
-	        await_expression,
-	        await_expression,
-	        binding,
-	        //bit_and_expression,
-	        //bit_or_expression,
-	        //bit_xor_expression,
-	        block:block_statement,
-	        block_statement,
-	        bool_literal: bool,
-	        call_expr: call,
-	        call_expression: call,
-	        catch_stmt:catch_statement,
-	        catch_statement,
-	        condition_expr: condition_expression,
-	        condition_expression,
-	        debugger_stmt:debugger_statement,
-	        debugger_statement,
-	        delete_expression,
-	        div:divide_expression,
-	        divide_expression,
-	        eq: equality_expression,
-	        equality_expression,
-	        exp:exponent_expression,
-	        exponent_expression,
-	        expr_stmt:expr_stmt,
-	        expression_list,
-	        expression_statement: expr_stmt,
-	        for_statement,
-	        for_stmt: for_statement,
-	        funct_decl: function_declaration,
-	        function_declaration,
-	        gt: greater,
-	        gteq: greater_eq,
-	        identifier: id,
-	        if_statement: if_stmt,
-	        if_stmt: if_stmt,
-	        in_expression,
-	        instanceof_expression: add_expression$1,
-	        left_shift_expression,
-	        lexical,
-	        lt: less,
-	        lteq: less_eq,
-	        member:mem,
-	        member_expression: mem,
-	        modulo_expression,
-	        mult:multiply_expression,
-	        multiply_expression,
-	        negate_expr: negate_expression,
-	        negate_expression,
-	        new_member_stmt:new_expression,
-	        new_expression,
-	        null_:null_literal,
-	        null_literal,
-	        numeric_literal: number,
-	        object,
-	        or: or_expression,
-	        or_expression,
-	        post_dec_expr: post_decrement_expression,
-	        post_decrement_expression,
-	        post_inc_expr: post_increment_expression,
-	        post_increment_expression,
-	        pre_decrement_expression,
-	        pre_increment_expression,
-	        property_binding,
-	        return_statement: return_stmt,
-	        return_stmt: return_stmt,
-	        right_shift_expression,
-	        right_shift_fill_expression,
-	        spread_expr: node$1,
-	        spread_element: node$1,
-	        stmts: stmts,
-	        statements: stmts,
-	        string_literal: string,
-	        sub:subtract_expression,
-	        subtract_expression,
-	        this_expr: this_literal,
-	        this_literal,
-	        try_stmt:try_statement,
-	        try_statement,
-	        typeof_expression,
-	        unary_not_expr: unary_not_expression,
-	        unary_not_expression,
-	        unary_not_expression,
-	        unary_or_expression,
-	        void_expression,
-	        argument_list,
-	        while_stmt: function(sym) {
-	            this.bool = sym[1];
-	            this.body = sym[3];
-	        },
-	        var_stmt: function(sym) { this.declarations = sym[1]; },
-	        mod_expr: function(sym) {
-	            this.le = sym[0];
-	            this.re = sym[2];
-	            this.ty = "MOD";
-	        },
-	        seq_expr: function(sym) {
-	            this.le = sym[0];
-	            this.re = sym[2];
-	            this.ty = "STRICT_EQ";
-	        },
-	        neq_expr: function(sym) {
-	            this.le = sym[0];
-	            this.re = sym[2];
-	            this.ty = "NEQ";
-	        },
-	        sneq_expr: function(sym) {
-	            this.le = sym[0];
-	            this.re = sym[2];
-	            this.ty = "STRICT_NEQ";
-	        },
-	        unary_plus: function(sym) {
-	            this.expr = sym[1];
-	            this.ty = "PRE INCR";
-	        },
-	        unary_minus: function(sym) {
-	            this.expr = sym[1];
-	            this.ty = "PRE INCR";
-	        },
-	        pre_inc_expr: function(sym) {
-	            this.expr = sym[1];
-	            this.ty = "PRE INCR";
-	        },
-	        pre_dec_expr: function(sym) {
-	            this.expr = sym[1];
-	            this.ty = "PRE DEC";
-	        },
-
-	        label_stmt: function(sym) {
-	            this.label = sym[0];
-	            this.stmt = sym[1];
-	        },
-
-	        defaultError: (tk, env, output, lex, prv_lex, ss, lu) => {
-	            /*USED for ASI*/
-
-	            if (env.ASI && lex.tx !== ")" && !lex.END) {
-
-	                if (lex.tx == "</") // As in "<script> script body => (</)script>"
-	                    return lu.get(";");
-
-	                let ENCOUNTERED_END_CHAR = (lex.tx == "}" || lex.END || lex.tx == "</");
-
-	                while (!ENCOUNTERED_END_CHAR && !prv_lex.END && prv_lex.off < lex.off) {
-	                    prv_lex.next();
-	                    if (prv_lex.ty == prv_lex.types.nl)
-	                        ENCOUNTERED_END_CHAR = true;
-	                }
-
-	                if (ENCOUNTERED_END_CHAR)
-	                    return lu.get(";");
-	            }
-
-	            if (lex.END)
-	                return lu.get(";");
-	        }
-	    },
-
-	    options: {
-	        integrate: false,
-	        onstart: () => {
-	            env.table = {};
-	            env.ASI = true;
-	        }
-	    }
-	};
-
 	const A = 65;
 	const a = 97;
 	const ACKNOWLEDGE = 6;
@@ -5345,9 +5226,8 @@ var js = (function (exports) {
 	0		/* DELETE */
 	];
 
-	const
-	    number$1 = 1,
-	    identifier = 2,
+	const number = 1,
+	    identifier$1 = 2,
 	    string$1 = 4,
 	    white_space = 8,
 	    open_bracket = 16,
@@ -5356,13 +5236,13 @@ var js = (function (exports) {
 	    symbol = 128,
 	    new_line = 256,
 	    data_link = 512,
-	    alpha_numeric = (identifier | number$1),
+	    alpha_numeric = (identifier$1 | number),
 	    white_space_new_line = (white_space | new_line),
 	    Types = {
-	        num: number$1,
-	        number: number$1,
-	        id: identifier,
-	        identifier,
+	        num: number,
+	        number,
+	        id: identifier$1,
+	        identifier: identifier$1,
 	        str: string$1,
 	        string: string$1,
 	        ws: white_space,
@@ -5398,7 +5278,7 @@ var js = (function (exports) {
 	        31, 27, 13, 23, 21, 19, 16, 7, 26, 12, 18, 6, 11, 5, 10, 9
 	    ];
 
-	const getNumbrOfTrailingZeroBitsFromPowerOf2 = (value) => debruijnLUT[(value * 0x077CB531) >>> 27];
+	const  getNumbrOfTrailingZeroBitsFromPowerOf2 = (value) => debruijnLUT[(value * 0x077CB531) >>> 27];
 
 	class Lexer {
 
@@ -5505,46 +5385,29 @@ var js = (function (exports) {
 	    Creates and error message with a diagrame illustrating the location of the error. 
 	    */
 	    errorMessage(message = "") {
-	        const pk = this.copy();
-
-	        pk.IWS = false;
-
-	        while (!pk.END && pk.ty !== Types.nl) { pk.next(); }
-
-	        const end = (pk.END) ? this.str.length : pk.off,
-
-	            nls = (this.line > 0) ? 2 : 0,
-
-	            number_of_tabs =
-	            this.str
-	            .slice(this.off - this.char + nls, this.off + nls)
-	            .split("")
-	            .reduce((r$$1, v$$1) => (r$$1 + ((v$$1.charCodeAt(0) == HORIZONTAL_TAB) | 0)), 0),
-
-	            arrow = String.fromCharCode(0x2b89),
-
+	        const arrow = String.fromCharCode(0x2b89),
+	            trs = String.fromCharCode(0x2500),
 	            line = String.fromCharCode(0x2500),
-
 	            thick_line = String.fromCharCode(0x2501),
+	            line_number = "    " + this.line + ": ",
+	            line_fill = line_number.length,
+	            t$$1 = thick_line.repeat(line_fill + 48),
+	            is_iws = (!this.IWS) ? "\n The Lexer produced whitespace tokens" : "";
+	        const pk = this.copy();
+	        pk.IWS = false;
+	        while (!pk.END && pk.ty !== Types.nl) { pk.next(); }
+	        const end = (pk.END) ? this.str.length : pk.off ;
 
-	            line_number = `    ${this.line}: `,
-
-	            line_fill = line_number.length + number_of_tabs,
-
-	            line_text = this.str.slice(this.off - this.char + (nls), end).replace(/\t/g, "  "),
-
-	            error_border = thick_line.repeat(line_text.length + line_number.length + 2),
-
-	            is_iws = (!this.IWS) ? "\n The Lexer produced whitespace tokens" : "",
-
-	            msg =[ `${message} at ${this.line}:${this.char}` ,
-	            `${error_border}` ,
-	            `${line_number+line_text}` ,
-	            `${line.repeat(this.char+line_fill-(nls))+arrow}` ,
-	            `${error_border}` ,
-	            `${is_iws}`].join("\n");
-
-	        return msg
+	    //console.log(`"${this.str.slice(this.off-this.char+((this.line > 0) ? 2 :2), end).split("").map((e,i,s)=>e.charCodeAt(0))}"`)
+	    let v$$1 = "", length = 0;
+	    v$$1 = this.str.slice(this.off-this.char+((this.line > 0) ? 2 :1), end);
+	    length = this.char;
+	    return `${message} at ${this.line}:${this.char}
+${t$$1}
+${line_number+v$$1}
+${line.repeat(length+line_fill-((this.line > 0) ? 2 :1))+arrow}
+${t$$1}
+${is_iws}`;
 	    }
 
 	    /**
@@ -5686,13 +5549,13 @@ var js = (function (exports) {
 	                                //Add e to the number string
 	                            }
 
-	                            type = number$1;
+	                            type = number;
 	                            length = off - base;
 
 	                            break;
 	                        case 1: //IDENTIFIER
 	                            while (++off < l$$1 && ((10 & number_and_identifier_table[str.charCodeAt(off)])));
-	                            type = identifier;
+	                            type = identifier$1;
 	                            length = off - base;
 	                            break;
 	                        case 2: //QUOTED STRING
@@ -5716,8 +5579,8 @@ var js = (function (exports) {
 	                            break;
 	                        case 5: //CARIAGE RETURN
 	                            length = 2;
-	                            //intentional
 	                        case 6: //LINEFEED
+	                            //Intentional
 	                            type = new_line;
 	                            line++;
 	                            base = off;
@@ -5742,7 +5605,7 @@ var js = (function (exports) {
 	                            length = 4; //Stores two UTF16 values and a data link sentinel
 	                            break;
 	                    }
-	                } else {
+	                }else{
 	                    break;
 	                }
 
@@ -6139,51 +6002,64 @@ var js = (function (exports) {
 	}
 
 	exports.types = types;
-	exports.for_stmt = for_statement;
-	exports.call_expr = call;
-	exports.identifier = id;
-	exports.catch_stmt = catch_statement;
-	exports.try_stmt = try_statement;
-	exports.stmts = stmts;
-	exports.block = block_statement;
-	exports.lexical = lexical;
-	exports.binding = binding;
-	exports.member = mem;
-	exports.assign = assignment_expression;
-	exports.add = add_expression;
-	exports.exp = exponent_expression;
-	exports.sub = subtract_expression;
-	exports.div = divide_expression;
-	exports.mult = multiply_expression;
-	exports.object = object;
-	exports.debugger_stmt = debugger_statement;
-	exports.string = string;
-	exports.null_ = null_literal;
-	exports.number = number;
-	exports.bool = bool;
-	exports.negate = negate_expression;
-	exports.rtrn = return_stmt;
-	exports.condition = condition_expression;
+	exports.env = env;
+	exports.add_expression = add_expression;
+	exports.and_expression = and_expression;
 	exports.array_literal = array_literal;
-	exports.this_expr = this_literal;
-	exports.property_binding = property_binding;
-	exports.arrow = arrow_function_declaration;
-	exports.funct_decl = function_declaration;
+	exports.arrow_function_declaration = arrow_function_declaration;
+	exports.assignment_expression = assignment_expression;
+	exports.await_expression = await_expression;
+	exports.binding = binding;
+	exports.block_statement = block_statement;
+	exports.bool_literal = bool_literal;
+	exports.call_expression = call_expression;
+	exports.catch_statement = catch_statement;
+	exports.condition_expression = condition_expression;
+	exports.debugger_statement = debugger_statement;
+	exports.delete_expression = delete_expression;
+	exports.divide_expression = divide_expression;
+	exports.equality_expression = equality_expression;
+	exports.exponent_expression = equality_expression$1;
 	exports.expression_list = expression_list;
-	exports.if_stmt = if_stmt;
-	exports.post_inc = post_increment_expression;
-	exports.post_dec = post_decrement_expression;
-	exports.expr_stmt = expr_stmt;
-	exports._or = or_expression;
-	exports._and = and_expression;
-	exports.not = node;
-	exports.new_member_stmt = mem$1;
-	exports.spread = node$1;
-	exports.equal = equality_expression;
-	exports.greater = greater;
-	exports.greater_eq = greater_eq;
-	exports.less = less;
-	exports.less_eq = less_eq;
+	exports.expression_statement = expression_statement;
+	exports.for_statement = for_statement;
+	exports.function_declaration = function_declaration;
+	exports.identifier = identifier;
+	exports.if_statement = if_statement;
+	exports.in_expression = in_expression;
+	exports.instanceof_expression = instanceof_expression;
+	exports.left_shift_expression = left_shift_expression;
+	exports.lexical_declaration = lexical_declaration;
+	exports.member_expression = member_expression;
+	exports.modulo_expression = modulo_expression;
+	exports.multiply_expression = multiply_expression;
+	exports.negate_expression = negate_expression;
+	exports.new_expression = new_expression;
+	exports.null_literal = null_literal;
+	exports.numeric_literal = numeric_literal;
+	exports.object_literal = object_literal;
+	exports.or_expression = or_expression;
+	exports.plus_expression = plus_expression;
+	exports.post_decrement_expression = post_decrement_expression;
+	exports.post_increment_expression = post_increment_expression;
+	exports.pre_decrement_expression = pre_decrement_expression;
+	exports.pre_increment_expression = pre_increment_expression;
+	exports.property_binding = property_binding;
+	exports.right_shift_expression = right_shift_expression;
+	exports.right_shift_fill_expression = right_shift_fill_expression;
+	exports.return_statement = return_statement;
+	exports.spread_element = spread_element;
+	exports.statements = statements;
+	exports.string = string;
+	exports.subtract_expression = subtract_expression;
+	exports.this_literal = this_literal;
+	exports.try_statement = try_statement;
+	exports.typeof_expression = typeof_expression;
+	exports.unary_not_expression = unary_not_expression;
+	exports.unary_or_expression = unary_or_expression;
+	exports.unary_xor_expression = unary_xor_expression;
+	exports.void_expression = void_expression;
+	exports.argument_list = argument_list;
 	exports.parse = parse;
 
 	return exports;

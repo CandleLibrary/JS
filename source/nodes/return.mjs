@@ -5,7 +5,7 @@ import types from "./types.mjs";
 
 
 
-export default class return_stmt extends base {
+export default class return_statement extends base {
     constructor(sym) {
         super((sym.length > 2) ? sym[1] : null);
     }
@@ -16,7 +16,7 @@ export default class return_stmt extends base {
         if (this.expr) this.expr.getRootIds(ids, closure);
     }
 
-    get type() { return types.return }
+    get type() { return types.return_statement }
 
     render() {
         let expr_str = "";

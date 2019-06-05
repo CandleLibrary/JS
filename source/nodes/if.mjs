@@ -3,7 +3,7 @@
 import base from "./base.mjs";
 import types from "./types.mjs";
 
-export default class if_stmt extends base {
+export default class if_statement extends base {
     constructor(sym) {
         const expr = sym[2],
             stmt = sym[4],
@@ -36,7 +36,7 @@ export default class if_stmt extends base {
             yield* this.else_stmt.traverseDepthFirst(this);
     }
 
-    get type() { return types.if }
+    get type() { return types.if_statement }
 
     render() {
         const
