@@ -1,7 +1,7 @@
 import base from "./base.mjs";
 import types from "./types.mjs";
 
-export default class extends base {
+export default class function_declaration extends base {
     constructor(id, args, body) {
         
         args = (Array.isArray(args)) ? args : [args];

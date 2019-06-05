@@ -1,8 +1,8 @@
 /** BLOCK **/
 
-import stmts from "./stmts.mjs";
+import stmts from "./statements.mjs";
 import types from "./types.mjs";
-export default class extends stmts {
+export default class block_statement extends stmts {
 
     constructor(sym) {
         if (!(sym[1] instanceof stmts))
@@ -15,7 +15,7 @@ export default class extends stmts {
         super.getRootIds(ids, new Set([...closure.values()]));
     }
 
-    get type() { return types.block }
+    get type() { return types.block_statement }
 
     render() { return `{${super.render()}}` }
 }

@@ -1,14 +1,11 @@
 /** MEMBER **/
 
-import base from "./base.mjs";
+import base from "./call.mjs";
 import types from "./types.mjs";
 import identifer from "./identifier.mjs";
 
 export default class mem extends base {
-    constructor(sym) { super(sym[1], sym[2]);
-        this.root = false;
-        this.id.root = false;
-    }
+    constructor(sym) { super([sym[1], sym[2]]);  }
 
     get id() { return this.vals[0] }
     get args() { return this.vals[1] }

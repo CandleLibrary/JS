@@ -26,21 +26,23 @@ export default class {
 
     * traverseDepthFirst(p, vals = this.vals) {
         this.parent = p;
-        yield this;
+
+        if(vals == this.vals)
+            yield this;
 
         for (let i = 0; i < vals.length; i++) {
 
-            const expr = vals[i];
+            const node = vals[i];
 
-            if (!expr) continue;
+            if (!node) continue;
 
-            if(Array.isArray(expr)){
-                yield* this.traverseDepthFirst(p, expr);
+            if(Array.isArray(node)){
+                yield* this.traverseDepthFirst(p, node);
             }else
-                yield* expr.traverseDepthFirst(this);
+                yield* node.traverseDepthFirst(this);
 
-            if (vals[i] !== expr) // Check to see if expression has been replaced. 
-                i--;
+            if (vals[i] !== node) // Check to see if node has been replaced. 
+                i--; //Reparse the node
         }
     }
 

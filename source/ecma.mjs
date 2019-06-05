@@ -3,7 +3,7 @@ import call_expr from "./nodes/call.mjs";
 import identifier from "./nodes/identifier.mjs";
 import catch_stmt from "./nodes/catch.mjs";
 import try_stmt from "./nodes/try.mjs";
-import stmts from "./nodes/stmts.mjs";
+import stmts from "./nodes/statements.mjs";
 import block from "./nodes/block.mjs";
 import lexical from "./nodes/lexical.mjs";
 import binding from "./nodes/binding.mjs";
