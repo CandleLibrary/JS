@@ -19,5 +19,5 @@ export default class debugger_statement extends base {
 
     get type() { return types.debugger_statement }
 
-    render() { return `debugger` }
+    render() { return `debugger;` }
 }

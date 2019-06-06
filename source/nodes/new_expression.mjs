@@ -15,7 +15,7 @@ export default class new_expression extends call_expression {
 
     render() { 
         const
-            args_str = this.args.render();
+            args_str = (this.args) ? this.args.render() : "";
 
         return `new ${this.id.render()}(${args_str})`;
     }

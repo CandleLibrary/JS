@@ -10,7 +10,7 @@ export default class identifier extends base {
 
     get val() { return this.vals[0] }
 
-    getRootIds(ids, closuere) { if (!closuere.has(this.val)) ids.add(this.val); }
+    getRootIds(ids, closuere) { ids.add(this.val) }
 
     * traverseDepthFirst(p) {
         this.parent = p;

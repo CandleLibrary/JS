@@ -8,7 +8,7 @@ export default class assignment_expression extends operator {
     constructor(sym) {
         super(sym);
         this.op = sym[1];
-        this.id.root = false;
+        //this.id.root = false;
     }
     get id() { return this.vals[0] }
     get expr() { return this.vals[2] }

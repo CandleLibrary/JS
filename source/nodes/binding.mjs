@@ -17,12 +17,5 @@ export default class extends base {
         if (this.init) this.init.getRootIds(ids, closure);
     }
 
-    * traverseDepthFirst(p) {
-        this.parent = p;
-        yield this;
-        yield* this.id.traverseDepthFirst(this);
-        yield* this.init.traverseDepthFirst(this);
-    }
-
     render() { return `${this.id}${this.init ? ` = ${this.init.render()}` : ""}` }
 }

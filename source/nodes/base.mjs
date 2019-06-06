@@ -26,11 +26,14 @@ export default class {
 
     * traverseDepthFirst(p, vals = this.vals) {
         this.parent = p;
+        this.SKIP = false;
 
         if(vals == this.vals)
             yield this;
 
         for (let i = 0; i < vals.length; i++) {
+            if(this.SKIP == true)
+                break;
 
             const node = vals[i];
 
@@ -46,12 +49,10 @@ export default class {
         }
     }
 
-    skip(trvs) {
-
-        for (let val = trvs.next().value; val && val !== this; val = trvs.next().value);
-
-        return trvs;
+    skip() {
+        this.SKIP = true;
     }
+
     spin(trvs) {
         let val = trvs.next().value;
         while (val !== undefined && val !== this) { val = trvs.next().value };

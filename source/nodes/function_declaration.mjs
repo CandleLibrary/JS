@@ -23,21 +23,6 @@ export default class function_declaration extends base {
         this.args.forEach(e => e.getRootIds(ids, closure));
     }
 
-    * traverseDepthFirst(p) {
-        this.parent = p;
-
-        yield this;
-
-        if (this.id)
-            yield* this.id.traverseDepthFirst(this);
-
-        for (const arg of this.args)
-            yield* arg.traverseDepthFirst(this);
-
-        yield* this.body.traverseDepthFirst(this);
-
-    }
-
     get name() { return this.id.name }
 
     get type() { return types.function_declaration }

@@ -12,6 +12,10 @@ export default class argument_list extends base {
         super(sym || []);
     }
 
+    clearRoots(){
+        this.args.forEach(a=>a.root = false);
+    }
+
     get args() { return this.vals[0] }
 
     getRootIds(ids, closure) {

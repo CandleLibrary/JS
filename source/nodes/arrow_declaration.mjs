@@ -10,21 +10,6 @@ export default class arrow_function_declaration extends _function {
         this.args.forEach(e => e.getRootIds(ids, closure));
     }
 
-    * traverseDepthFirst(p) {
-        this.parent = p;
-
-        yield this;
-
-        if (this.id)
-            yield* this.id.traverseDepthFirst(this);
-
-        for (const arg of this.args)
-            yield* arg.traverseDepthFirst(this);
-
-        yield* this.body.traverseDepthFirst(this);
-
-    }
-
     get name() { return null }
 
     get type() { return types.arrow_function_declaration }

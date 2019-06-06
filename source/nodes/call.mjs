@@ -4,6 +4,8 @@ import types from "./types.mjs";
 export default class call_expression extends base {
     constructor(sym) {
         super(sym[0],sym[1]);
+        if(this.args)
+        this.args.clearRoots();
     }
 
     get id() { return this.vals[0] }
