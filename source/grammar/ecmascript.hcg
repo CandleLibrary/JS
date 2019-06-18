@@ -171,21 +171,21 @@
 				(EXC τlet \[ ) expression 
 				│ τvar variable_declaration_list ↦r {$sym2}
 				)? ; expression? ; expression? \) ↦{ env.ASI = true;} statement  												
-																									↦return{ (new env.functions.for_statement($$sym3, $$sym5, $$sym7, $$sym9)) }	
+																									↦return{ (new fn.for_statement($$sym3, $$sym5, $$sym7, $$sym9)) }	
 
-			│ τfor \( lexical_declaration expression? ; expression? \) statement   			 		↦return{ (new env.functions.for_statement($$sym3, $$sym4, $$sym6, $$sym8)) }																			
+			│ τfor \( lexical_declaration expression? ; expression? \) statement   			 		↦return{ (new fn.for_statement($$sym3, $$sym4, $$sym6, $$sym8)) }																			
 																																																																				
 			│ τfor \( (
 					(EXC τlet \[ ) left_hand_side_expression
 					│ τvar for_binding ↦r {$sym2}
 					│ for_declaration
-				) τin expression \) statement 			↦return{ (new env.functions.for_in_statement($$sym3, $$sym5, $$sym7)) }
+				) τin expression \) statement 			↦return{ (new fn.for_in_statement($$sym3, $$sym5, $$sym7)) }
 
 			│ τfor τawait? \( (
 					(EXC τlet \[ ) left_hand_side_expression
 					│ τvar for_binding ↦r {$sym2}
 					│ for_declaration
-				) τof expression \) statement 			↦return{ (new env.functions.for_of_statement($$sym2, $$sym4, $$sym6, $$sym8)) }
+				) τof expression \) statement 			↦return{ (new fn.for_of_statement($$sym2, $$sym4, $$sym6, $$sym8)) }
 
 		<> for_declaration → let_or_const for_binding
 
@@ -197,14 +197,14 @@
 	##############################################################################################################
 
 		<> continue_statement → τcontinue ; 							↦c ^continue_statement
-			│ τcontinue  label_identifier ;								↦return{ (new env.functions.continue_statement(sym[1])) }
+			│ τcontinue  label_identifier ;								↦return{ (new fn.continue_statement(sym[1])) }
 
 	##############################################################################################################
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-break-statement
 	##############################################################################################################
 
 		<> break_statement → τbreak ;  									↦c ^break_statement
-			│ τbreak   label_identifier ; 								↦return{ (new env.functions.break_statement(sym[1])) }
+			│ τbreak   label_identifier ; 								↦return{ (new fn.break_statement(sym[1])) }
 
 
 	##############################################################################################################
@@ -242,11 +242,11 @@
 		<> case_clauses → case_clause 									↦return{ [sym[0]] }
 			│ case_clauses case_clause 									↦return{ sym[0].concat(sym[1]) }
 
-		<> case_clause → τcase expression : statement_list 				↦return{ (new env.functions.case_statement(sym[1], sym[3])) }
-			│ τcase expression : 										↦return{ (new env.functions.case_statement(sym[1])) }
+		<> case_clause → τcase expression : statement_list 				↦return{ (new fn.case_statement(sym[1], sym[3])) }
+			│ τcase expression : 										↦return{ (new fn.case_statement(sym[1])) }
 
-		<> default_clause → τdefault : statement_list 					↦return{ (new env.functions.default_case_statement(sym[2])) }
-			│ τdefault  												↦return{ (new env.functions.default_case_statement()) }
+		<> default_clause → τdefault : statement_list 					↦return{ (new fn.default_case_statement(sym[2])) }
+			│ τdefault  												↦return{ (new fn.default_case_statement()) }
 
 	##############################################################################################################
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-labelled-statements
@@ -263,9 +263,9 @@
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-try-statement
 	##############################################################################################################
 
-		<> try_statement → τtry block catch 							↦return{ (new env.functions.try_statement(sym[1],sym[2])) }
-			│ τtry block finally										↦return{ (new env.functions.try_statement(sym[1],null,sym[2])) }
-			│ τtry block catch finally 									↦return{ (new env.functions.try_statement(sym[1], sym[2], sym[3])) }
+		<> try_statement → τtry block catch 							↦return{ (new fn.try_statement(sym[1],sym[2])) }
+			│ τtry block finally										↦return{ (new fn.try_statement(sym[1],null,sym[2])) }
+			│ τtry block catch finally 									↦return{ (new fn.try_statement(sym[1], sym[2], sym[3])) }
 
 		<> catch → τcatch \( catch_parameter \) block 					↦c ^catch_statement
 
@@ -344,7 +344,7 @@
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-arrow-function-definitions
 	##############################################################################################################
 
-		<> arrow_function → arrow_parameters => concise_body 							↦return{ new fn.arrow(null, $sym1, $sym3) }
+		<> arrow_function → arrow_parameters => concise_body 							↦return{ new fn.arrow_function_declaration(null, $sym1, $sym3) }
 
 		<> arrow_parameters → binding_identifier 
 			│ cover_parenthesized_expression_and_arrow_parameter_list
@@ -377,9 +377,9 @@
 		<> class_declaration → τclass binding_identifier class_tail  					↦c ^class_statement
 			│ τclass class_tail															↦c ^class_statement
 
-		<> class_tail → class_heritage { class_body } 									↦return{ new env.functions.class_tail(sym) }
-			│ { class_body }															↦return{ new env.functions.class_tail([null, ... sym[0]]) }
-			│ class_heritage { }														↦return{ new env.functions.class_tail([sym[0], null, null]) }
+		<> class_tail → class_heritage { class_body } 									↦return{ new fn.class_tail(sym) }
+			│ { class_body }															↦return{ new fn.class_tail([null, ... sym[0]]) }
+			│ class_heritage { }														↦return{ new fn.class_tail([sym[0], null, null]) }
 			│ { }																		↦return{ null }
 
 		<> class_heritage → τextends left_hand_side_expression 							↦return{ $sym2 }
@@ -483,7 +483,7 @@
 	<> property_definition →  cover_initialized_name 				
 		│ identifier_reference 										
 	 	│ method_definition											
-		│ ... assignment_expression 								↦c ^spread_expr
+		│ ... assignment_expression 								↦c ^spread_element
 		│ property_name : assignment_expression						↦c ^property_binding		
 
 	<> property_name → literal_property_name
@@ -552,98 +552,98 @@
 	##############################################################################################################
 
 		<> conditional_expression → logical_or_expression
-			│ logical_or_expression \? assignment_expression : assignment_expression ↦c ^condition_expression
+			│ logical_or_expression \? assignment_expression : assignment_expression 			↦c ^condition_expression
 
 	##############################################################################################################
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-binary-logical-operators
 	##############################################################################################################
 
 		<> logical_or_expression → logical_and_expression 
-			│ logical_or_expression || logical_and_expression		↦c ^or_expression
+			│ logical_or_expression || logical_and_expression									↦c ^or_expression
 
 		<> logical_and_expression → bitwise_or_expression 
-			│ logical_and_expression && bitwise_or_expression		↦c ^and_expression
+			│ logical_and_expression && bitwise_or_expression									↦c ^and_expression
 
 	##############################################################################################################
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-binary-bitwise-operators
 	##############################################################################################################
 
 		<> bitwise_or_expression → bitwise_xor_expression 
-			│ bitwise_or_expression | bitwise_xor_expression		↦c ^bit_or_expression
+			│ bitwise_or_expression | bitwise_xor_expression									↦c ^bit_or_expression
 
 		<> bitwise_xor_expression → bitwise_and_expression 
-			│ bitwise_xor_expression ^ bitwise_and_expression		↦c ^bit_xor_expression
+			│ bitwise_xor_expression ^ bitwise_and_expression									↦c ^bit_xor_expression
 
 		<> bitwise_and_expression → equality_expression 
-			│ bitwise_and_expression & equality_expression			↦c ^bit_and_expression
+			│ bitwise_and_expression & equality_expression										↦c ^bit_and_expression
 
 	##############################################################################################################
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-equality-operators
 	##############################################################################################################
 
 		<> equality_expression → relational_expression 
-			│ equality_expression == relational_expression			↦c ^equality_expression
-			│ equality_expression != relational_expression			↦c ^equality_expression
-			│ equality_expression === relational_expression			↦c ^equality_expression
-			│ equality_expression !== relational_expression			↦c ^equality_expression
+			│ equality_expression == relational_expression										↦c ^equality_expression
+			│ equality_expression != relational_expression										↦c ^equality_expression
+			│ equality_expression === relational_expression										↦c ^equality_expression
+			│ equality_expression !== relational_expression										↦c ^equality_expression
 
 	##############################################################################################################
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-relational-operators
 	##############################################################################################################
 
 		<> relational_expression → shift_expression 
-			│ relational_expression < shift_expression				↦c ^equality_expression
-			│ relational_expression >  shift_expression				↦c ^equality_expression
-			│ relational_expression <= shift_expression				↦c ^equality_expression	
-			│ relational_expression >= shift_expression				↦c ^equality_expression
-			│ relational_expression τinstanceof shift_expression	↦c ^instanceof_expression
-			│ relational_expression τin shift_expression			↦c ^in_expression	
+			│ relational_expression < shift_expression											↦c ^equality_expression
+			│ relational_expression >  shift_expression											↦c ^equality_expression
+			│ relational_expression <= shift_expression											↦c ^equality_expression	
+			│ relational_expression >= shift_expression											↦c ^equality_expression
+			│ relational_expression τinstanceof shift_expression								↦c ^instanceof_expression
+			│ relational_expression τin shift_expression										↦c ^in_expression	
 
 	##############################################################################################################
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-bitwise-shift-operators
 	##############################################################################################################
 
 		<> shift_expression → additive_expression 
-			│ shift_expression << additive_expression			↦c ^left_shift_expression
-			│ shift_expression >> additive_expression			↦c ^right_shift_expression
-			│ shift_expression >>> additive_expression			↦c ^right_shift_fill_expression
+			│ shift_expression << additive_expression											↦c ^left_shift_expression
+			│ shift_expression >> additive_expression											↦c ^right_shift_expression
+			│ shift_expression >>> additive_expression											↦c ^right_shift_fill_expression
 	
 	##############################################################################################################
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-additive-operators
 	##############################################################################################################
 
 		<> additive_expression → multiplicative_expression 
-			│ additive_expression + multiplicative_expression   ↦c ^add_expression
-			│ additive_expression - multiplicative_expression	↦c ^subtract_expression
+			│ additive_expression + multiplicative_expression   								↦c ^add_expression
+			│ additive_expression - multiplicative_expression									↦c ^subtract_expression
 
 	##############################################################################################################
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-multiplicative-operators
 	##############################################################################################################
 
 		<> multiplicative_expression → exponentiation_expression 
-			│ multiplicative_expression * exponentiation_expression ↦c ^multiply_expression
-			│ multiplicative_expression / exponentiation_expression ↦c ^divide_expression
-			│ multiplicative_expression % exponentiation_expression ↦c ^modulo_expression
+			│ multiplicative_expression * exponentiation_expression 							↦c ^multiply_expression
+			│ multiplicative_expression / exponentiation_expression 							↦c ^divide_expression
+			│ multiplicative_expression % exponentiation_expression 							↦c ^modulo_expression
 
 	##############################################################################################################
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-exp-operator
 	##############################################################################################################
 
 		<> exponentiation_expression → unary_expression 
-			│ update_expression ** exponentiation_expression		↦c ^exponent_expression
+			│ update_expression ** exponentiation_expression									↦c ^exponent_expression
 
 	##############################################################################################################
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-unary-operators
 	##############################################################################################################
 
 		<> unary_expression → update_expression 
-			│ τdelete unary_expression			↦c ^delete_expression
-			│ τvoid unary_expression			↦c ^void_expression
-			│ τtypeof unary_expression			↦c ^typeof_expression
-			│ + unary_expression				↦c ^plus_expression
-			│ - unary_expression				↦c ^negate_expression
-			│ ~ unary_expression				↦c ^unary_or_expression
-			│ ! unary_expression				↦c ^unary_not_expression
+			│ τdelete unary_expression															↦c ^delete_expression
+			│ τvoid unary_expression															↦c ^void_expression
+			│ τtypeof unary_expression															↦c ^typeof_expression
+			│ + unary_expression																↦c ^plus_expression
+			│ - unary_expression																↦c ^negate_expression
+			│ ~ unary_expression																↦c ^unary_or_expression
+			│ ! unary_expression																↦c ^unary_not_expression
 			│ await_expression
 
 	##############################################################################################################
@@ -651,16 +651,16 @@
 	##############################################################################################################
  	
 		<> update_expression →  left_hand_side_expression 
-			│ left_hand_side_expression  ++				↦c ^post_increment_expression
-			│ left_hand_side_expression  --				↦c ^post_decrement_expression
-			│ ++ unary_expression						↦c ^pre_increment_expression
-			│ -- unary_expression						↦c ^pre_decrement_expression
+			│ left_hand_side_expression  ++														↦c ^post_increment_expression
+			│ left_hand_side_expression  --														↦c ^post_decrement_expression
+			│ ++ unary_expression																↦c ^pre_increment_expression
+			│ -- unary_expression																↦c ^pre_decrement_expression
 
 	##############################################################################################################	
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#prod-AwaitExpression
 	##############################################################################################################
 
-		<> await_expression → τawait unary_expression	↦c ^await_expression
+		<> await_expression → τawait unary_expression											↦c ^await_expression
 
 	##############################################################################################################
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#prod-CoverParenthesizedExpressionAndArrowParameterList
@@ -668,12 +668,12 @@
 
 		<> cover_parenthesized_expression_and_arrow_parameter_list →
 			\( \)												↦return{ null; }
-			│ \( expression \)									↦return{ sym[1] }
-			│ \( expression , \)								↦return{ sym[1] }
-			│ \( ... binding_identifier \)    					↦return{ new env.functions.spread_expr(env, sym.slice(1,3)) }
-			│ \( ... binding_pattern \) 						↦return{ new env.functions.spread_expr(env, sym.slice(1,3)) }
-			│ \( expression , ...binding_identifier \)			↦return{ Array.isArray(sym[0]) ? (sym[1].push(new env.functions.spread_expr(env, sym.slice(3,5))) , sym[1]) : [sym[0], new env.functions.spread_expr(env, sym.slice(3,5))]; }
-			│ \( expression , ...binding_pattern \)  			↦return{ Array.isArray(sym[0]) ? (sym[1].push(new env.functions.spread_expr(env, sym.slice(3,5))) , sym[1]) : [sym[0], new env.functions.spread_expr(env, sym.slice(3,5))]; }
+			│ \( expression \)									↦return{ new fn.parenthasized(sym[1]) }
+			│ \( expression , \)								↦return{ new fn.parenthasized(sym[1]) }
+			│ \( ... binding_identifier \)    					↦return{ new fn.parenthasized(new fn.spread_element(sym.slice(1,3))) }
+			│ \( ... binding_pattern \) 						↦return{ new fn.parenthasized(new fn.spread_element(sym.slice(1,3))) }
+			│ \( expression , ...binding_identifier \)			↦return{ new fn.parenthasized(Array.isArray(sym[0]) ? (sym[1].push(new fn.spread_element(sym.slice(3,5))) , sym[1]) : [sym[0], new fn.spread_element(sym.slice(3,5))]); }
+			│ \( expression , ...binding_pattern \)  			↦return{ new fn.parenthasized(Array.isArray(sym[0]) ? (sym[1].push(new fn.spread_element(sym.slice(3,5))) , sym[1]) : [sym[0], new fn.spread_element(sym.slice(3,5))]); }
 
 ##############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#prod-BindingPattern

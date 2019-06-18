@@ -17,7 +17,7 @@ export default class arrow_function_declaration extends _function {
     render() {
         const
             body_str = this.body.render(),
-            args_str = this.args.map(e => e.render()).join(",");
-        return `${this.args.length == 1 ? args_str : `(${args_str})`} => ${body_str}`;
+            args_str = this.args.render();
+        return `${args_str} => ${body_str}`;
     }
 }

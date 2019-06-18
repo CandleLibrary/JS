@@ -17,11 +17,14 @@ export default class member_expression extends base {
         this.id.getRootIds(ids, closuere);
     }
 
-    * traverseDepthFirst(p) {
-        this.parent = p;
-        yield this;
-        yield* this.id.traverseDepthFirst(this);
-        yield* this.mem.traverseDepthFirst(this);
+    replaceNode(original, _new = null) {
+        let index = 0;
+        if ((index = super.replaceNode(original, _new, this.vals)) > -1) {
+            if(index == 0)
+                this.replace(_new);
+            else
+                this.replace(null)
+        }
     }
 
     get name() { return this.id.name }

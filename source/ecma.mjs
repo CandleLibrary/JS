@@ -2,6 +2,9 @@ import add_expression from "./nodes/add.mjs";
 import and_expression from "./nodes/and.mjs";
 import array_literal from "./nodes/array_literal.mjs";
 import arrow_function_declaration from "./nodes/arrow_declaration.mjs";
+import bit_and_expression from "./nodes/bit_and.mjs";
+import bit_or_expression from "./nodes/bit_or.mjs";
+import bit_xor_expression from "./nodes/bit_xor.mjs";
 import assignment_expression from "./nodes/assign.mjs";
 import await_expression from "./nodes/await.mjs";
 import binding from "./nodes/binding.mjs";
@@ -55,6 +58,7 @@ import unary_or_expression from "./nodes/unary_or.mjs";
 import unary_xor_expression from "./nodes/unary_xor.mjs";
 import void_expression from "./nodes/void.mjs";
 import argument_list from "./nodes/argument_list.mjs";
+import parenthasized from "./nodes/parenthasized.mjs";
 
 import types from "./nodes/types.mjs";
 import env from "./parser/env.mjs";
@@ -63,6 +67,7 @@ import whind from "@candlefw/whind";
 export {
 	types,
 	env,
+	parenthasized,
 	add_expression,
 	and_expression,
 	array_literal,
@@ -71,6 +76,9 @@ export {
 	await_expression,
 	binding,
 	block_statement,
+	bit_and_expression,
+bit_or_expression,
+bit_xor_expression,
 	bool_literal,
 	call_expression,
 	catch_statement,
