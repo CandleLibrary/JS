@@ -29,7 +29,7 @@ export default class function_declaration extends base {
 
     render() {
         const
-            body_str = this.body.render(),
+            body_str = (this.body) ? this.body.render() : "",
             args_str = this.args.map(e => e.render()).join(","),
             id = this.id ? this.id.render() : "";
 

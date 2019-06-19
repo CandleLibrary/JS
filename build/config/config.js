@@ -1,4 +1,7 @@
 import resolve from 'rollup-plugin-node-resolve';
+import commonjs from 'rollup-plugin-commonjs';
+import {terser} from 'rollup-plugin-terser';
+import gzipPlugin from 'rollup-plugin-gzip';
 
 const output = [{
         name: "js",
@@ -14,5 +17,9 @@ export default {
     input: "./source/ecma.mjs",
     treeshake: false,
     output,
-    plugins: [resolve({jail:"",modulesOnly: true})]
+    plugins: [
+    resolve({jail:"",modulesOnly: true}),  
+    terser({mangle:true, module:true}), 
+    gzipPlugin()
+    ]
 };

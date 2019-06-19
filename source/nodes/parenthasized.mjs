@@ -5,7 +5,7 @@ import base from "./base.mjs";
 import types from "./types.mjs";
 export default class argument_list extends base {
     constructor(sym) {
-        super(sym || []);
+        super((sym) ? (Array.isArray(sym) )? sym : [sym]  : []);
     }
 
     clearRoots(){
@@ -31,6 +31,6 @@ export default class argument_list extends base {
     get type() { return types.cover_parenthesized_expression_and_arrow_parameter_list }
 
     render() { 
-        return `(${this.expressions.map(s=>(s.render())).join(",")}` ;
+        return `(${this.expressions.map(s=>(s.render())).join(",")})` ;
     }
 }

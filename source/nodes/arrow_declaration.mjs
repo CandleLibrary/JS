@@ -3,7 +3,11 @@ import types from "./types.mjs";
 
 export default class arrow_function_declaration extends _function {
     constructor(...sym) {
+        
         super(...sym);
+
+        //Since _function boxes args into an array, pull out the argument node
+        this.vals[1] = this.vals[1][0]
     }
 
     getRootIds(ids, closure) {

@@ -172,9 +172,6 @@ const env = {
 
             if (env.ASI && lex.tx !== ")" && !lex.END) {
 
-                if (lex.tx == "</") // As in "<script> script body => (</)script>"
-                    return lu.get(";");
-
                 let ENCOUNTERED_END_CHAR = (lex.tx == "}" || lex.END || lex.tx == "</");
 
                 while (!ENCOUNTERED_END_CHAR && !prv_lex.END && prv_lex.off < lex.off) {
@@ -183,12 +180,16 @@ const env = {
                         ENCOUNTERED_END_CHAR = true;
                 }
 
-                if (ENCOUNTERED_END_CHAR)
-                    return lu.get(";");
+                if (ENCOUNTERED_END_CHAR) {
+                    lex.tl = 0;
+                    return lu({ tx: ";" });
+                }
             }
 
-            if (lex.END)
-                return lu.get(";");
+            if (lex.END) {
+                lex.tl = 0;
+                return lu({ tx: ";" });
+            }
         }
     },
 

@@ -11,6 +11,8 @@
 <> javascript → start					↦return{ sym[0] }
 
 <> start → script 						↦return{ sym[0] }
+	│ module
+	│ ɛ
 
 ## MODULES
 
@@ -18,12 +20,9 @@
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-ecmascript-language-scripts-and-modules
 	##############################################################################################################
 	
-		<> module → module_body 
+		<> module → module_body 	   ↦r ^module
 
-		<> module_body → module_list_item
-
-		<> module_list_item → module_item 
-			│ module_list_item module_item
+		<> module_body → module_item(+)
 
 		<> module_item → import_declaration 
 			│ export_declaration
@@ -80,8 +79,7 @@
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-ecmascript-language-scripts-and-modules
 	##############################################################################################################
 		
-		<> script → script_body 							↦return{ sym[0] }
-			│ ɛ
+		<> script → script_body 							↦r ^script
 
 		<> script_body → statement_list 	
 
@@ -213,14 +211,13 @@
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-return-statement
 	##############################################################################################################
 
-		<> return_statement → τreturn ; 								↦c ^return_statement
-			│ τreturn expression ; 										↦c ^return_statement
+		<> return_statement → τreturn expression? ; 					↦r { new fn.return_statement($$sym2) }
 
 	##############################################################################################################
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-throw-statement
 	##############################################################################################################
 
-		<> throw_statement → τthrow  expression ; 						↦c ^throw_statement
+		<> throw_statement → τthrow expression ; 						↦c ^throw_statement
 
 	##############################################################################################################
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-with-statement
@@ -748,7 +745,7 @@
 
 	# <> HTMLExpression → StartTag
 
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-identifiers
+
 
 	<> label_identifier → identifier				#↦c ^identifier		
 			#│ τyield 							↦c ^yield_id
@@ -762,7 +759,14 @@
 			#│ τyield 							↦c ^yield_id
 			#│ τawait 							↦c ^await_id
 
-	<> identifier → identifier_name							
+	<> identifier → identifier_name				
 
-	<> identifier_name → ( θid  │ 	\$ identifier_name? ↦ r{ $sym1 + $sym2 })					↦c ^identifier
+	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-names-and-keywords
+
+	<> identifier_name →  id 					↦c ^identifier				
+
+	<> id → ( \$ │ θid │ \_ ) ( \# │ \$ │ θid │ θnum )(*') (θws │ θnl)?  ↦r { $sym1 + $sym2 }
+
+
+
 			
