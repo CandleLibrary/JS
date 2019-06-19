@@ -28,6 +28,7 @@ import in_expression from "./nodes/in.mjs";
 import instanceof_expression from "./nodes/instanceof.mjs";
 import left_shift_expression from "./nodes/left_shift.mjs";
 import lexical_declaration from "./nodes/lexical.mjs";
+import label_statement from "./nodes/label_statement.mjs";
 import member_expression from "./nodes/member.mjs";
 import modulo_expression from "./nodes/modulo.mjs";
 import multiply_expression from "./nodes/mult.mjs";
@@ -81,6 +82,7 @@ bit_or_expression,
 bit_xor_expression,
 	bool_literal,
 	call_expression,
+	label_statement,
 	catch_statement,
 	condition_expression,
 	debugger_statement,

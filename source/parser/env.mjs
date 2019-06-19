@@ -59,6 +59,7 @@ import unary_xor_expression from "../nodes/unary_xor.mjs";
 import void_expression from "../nodes/void.mjs";
 import argument_list from "../nodes/argument_list.mjs";
 import parenthasized from "../nodes/parenthasized.mjs";
+import label_statement from "../nodes/label_statement.mjs";
 
 //continue_statement
 //break_statement
@@ -79,6 +80,7 @@ const env = {
 
         //JS
         parenthasized,
+        label_statement,
         plus_expression,
         add_expression,
         and_expression,

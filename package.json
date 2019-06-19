@@ -38,7 +38,7 @@
     "@candlefw/whind": "latest"
   },
   "devDependencies": {
-    "@candlefw/hydrocarbon": "0.0.1-a",
+    "@candlefw/hydrocarbon": "latest",
     "chai": "^4.2.0",
     "esm": "^3.0.84",
     "jsdom": "^13.0.0",
