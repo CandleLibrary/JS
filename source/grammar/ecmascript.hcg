@@ -8,11 +8,9 @@
 
 @ERROR /* //
 
-<> javascript → start					↦return{ sym[0] }
+<> javascript → start					↦{ env.IS_MODULE = false } ↦return{ sym[0] }
 
-<> start → script 						↦return{ sym[0] }
-	│ module
-	│ ɛ
+<> start → module 						↦return{ (env.IS_MODULE) ? new fn.module($$sym1) : new fn.script($$sym1)  }
 
 ## MODULES
 
@@ -20,20 +18,20 @@
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-ecmascript-language-scripts-and-modules
 	##############################################################################################################
 	
-		<> module → module_body 	   ↦c ^module
+		<> module → module_body 	 
 
-		<> module_body → module_item(+)
+		<> module_body → (module_item)(+)			↦c ^statements
 
-		<> module_item → import_declaration 
-			│ export_declaration
+		<> module_item → import_declaration 	↦{ env.IS_MODULE = true }
+			│ export_declaration 				↦{ env.IS_MODULE = true }
 			│ statement_list_item
 
 	##############################################################################################################
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#prod-ImportDeclaration
 	##############################################################################################################
 
-		<> import_declaration → τimport import_clause from_clause 
-			│ τimport module_specifier	 
+		<> import_declaration → τimport import_clause from_clause
+			│ τimport module_specifier
 
 		<> import_clause → imported_default_binding
 			│ name_space_import
@@ -79,7 +77,7 @@
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-ecmascript-language-scripts-and-modules
 	##############################################################################################################
 		
-		<> script → script_body 							↦c ^script
+		<> script → script_body 							↦r ^script
 
 		<> script_body → statement_list 	
 
@@ -765,7 +763,7 @@
 
 	<> identifier_name →  id 					↦c ^identifier				
 
-	<> id → ( \$ │ θid │ \_ ) ( \# │ \$ │ θid │ θnum )(*') (θws │ θnl)?  ↦r { $sym1 + $sym2 }
+	<> id → ( \$ │ θid │ \_ ) ( \# │ \$ │ θkeyword │ θid │ θnum │ \_ )(*') (θws │ θnl)?  ↦r { $sym1 + $sym2 }
 
 
 
