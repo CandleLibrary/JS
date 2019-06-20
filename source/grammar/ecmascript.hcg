@@ -20,7 +20,7 @@
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-ecmascript-language-scripts-and-modules
 	##############################################################################################################
 	
-		<> module → module_body 	   ↦r ^module
+		<> module → module_body 	   ↦c ^module
 
 		<> module_body → module_item(+)
 
@@ -32,8 +32,8 @@
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#prod-ImportDeclaration
 	##############################################################################################################
 
-		<> import_declaration → τimport import_clause from_clause
-			│ τimport module_specifier
+		<> import_declaration → τimport import_clause from_clause 
+			│ τimport module_specifier	 
 
 		<> import_clause → imported_default_binding
 			│ name_space_import
@@ -79,7 +79,7 @@
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-ecmascript-language-scripts-and-modules
 	##############################################################################################################
 		
-		<> script → script_body 							↦r ^script
+		<> script → script_body 							↦c ^script
 
 		<> script_body → statement_list 	
 

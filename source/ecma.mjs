@@ -60,6 +60,10 @@ import unary_xor_expression from "./nodes/unary_xor.mjs";
 import void_expression from "./nodes/void.mjs";
 import argument_list from "./nodes/argument_list.mjs";
 import parenthasized from "./nodes/parenthasized.mjs";
+import script from "./nodes/script.mjs";
+import module from "./nodes/module.mjs";
+import export_statement from "./nodes/export_statement.mjs";
+import import_statement from "./nodes/import_statement.mjs";
 
 import types from "./nodes/types.mjs";
 import env from "./parser/env.mjs";
@@ -68,6 +72,10 @@ import whind from "@candlefw/whind";
 export {
 	types,
 	env,
+	script,
+	module,
+	export_statement,
+	import_statement,
 	parenthasized,
 	add_expression,
 	and_expression,

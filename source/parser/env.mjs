@@ -1,5 +1,9 @@
 import add_expression from "../nodes/add.mjs";
 import and_expression from "../nodes/and.mjs";
+import script from "../nodes/script.mjs";
+import module from "../nodes/module.mjs";
+import export_statement from "../nodes/export_statement.mjs";
+import import_statement from "../nodes/import_statement.mjs";
 import bit_and_expression from "../nodes/bit_and.mjs";
 import bit_or_expression from "../nodes/bit_or.mjs";
 import bit_xor_expression from "../nodes/bit_xor.mjs";
@@ -79,6 +83,10 @@ const env = {
     functions: {
 
         //JS
+        script,
+        module,
+        export_statement,
+        import_statement,
         parenthasized,
         label_statement,
         plus_expression,
