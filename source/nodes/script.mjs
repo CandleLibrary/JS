@@ -7,7 +7,7 @@ import types from "./types.mjs";
 
 export default class script extends base {
     constructor(sym) {
-        super(sym);
+        super(sym[0]);
     }
 
     get statements() { return this.vals[0] }

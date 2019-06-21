@@ -22,7 +22,7 @@
 	
 		<> module → module_body 	 
 
-		<> module_body → (module_item)(+)			↦c ^statements
+		<> module_body → (module_item)(+)		↦c ^statements
 
 		<> module_item → import_declaration 	↦{ env.IS_MODULE = true }
 			│ export_declaration 				↦{ env.IS_MODULE = true }
@@ -79,7 +79,7 @@
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-ecmascript-language-scripts-and-modules
 	##############################################################################################################
 		
-		<> script → script_body 							↦r ^script
+		<> script → script_body 							↦c ^script
 
 		<> script_body → statement_list 	
 
