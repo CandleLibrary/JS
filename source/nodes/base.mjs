@@ -41,8 +41,9 @@ export default class {
 
             if(Array.isArray(node)){
                 yield* this.traverseDepthFirst(p, node);
-            }else
+            }else{
                 yield* node.traverseDepthFirst(this);
+            }
 
             if (vals[i] !== node) // Check to see if node has been replaced. 
                 i--; //Reparse the node

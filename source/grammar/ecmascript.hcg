@@ -10,7 +10,9 @@
 
 <> javascript → start					↦{ env.IS_MODULE = false } ↦return{ sym[0] }
 
+
 <> start → module 						↦return{ (env.IS_MODULE) ? new fn.module($$sym1) : new fn.script($$sym1)  }
+
 
 ## MODULES
 
@@ -761,7 +763,7 @@
 
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-names-and-keywords
 
-	<> identifier_name →  id 					↦c ^identifier				
+	<> identifier_name →  id 				↦c ^identifier				
 
 	<> id → ( \$ │ θid │ \_ ) ( \# │ \$ │ θkeyword │ θid │ θnum │ \_ )(*') (θws │ θnl)?  ↦r { $sym1 + $sym2 }
 

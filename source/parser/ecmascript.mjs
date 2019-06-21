@@ -2224,17 +2224,17 @@ e],
 
     //Environment Functions
     
-redv = (ret, fn, plen, ln, t, e, o, l, s) => {        ln = max(o.length - plen, 0);        o[ln] = fn(o.slice(-plen), e, l, s, o, plen);        o.length = ln + 1;        return ret;    },
-rednv = (ret, Fn, plen, ln, t, e, o, l, s) => {        ln = max(o.length - plen, 0);        o[ln] = new Fn(o.slice(-plen), e, l, s, o, plen);        o.length = ln + 1;        return ret;    },
-redn = (ret, plen, t, e, o, l, s) => {        if(plen > 0){            let ln = max(o.length - plen, 0);            o[ln] = o[o.length -1];            o.length = ln + 1;        }        return ret;    },
+redv = (ret, fn, plen, ln, t, e, o, l, s) => {        ln = max(o.length - plen, 0);        const slice = o.slice(-plen);        o.length = ln + 1;        o[ln] = fn(slice, e, l, s, o, plen);        if (!o[ln]) {        }        return ret;    },
+rednv = (ret, Fn, plen, ln, t, e, o, l, s) => {        ln = max(o.length - plen, 0);        const slice = o.slice(-plen);        o.length = ln + 1;        o[ln] = new Fn(slice, e, l, s, o, plen);        if (!o[ln]) {                }        return ret;    },
+redn = (ret, plen, t, e, o, l, s) => {        if (plen > 0) {            let ln = max(o.length - plen, 0);            o[ln] = o[o.length - 1];            o.length = ln + 1;        }        return ret;    },
 shftf = (ret, fn, t, e, o, l, s) => (fn(o, e, l, s), ret),
 R00_javascript=function (sym,env,lex,state,output,len) {return sym[0]},
 I01_javascript=function (sym,env,lex,state,output,len) {env.IS_MODULE = false},
 R10_start=function (sym,env,lex,state,output,len) {return (env.IS_MODULE) ? new fn.module(sym[0]) : new fn.script(sym[0])},
-R40_module_body401_group_list=function (sym,env,lex,state,output,len) {return (sym[0].push(sym[1]),sym[0])},
-R41_module_body401_group_list=function (sym,env,lex,state,output,len) {return [sym[0]]},
+R40_module_body401_group_list=function (sym,env,lex,state,output,len) {return ((sym[1] !== null) ? sym[0].push(sym[1]) : null,sym[0])},
+R41_module_body401_group_list=function (sym,env,lex,state,output,len) {return (sym[0] !== null) ? [sym[0]] : []},
 I60_module_item=function (sym,env,lex,state,output,len) {env.IS_MODULE = true},
-R120_named_imports1801_group_list=function (sym,env,lex,state,output,len) {return (sym[0].push(sym[2]),sym[0])},
+R120_named_imports1801_group_list=function (sym,env,lex,state,output,len) {return ((sym[1] !== null) ? sym[0].push(sym[2]) : null,sym[0])},
 C350_empty_statement=function (sym,env,lex,state,output,len) {this.type = "empty";},
 R380_iteration_statement7212_group=function (sym,env,lex,state,output,len) {return sym[1]},
 R410_iteration_statement=function (sym,env,lex,state,output,len) {return (new fn.for_statement(sym[2],sym[4],sym[6],sym[8]))},
@@ -2260,7 +2260,8 @@ R461_return_statement=function (sym,env,lex,state,output,len) {return new fn.ret
 R500_case_block=function (sym,env,lex,state,output,len) {return []},
 R501_case_block=function (sym,env,lex,state,output,len) {return sym[1].concat(sym[2].concat(sym[3]))},
 R502_case_block=function (sym,env,lex,state,output,len) {return sym[1].concat(sym[2])},
-R510_case_clauses=function (sym,env,lex,state,output,len) {return sym[0].concat(sym[1])},
+R510_case_clauses=function (sym,env,lex,state,output,len) {return [sym[0]]},
+R511_case_clauses=function (sym,env,lex,state,output,len) {return sym[0].concat(sym[1])},
 R520_case_clause=function (sym,env,lex,state,output,len) {return (new fn.case_statement(sym[1],sym[3]))},
 R521_case_clause=function (sym,env,lex,state,output,len) {return (new fn.case_statement(sym[1]))},
 R530_default_clause=function (sym,env,lex,state,output,len) {return (new fn.default_case_statement(sym[2]))},
@@ -2268,6 +2269,7 @@ R531_default_clause=function (sym,env,lex,state,output,len) {return (new fn.defa
 R570_try_statement=function (sym,env,lex,state,output,len) {return (new fn.try_statement(sym[1],sym[2]))},
 R571_try_statement=function (sym,env,lex,state,output,len) {return (new fn.try_statement(sym[1],null,sym[2]))},
 R572_try_statement=function (sym,env,lex,state,output,len) {return (new fn.try_statement(sym[1],sym[2],sym[3]))},
+R630_variable_declaration_list=function (sym,env,lex,state,output,len) {return (sym[0].push(sym[2]),sym[0])},
 R660_let_or_const=function (sym,env,lex,state,output,len) {return "let"},
 R661_let_or_const=function (sym,env,lex,state,output,len) {return "const"},
 R700_function_declaration=function (sym,env,lex,state,output,len) {return new fn.function_declaration(sym[1],sym[3],sym[6])},
@@ -2573,7 +2575,7 @@ R1531_string_literal35007_group_list=function (sym,env,lex,state,output,len) {re
 (...v)=>(rednv(55307,fn.label_statement,2,0,...v)),
 ()=>(1630),
 ()=>(1626),
-(...v)=>(redv(64519,R41_module_body401_group_list,1,0,...v)),
+(...v)=>(redv(64519,R510_case_clauses,1,0,...v)),
 (...v)=>(rednv(65543,fn.binding,1,0,...v)),
 ()=>(1638),
 (...v)=>(redn(143367,1,...v)),
@@ -2604,7 +2606,7 @@ R1531_string_literal35007_group_list=function (sym,env,lex,state,output,len) {re
 ()=>(1866),
 ()=>(1894),
 ()=>(1890),
-(...v)=>(redv(68615,R41_module_body401_group_list,1,0,...v)),
+(...v)=>(redv(68615,R510_case_clauses,1,0,...v)),
 (...v)=>(redn(7183,3,...v)),
 ()=>(1922),
 ()=>(1926),
@@ -2653,7 +2655,7 @@ R1531_string_literal35007_group_list=function (sym,env,lex,state,output,len) {re
 ()=>(1990),
 ()=>(1978),
 (...v)=>(redv(120843,R873_class_tail,2,0,...v)),
-(...v)=>(redv(121863,R41_module_body401_group_list,1,0,...v)),
+(...v)=>(redv(121863,R510_case_clauses,1,0,...v)),
 (...v)=>(redn(122887,1,...v)),
 ()=>(1998),
 ()=>(2002),
@@ -2739,7 +2741,7 @@ R1531_string_literal35007_group_list=function (sym,env,lex,state,output,len) {re
 ()=>(2278),
 (...v)=>(redv(89099,R873_class_tail,2,0,...v)),
 (...v)=>(redn(91143,1,...v)),
-(...v)=>(redv(92167,R41_module_body401_group_list,1,0,...v)),
+(...v)=>(redv(92167,R510_case_clauses,1,0,...v)),
 (...v)=>(redn(93191,1,...v)),
 (...v)=>(redv(90123,R380_iteration_statement7212_group,2,0,...v)),
 ()=>(2294),
@@ -2748,7 +2750,7 @@ R1531_string_literal35007_group_list=function (sym,env,lex,state,output,len) {re
 (...v)=>(redn(73735,1,...v)),
 ()=>(2306),
 (...v)=>(redn(75783,1,...v)),
-(...v)=>(redv(74759,R41_module_body401_group_list,1,0,...v)),
+(...v)=>(redv(74759,R510_case_clauses,1,0,...v)),
 (...v)=>(redn(76807,1,...v)),
 (...v)=>(rednv(66575,fn.lexical,3,0,...v)),
 (...v)=>(rednv(69643,fn.binding,2,0,...v)),
@@ -2785,7 +2787,7 @@ R1531_string_literal35007_group_list=function (sym,env,lex,state,output,len) {re
 (...v)=>(rednv(102419,fn.supper_expression,4,0,...v)),
 ()=>(2406),
 (...v)=>(redn(78855,1,...v)),
-(...v)=>(redv(64527,R120_named_imports1801_group_list,3,0,...v)),
+(...v)=>(redv(64527,R630_variable_declaration_list,3,0,...v)),
 (...v)=>(redv(119819,R380_iteration_statement7212_group,2,0,...v)),
 (...v)=>(redn(144399,3,...v)),
 ()=>(2414),
@@ -2820,8 +2822,8 @@ R1531_string_literal35007_group_list=function (sym,env,lex,state,output,len) {re
 ()=>(2546),
 ()=>(2550),
 ()=>(2558),
-(...v)=>(redv(73739,R41_module_body401_group_list,2,0,...v)),
-(...v)=>(redv(68623,R120_named_imports1801_group_list,3,0,...v)),
+(...v)=>(redv(73739,R510_case_clauses,2,0,...v)),
+(...v)=>(redv(68623,R630_variable_declaration_list,3,0,...v)),
 (...v)=>(redn(13331,4,...v)),
 (...v)=>(redv(12303,R120_named_imports1801_group_list,3,0,...v)),
 (...v)=>(redn(15375,3,...v)),
@@ -2877,8 +2879,8 @@ R1531_string_literal35007_group_list=function (sym,env,lex,state,output,len) {re
 ()=>(2730),
 (...v)=>(redv(71703,R707_function_declaration,5,0,...v)),
 (...v)=>(redn(77831,1,...v)),
-(...v)=>(redv(73743,R120_named_imports1801_group_list,3,0,...v)),
-(...v)=>(redv(74767,R120_named_imports1801_group_list,3,0,...v)),
+(...v)=>(redv(73743,R630_variable_declaration_list,3,0,...v)),
+(...v)=>(redv(74767,R630_variable_declaration_list,3,0,...v)),
 (...v)=>(redv(121875,R1191_element_list,4,0,...v)),
 ()=>(2734),
 ()=>(2738),
@@ -2899,7 +2901,7 @@ R1531_string_literal35007_group_list=function (sym,env,lex,state,output,len) {re
 (...v)=>(redv(51211,R500_case_block,2,0,...v)),
 ()=>(2814),
 ()=>(2826),
-(...v)=>(redv(52231,R41_module_body401_group_list,1,0,...v)),
+(...v)=>(redv(52231,R510_case_clauses,1,0,...v)),
 (...v)=>(redv(54279,R531_default_clause,1,0,...v)),
 ()=>(2834),
 ()=>(2846),
@@ -2922,7 +2924,7 @@ R1531_string_literal35007_group_list=function (sym,env,lex,state,output,len) {re
 (...v)=>(redv(42015,R4110_iteration_statement,7,0,...v)),
 ()=>(2898),
 (...v)=>(redv(51215,R380_iteration_statement7212_group,3,0,...v)),
-(...v)=>(redv(52235,R510_case_clauses,2,0,...v)),
+(...v)=>(redv(52235,R511_case_clauses,2,0,...v)),
 ()=>(2902),
 ()=>(2906),
 (...v)=>(rednv(59415,fn.catch_statement,5,0,...v)),
@@ -3729,17 +3731,21 @@ function parser(l, e = {}) {
         l.next();
     }
 
+    const recovery_chain = [];
+
     const o = [],
         ss = [0, 0];
 
     let time = 1000000,
         RECOVERING = 100,
+        RESTARTED = true,
         tk = getToken(l, lu),
         p = l.copy(),
         sp = 1,
         len = 0,
-        off = 0,
-        reduceStack = (e.reduceStack = []);
+        reduceStack = (e.reduceStack = []),
+        ROOT = 10000,
+        off = 0;
 
     outer:
 
@@ -3807,7 +3813,8 @@ function parser(l, e = {}) {
 
                     if (tk == "$eof")
                         l.throw("Unexpected end of input");
-                    l.throw(`Unexpected token [${RECOVERING ? l.next().tx : l.tx}]`);
+
+                    l.throw(`Unexpected token [${RECOVERING ? l.next().tx : l.tx}] ${l.slice(p)}`);
                     return [null];
 
                 case 1:
@@ -3815,11 +3822,11 @@ function parser(l, e = {}) {
                     break outer;
 
                 case 2:
+
                     /*SHIFT */
                     o.push(l.tx);
                     ss.push(off, r >> 2);
                     sp += 2;
-                    p.sync(l);
                     l.next();
                     off = l.off;
                     tk = getToken(l, lu);
@@ -3828,6 +3835,7 @@ function parser(l, e = {}) {
 
                 case 3:
                     /* REDUCE */
+                    RESTARTED = true;
 
                     len = (r & 0x3FC) >> 1;
 

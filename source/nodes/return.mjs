@@ -7,7 +7,7 @@ import types from "./types.mjs";
 
 export default class return_statement extends base {
     constructor(sym) {
-        super((sym.length > 2) ? sym[1] : null);
+        super(sym);
     }
 
     get expr() { return this.vals[0] }
