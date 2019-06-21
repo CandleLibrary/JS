@@ -7,7 +7,7 @@ import types from "./types.mjs";
 
 export default class script extends base {
     constructor(sym) {
-        super(sym[0]);
+        super((Array.isArray(sym)) ? sym[0] : sym) ;
     }
 
     get statements() { return this.vals[0] }
