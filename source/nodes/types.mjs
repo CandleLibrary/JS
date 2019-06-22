@@ -58,5 +58,6 @@ unary_or_expression:56,
 unary_xor_expression:57,
 void_expression:58,
 argument_list:59,
+variable_declaration:61,
 cover_parenthesized_expression_and_arrow_parameter_list:60,
 	};

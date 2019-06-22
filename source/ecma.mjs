@@ -71,6 +71,13 @@ import import_specifier from "./nodes/import_specifier.mjs"
 import export_declaration from "./nodes/export_declaration.mjs"
 import export_clause from "./nodes/export_clause.mjs"
 import export_specifier from "./nodes/export_specifier.mjs"
+import break_statement from "./nodes/break.mjs"
+import continue_statement from "./nodes/continue.mjs"
+import case_statement from "./nodes/case_statement.mjs"
+import default_case_statement from "./nodes/default_case_statement.mjs"
+import switch_statement from "./nodes/switch_statement.mjs";
+import empty_statement from "./nodes/empty_statement.mjs";
+import variable_statement from "./nodes/variable_statement.mjs";
 
 import types from "./nodes/types.mjs";
 import env from "./parser/env.mjs";
@@ -82,6 +89,13 @@ export {
     env,
     script,
     module,
+    variable_statement,
+    case_statement,
+    switch_statement,
+    empty_statement,
+	default_case_statement,
+    break_statement,
+	continue_statement,
     import_declaration,
     import_clause,
     default_import,

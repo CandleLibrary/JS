@@ -71,9 +71,13 @@ import import_specifier from "../nodes/import_specifier.mjs"
 import export_declaration from "../nodes/export_declaration.mjs"
 import export_clause from "../nodes/export_clause.mjs"
 import export_specifier from "../nodes/export_specifier.mjs"
-
-//continue_statement
-//break_statement
+import break_statement from "../nodes/break.mjs"
+import continue_statement from "../nodes/continue.mjs"
+import switch_statement from "../nodes/switch_statement.mjs";
+import case_statement from "../nodes/case_statement.mjs"
+import default_case_statement from "../nodes/default_case_statement.mjs"
+import empty_statement from "../nodes/empty_statement.mjs";
+import variable_statement from "../nodes/variable_statement.mjs";
 //return_statement
 //throw_statement
 //with_statement
@@ -92,6 +96,12 @@ const env = {
         //JS
         script,
         module,
+        empty_statement,
+        switch_statement,
+        break_statement,
+        case_statement,
+        default_case_statement,
+        continue_statement,
         import_declaration,
         import_clause,
         default_import,
@@ -164,6 +174,7 @@ const env = {
         unary_or_expression,
         void_expression,
         argument_list,
+        variable_statement,
         while_stmt: function(sym) {
             this.bool = sym[1];
             this.body = sym[3];

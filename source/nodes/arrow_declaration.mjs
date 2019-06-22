@@ -13,6 +13,7 @@ export default class arrow_function_declaration extends _function {
     getRootIds(ids, closure) {
         if(this.args)
             this.args.getRootIds(ids, closure);
+        this.body.getRootIds(ids,closure)
     }
 
     get name() { return null }
@@ -21,7 +22,7 @@ export default class arrow_function_declaration extends _function {
 
     render() {
         const
-            body_str = this.body.render(),
+            body_str = this.body.stmts.length > 1 ? `{${this.body.render()}}` : this.body.render(),
             args_str = (this.args) ? this.args.render() : "()";
         return `${args_str} => ${body_str}`;
     }

@@ -13,7 +13,6 @@ export default class call_expression extends base {
     get args() { return this.vals[1] }
 
     getRootIds(ids, closure) {
-        debugger
         this.id.getRootIds(ids, closure);
         this.args.getRootIds(ids, closure);
     }

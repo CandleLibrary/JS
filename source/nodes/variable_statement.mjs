@@ -1,11 +1,10 @@
-/** LEXICAL DECLARATION **/
+/** VARIABLE STATEMENT **/
 
 import base from "./base.mjs";
 import types from "./types.mjs";
-export default class lexical_declaration extends base {
+export default class variable_declaration extends base {
     constructor(sym) {
         super(sym[1]);
-        this.mode = sym[0];
     }
 
     get bindings() { return this.vals[0] }
@@ -14,7 +13,7 @@ export default class lexical_declaration extends base {
         this.bindings.forEach(b => b.getRootIds(ids, closure, true));
     }
 
-    get type() { return types.lexical_declaration }
+    get type() { return types.variable_declaration }
 
-    render() { return `${this.mode} ${this.bindings.map(b=>b.render()).join(",")};` }
+    render() { return `var ${this.bindings.map(b=>b.render()).join(",")};` }
 }

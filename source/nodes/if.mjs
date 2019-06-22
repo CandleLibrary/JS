@@ -41,8 +41,10 @@ export default class if_statement extends base {
     render() {
         const
             expr = this.expr.render(),
-            stmt = this.stmt.render(),
-            _else = (this.else_stmt) ? " else " + this.else_stmt.render() : "";
+            stmt = this.stmt.type == types.statements ? `{${this.stmt.render()}}` : this.stmt.render(),
+            _else = (this.else_stmt) ? " else " + (
+                this.else_stmt.type == types.statements || this.else_stmt.type == types.if_statement ? `{${this.else_stmt.render()}}` : this.else_stmt.render()
+            ) : "";
         return `if(${expr})${stmt}${_else}`;
     }
 }

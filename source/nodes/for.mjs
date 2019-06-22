@@ -9,13 +9,15 @@ export default class for_statement extends base {
     get iter() { return this.vals[2] }
     get body() { return this.vals[3] }
 
-    getRootIds(ids, closure) {
-
-        closure = new Set([...closure.values()]);
-
+    getRootIds(ids, closure) {  
+        if (this.init) this.init.getRootIds(ids, closure);
         if (this.bool) this.bool.getRootIds(ids, closure);
         if (this.iter) this.iter.getRootIds(ids, closure);
-        if (this.body) this.body.getRootIds(ids, closure);
+
+       // closure = new Set([...closure.values()]);
+        
+        if (this.body) this.body.getRootIds(ids, new Set);
+
     }
 
     * traverseDepthFirst(p) {
@@ -38,6 +40,8 @@ export default class for_statement extends base {
         if (this.iter) iter = this.iter.render();
         if (this.body) body = this.body.render();
 
-        return `for(${init};${bool};${iter})${body}`;
+        const init_simicolon = init[init.length-1] == ";";
+
+        return `for(${init}${init_simicolon ? "" : ";"}${bool};${iter})${body}`;
     }
 }

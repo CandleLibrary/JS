@@ -5,7 +5,9 @@ import types from "./types.mjs";
 import identifer from "./identifier.mjs";
 
 export default class member_expression extends base {
-    constructor(sym) { super(sym[0], sym[2]);
+    constructor(id, mem, evaluated = false) { 
+        super(id, mem);
+        this.evaluated = evaluated;
         this.root = true;
         this.mem.root = false;
     }
@@ -31,10 +33,10 @@ export default class member_expression extends base {
     get type() { return types.member_expression }
 
     render() { 
-        if(this.mem.type == types.member_expression || this.mem.type == types.identifier){
-            return `${this.id.render()}.${this.mem.render()}`;
-        }else{
+        if(this.evaluated){
             return `${this.id.render()}[${this.mem.render()}]`;
+        }else{
+            return `${this.id.render()}.${this.mem.render()}`;
         }
     }
 }

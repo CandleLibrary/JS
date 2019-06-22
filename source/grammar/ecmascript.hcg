@@ -150,7 +150,7 @@
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-empty-statement
 	##############################################################################################################
 
-		<> empty_statement → ; 							 ↦c{ this.type = "empty"}
+		<> empty_statement → ; 							 ↦c ^empty_statement
 
 	##############################################################################################################
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-expression-statement
@@ -175,7 +175,7 @@
 			
 			│ τfor \( ↦{ env.ASI = false;} (
 				(EXC τlet \[ ) expression 
-				│ τvar variable_declaration_list ↦r {$sym2}
+				│ τvar variable_declaration_list ↦c ^variable_statement
 				)? ; expression? ; expression? \) ↦{ env.ASI = true;} statement  												
 																									↦return{ (new fn.for_statement($$sym3, $$sym5, $$sym7, $$sym9)) }	
 
@@ -202,15 +202,13 @@
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-continue-statement
 	##############################################################################################################
 
-		<> continue_statement → τcontinue ; 							↦c ^continue_statement
-			│ τcontinue  label_identifier ;								↦return{ (new fn.continue_statement(sym[1])) }
+		<> continue_statement → τcontinue label_identifier? ; 			↦return{ (new fn.continue_statement($$sym2)) }	
 
 	##############################################################################################################
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-break-statement
 	##############################################################################################################
 
-		<> break_statement → τbreak ;  									↦c ^break_statement
-			│ τbreak   label_identifier ; 								↦return{ (new fn.break_statement(sym[1])) }
+		<> break_statement → τbreak label_identifier? ;  				↦return{ (new fn.break_statement($$sym2)) }
 
 
 	##############################################################################################################
@@ -235,7 +233,7 @@
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-switch-statement
 	##############################################################################################################
 
-		<> switch_statement → τswitch \( expression \) case_block 		↦c ^switch_statement
+		<> switch_statement → τswitch \( expression \) case_block 		↦r{ new fn.switch_statement($$sym3, $$sym5)}
 
 		<> case_block → { } 											↦return{ [] }
 			│ { case_clauses default_clause case_clause } 				↦return{ sym[1].concat(sym[2].concat(sym[3])) }
@@ -247,11 +245,9 @@
 		<> case_clauses → case_clause 									↦return{ [sym[0]] }
 			│ case_clauses case_clause 									↦return{ sym[0].concat(sym[1]) }
 
-		<> case_clause → τcase expression : statement_list 				↦return{ (new fn.case_statement(sym[1], sym[3])) }
-			│ τcase expression : 										↦return{ (new fn.case_statement(sym[1])) }
+		<> case_clause → τcase expression : statement_list? 			↦return{ (new fn.case_statement($sym2, $$sym4)) }
 
-		<> default_clause → τdefault : statement_list 					↦return{ (new fn.default_case_statement(sym[2])) }
-			│ τdefault  												↦return{ (new fn.default_case_statement()) }
+		<> default_clause → τdefault : statement_list? 					↦return{ (new fn.default_case_statement($$sym3)) }
 
 	##############################################################################################################
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-labelled-statements
@@ -428,8 +424,8 @@
 		│ τnew new_expression 										↦r { new fn.new_expression($sym2, null) }
 
 	<> member_expression → primary_expression 				
-		│ member_expression \[ expression \]						↦c ^member_expression		
-		│ member_expression . identifier_name 						↦c ^member_expression
+		│ member_expression \[ expression \]						↦r{new fn.member_expression($sym1,$sym3 ,true) }
+		│ member_expression . identifier_name 						↦r{new fn.member_expression($sym1,$sym3 ,false)}
 		# │ member_expression template_literal
 		│ super_property
 		│ meta_property
@@ -442,7 +438,7 @@
 
 	<> new_target → τnew . τtarget									↦c ^new_target_expression
 
-	<> call_expression → call_expression . identifier_name 			↦c ^member_expression
+	<> call_expression → call_expression . identifier_name 			↦r{new fn.member_expression($sym1,$sym3 ,false)}
 		│ super_call
 		│ call_expression arguments 								↦c ^call_expression
 		│ call_expression \[ expression \] 							↦c ^call_expression

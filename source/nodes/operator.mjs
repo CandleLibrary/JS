@@ -11,6 +11,11 @@ export default class extends base {
     get left() { return this.vals[0] }
     get right() { return this.vals[1] }
 
+    getRootIds(ids, closure) { 
+        this.left.getRootIds(ids, closure)
+        this.right.getRootIds(ids, closure)
+    }
+
     replaceNode(original, _new = null) {
         var index;
 
