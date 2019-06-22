@@ -2,8 +2,6 @@ import add_expression from "../nodes/add.mjs";
 import and_expression from "../nodes/and.mjs";
 import script from "../nodes/script.mjs";
 import module from "../nodes/module.mjs";
-import export_statement from "../nodes/export_statement.mjs";
-import import_statement from "../nodes/import_statement.mjs";
 import bit_and_expression from "../nodes/bit_and.mjs";
 import bit_or_expression from "../nodes/bit_or.mjs";
 import bit_xor_expression from "../nodes/bit_xor.mjs";
@@ -64,6 +62,15 @@ import void_expression from "../nodes/void.mjs";
 import argument_list from "../nodes/argument_list.mjs";
 import parenthasized from "../nodes/parenthasized.mjs";
 import label_statement from "../nodes/label_statement.mjs";
+import import_declaration from "../nodes/import_declaration.mjs"
+import import_clause from "../nodes/import_clause.mjs"
+import default_import from "../nodes/default_import.mjs"
+import name_space_import from "../nodes/name_space_import.mjs"
+import named_imports from "../nodes/named_imports.mjs"
+import import_specifier from "../nodes/import_specifier.mjs"
+import export_declaration from "../nodes/export_declaration.mjs"
+import export_clause from "../nodes/export_clause.mjs"
+import export_specifier from "../nodes/export_specifier.mjs"
 
 //continue_statement
 //break_statement
@@ -85,8 +92,15 @@ const env = {
         //JS
         script,
         module,
-        export_statement,
-        import_statement,
+        import_declaration,
+        import_clause,
+        default_import,
+        name_space_import,
+        named_imports,
+        import_specifier,
+        export_declaration,
+        export_clause,
+        export_specifier,
         parenthasized,
         label_statement,
         plus_expression,

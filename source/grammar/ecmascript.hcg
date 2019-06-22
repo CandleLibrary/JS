@@ -32,25 +32,25 @@
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#prod-ImportDeclaration
 	##############################################################################################################
 
-		<> import_declaration → τimport import_clause from_clause
-			│ τimport module_specifier
+		<> import_declaration → τimport import_clause from_clause ; ↦r { new fn.import_declaration($$sym3, $$sym2 ) }
+			│ τimport module_specifier ; 							  ↦r { new fn.import_declaration($$sym2) }			
 
-		<> import_clause → imported_default_binding
-			│ name_space_import
-			│ named_imports
-			│ imported_default_binding , name_space_import
-			│ imported_default_binding , named_imports
+		<> import_clause → imported_default_binding 				
+			│ name_space_import 									
+			│ named_imports 										
+			│ imported_default_binding , name_space_import 			↦r { [$$sym1, $$sym3]}
+			│ imported_default_binding , named_imports 			 	↦r { [$$sym1, $$sym3]}
 
-		<> imported_default_binding → imported_binding
+		<> imported_default_binding → imported_binding 			  ↦c ^default_import	
 
-		<> name_space_import → * τas imported_binding 
+		<> name_space_import → * τas imported_binding 			  ↦c ^name_space_import
 
-		<> named_imports → { (import_specifier)(*,) ,? }
+		<> named_imports → { (import_specifier)(*,) ,? }  		 ↦r {new fn.named_imports($$sym2)}
 
-		<> from_clause → τfrom module_specifier
+		<> from_clause → τfrom module_specifier 				 ↦r { $sym2  }
 
-		<> import_specifier → imported_binding 
-			│ identifier τas imported_binding
+		<> import_specifier → imported_binding  				 ↦r {new fn.import_specifier($sym1)}
+			│ identifier τas imported_binding 					 ↦r {new fn.import_specifier($sym1, $sym2)}
 
 		<> module_specifier → string_literal
 
@@ -60,19 +60,25 @@
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-exports
 	##############################################################################################################
 
-		<> export_declaration → τexport * from_clause ;
-			│ τexport export_clause from_clause ;
-			│ τexport export_clause ;
-			│ τexport variable_statement
-			│ τexport declaration
-			│ τexport τdefault hoistable_declaration
-			│ τexport τdefault class_declaration
-			│ τexport τdefault assignment_expression
+		<> export_declaration → τexport * from_clause ; 		↦r { new fn.export_declaration(null,   $$sym3, false) }
+			│ τexport export_clause from_clause ; 				↦r { new fn.export_declaration($$sym2, $$sym3, false) }
+			│ τexport export_clause ; 							↦r { new fn.export_declaration($$sym2, null, false) }
+			│ τexport variable_statement 						↦r { new fn.export_declaration($$sym2, null, false) }
+			│ τexport declaration 								↦r { new fn.export_declaration($$sym2, null, false) }
+			│ τexport τdefault hoistable_declaration 			↦r { new fn.export_declaration($$sym2, null, true) }
+			│ τexport τdefault class_declaration 				↦r { new fn.export_declaration($$sym2, null, true) }
+			│ τexport τdefault 
 
-		<> export_clause → { (export_specifier)(*,) ,? }
+				(EXC τfunction )
+				(EXC τclass )
+				(EXC τasync τfunction )
+			
+				assignment_expression 							↦r { new fn.export_declaration($$sym2, null, true) }
 
-		<> export_specifier →  identifier 
-			│ identifier τas identifier
+		<> export_clause → { (export_specifier)(*,) ,? } 		↦r { new fn.export_clause($$sym2) }
+
+		<> export_specifier →  identifier  						↦r {new fn.export_specifier($sym1)}
+			│ identifier τas identifier 						↦r {new fn.export_specifier($sym1, $sym2)}
 ## SCRIPT
 
 	##############################################################################################################
