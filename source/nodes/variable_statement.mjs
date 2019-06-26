@@ -1,8 +1,8 @@
 /** VARIABLE STATEMENT **/
 
-import base from "./base.mjs";
+import {statement} from "./base.mjs";
 import types from "./types.mjs";
-export default class variable_declaration extends base {
+export default class variable_declaration extends statement {
     constructor(sym) {
         super(sym[1]);
     }

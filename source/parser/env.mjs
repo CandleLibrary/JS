@@ -1,5 +1,6 @@
 import add_expression from "../nodes/add.mjs";
 import and_expression from "../nodes/and.mjs";
+import throw_statement from "../nodes/throw_statement.mjs";
 import script from "../nodes/script.mjs";
 import module from "../nodes/module.mjs";
 import bit_and_expression from "../nodes/bit_and.mjs";
@@ -78,8 +79,7 @@ import case_statement from "../nodes/case_statement.mjs"
 import default_case_statement from "../nodes/default_case_statement.mjs"
 import empty_statement from "../nodes/empty_statement.mjs";
 import variable_statement from "../nodes/variable_statement.mjs";
-//return_statement
-//throw_statement
+
 //with_statement
 //switch_statement
 //label_statement
@@ -96,6 +96,7 @@ const env = {
         //JS
         script,
         module,
+        throw_statement,
         empty_statement,
         switch_statement,
         break_statement,

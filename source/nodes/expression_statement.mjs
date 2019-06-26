@@ -1,9 +1,9 @@
-/** EXPRESSION_LIST **/
+/** EXPRESSION STATEMENT **/
 
-import base from "./base.mjs";
+import {statement} from "./base.mjs";
 import types from "./types.mjs";
 
-export default class expression_statement extends base {
+export default class expression_statement extends statement {
 
     constructor(sym) {
         super(sym[0]);
@@ -18,13 +18,6 @@ export default class expression_statement extends base {
     replaceNode(original, _new = null) {
         if(!super.replaceNode(original, _new, this.vals[0]))
             this.replace();
-    }
-
-    * traverseDepthFirst(p) {
-        this.parent = p;
-        yield this;
-        yield* this.expression.traverseDepthFirst(this);
-
     }
 
     get type() { return types.expression_statement }

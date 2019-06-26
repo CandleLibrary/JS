@@ -1,15 +1,14 @@
-/** TRY **/
+/** TRY STATEMENT **/
 
-import base from "./base.mjs";
+import { statement } from "./base.mjs";
 import types from "./types.mjs";
-export default class try_statement extends base {
+export default class try_statement extends statement {
     constructor(body, _catch, _finally) {
         super(body, _catch, _finally);
-
-
     }
-    get catch() { return this.vals[0] }
-    get body() { return this.vals[1] }
+
+    get body() { return this.vals[0] }
+    get catch() { return this.vals[1] }
     get finally() { return this.vals[2] }
 
     getRootIds(ids, clsr) {
@@ -18,13 +17,9 @@ export default class try_statement extends base {
         if (this.finally) this.finally.getRootIds(ids, clsr);
     }
 
-    * traverseDepthFirst(p) {
-        this.parent = p;
-        yield this;
-        if (this.body) yield* this.body.traverseDepthFirst(p);
-        if (this.catch) yield* this.catch.traverseDepthFirst(p);
-        if (this.finally) yield* this.finally.traverseDepthFirst(p);
-    }
-
     get type() { return types.try_statement }
+
+    render(){
+        return `try ${this.body}${this.catch ? " "+ this.catch : ""}${this.finally ? " "+this.finally : ""}`
+    }
 }

@@ -1,5 +1,6 @@
 import add_expression from "./nodes/add.mjs";
 import and_expression from "./nodes/and.mjs";
+import throw_statement from "./nodes/throw_statement.mjs";
 import array_literal from "./nodes/array_literal.mjs";
 import arrow_function_declaration from "./nodes/arrow_declaration.mjs";
 import bit_and_expression from "./nodes/bit_and.mjs";
@@ -98,6 +99,7 @@ export {
 	continue_statement,
     import_declaration,
     import_clause,
+    throw_statement,
     default_import,
     name_space_import,
     named_imports,

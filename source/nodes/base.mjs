@@ -1,6 +1,6 @@
 import types from "./types.mjs";
 
-export default class {
+export default class base {
     constructor(...vals) {
 
         this.vals = vals;
@@ -58,6 +58,7 @@ export default class {
         let val = trvs.next().value;
         while (val !== undefined && val !== this) { val = trvs.next().value };
     }
+
     toString() { return this.render() }
 
     render() { return this.vals.join("") }
@@ -73,3 +74,5 @@ export default class {
         return this;
     }
 }
+
+export class statement extends base {get IS_STATEMENT(){return true}}

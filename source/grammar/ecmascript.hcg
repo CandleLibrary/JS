@@ -221,13 +221,13 @@
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-throw-statement
 	##############################################################################################################
 
-		<> throw_statement → τthrow expression ; 						↦c ^throw_statement
+		<> throw_statement → τthrow expression ; 						↦r { new fn.throw_statement($$sym2) }
 
 	##############################################################################################################
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-with-statement
 	##############################################################################################################
 
-		<> with_statement → τwith \( expression \) statement 			↦c ^with_statement
+		<> with_statement → τwith \( expression \) statement 			↦r { new fn.with_statement($$sym3, $$sym5) }
 
 	##############################################################################################################
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-switch-statement
