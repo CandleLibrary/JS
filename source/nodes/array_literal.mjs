@@ -19,24 +19,6 @@ export default class array_literal extends base {
         }
     }
 
-    * traverseDepthFirst(p) {
-        this.parent = p;
-
-        yield this;
-
-        for (let i = 0; i < this.exprs.length; i++) {
-
-            const expr = this.exprs[i];
-
-            yield* expr.traverseDepthFirst(this);
-
-            if (this.exprs[i] !== expr)
-                yield* this.exprs[i].traverseDepthFirst(this);
-        }
-    }
-
-    get name() { return this.id.name }
-
     get type() { return types.array_literal }
 
     render() { return `[${this.exprs.map(a=>a.render()).join(",")}]` }
