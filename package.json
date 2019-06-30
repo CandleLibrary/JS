@@ -31,9 +31,6 @@
   },
   "homepage": "https://github.com/candlefw/js#readme",
   "dependencies": {
-    "@candlefw/color": "latest",
-    "@candlefw/ll": "latest",
-    "@candlefw/math": "latest",
     "@candlefw/url": "latest",
     "@candlefw/whind": "latest"
   },
