@@ -12,7 +12,6 @@
     "compile": "hydrocarbon compile --unattended -u -o ./source/parser -e ./source/parser/env.mjs -t mjs ./source/grammar/ecmascript.hcg",
     "compile.test": "hydrocarbon compile --unattended -d -u -e ./source/parser/env.mjs -t mjs ./source/grammar/ecmascript.hcg",
     "compile.mount": "hydrocarbon compile -d -e ./source/parser/env.mjs -m ./source/grammar/ecmascript.hcg",
-    "prepare": "npm run build && npm test"
   },
   "repository": {
     "type": "git",
