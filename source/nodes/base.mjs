@@ -22,7 +22,11 @@ export default class base {
             this.parent.replaceNode(this, node);
     }
 
-    getRootIds() {}
+    getRootIds(ids, closure) {
+        for(const id of this.vals)
+            if(id && id.getRootIds)
+                id.getRootIds(ids, closure);
+    }
 
     * traverseDepthFirst(p, vals = this.vals) {
         this.parent = p;

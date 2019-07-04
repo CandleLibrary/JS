@@ -3,10 +3,7 @@ import types from "./types.mjs";
 
 export default class call_expression extends base {
     constructor(sym) {
-        super(sym[0],sym[1]);
-        
-        // /if(this.args)
-        // /    this.args.clearRoots();
+        super(...sym);
     }
 
     get id() { return this.vals[0] }
@@ -31,6 +28,6 @@ export default class call_expression extends base {
     get type() { return types.call_expression }
 
     render() { 
-        return `${this.id.render()}(${this.args.render()})` 
+        return `${this.id.render()}${this.args.render()}` 
     }
 }

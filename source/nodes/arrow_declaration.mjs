@@ -1,22 +1,24 @@
 import _function from "./function_declaration.mjs";
 import types from "./types.mjs";
+import argument_list from "./parenthasized.mjs";
 
 export default class arrow_function_declaration extends _function {
     constructor(...sym) {
-        
+
         super(...sym);
 
-        //Since _function boxes args into an array, pull out the argument node
-        this.vals[1] = this.vals[1][0]
+        if (!this.args)
+            this.vals[1] = new argument_list();
     }
 
     getRootIds(ids, closure) {
-        if(this.args)
+        if (this.args)
             this.args.getRootIds(ids, closure);
-        this.body.getRootIds(ids,closure)
+        if (this.body)
+            this.body.getRootIds(ids, closure)
     }
 
-    get IS_STATEMENT(){return false}
+    get IS_STATEMENT() { return false }
 
     get name() { return null }
 
@@ -24,8 +26,15 @@ export default class arrow_function_declaration extends _function {
 
     render() {
         const
-            body_str = (this.body.IS_STATEMENT || (this.body.type == types.statements && this.body.stmts.length > 1)) ? `{${this.body.render()}}` : this.body.render(),
-            args_str = (this.args) ? this.args.render() : "()";
-        return `${args_str} => ${body_str}`;
+            body_str = ((this.body) ?
+                ((this.body.IS_STATEMENT || (this.body.type == types.statements && this.body.stmts.length > 1)) ?
+                    `{${this.body.render()}}` :
+                    this.body.render()) :
+                "{}"),
+            args_str = this.args.render(this.args.length !== 1);
+
+        if (body_str[0] == "{")
+            return `${args_str}=>(${body_str})`;
+        return `${args_str}=>${body_str}`;
     }
 }

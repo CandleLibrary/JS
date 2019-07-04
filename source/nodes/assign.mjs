@@ -12,6 +12,8 @@ export default class assignment_expression extends operator {
     }
     
     getRootIds(ids, closure) { 
+        if(this.left.type !== types.identifier)
+            this.left.getRootIds(ids, closure)
         this.right.getRootIds(ids, closure)
     }
 

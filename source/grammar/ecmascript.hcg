@@ -318,28 +318,27 @@
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-function-definitions
 	##############################################################################################################
 
-		<> function_expression → function_declaration
+		<> function_expression → τfunction binding_identifier? \( formal_parameters? \) { function_body? } 		↦return{ new fn.function_declaration($$sym2, $$sym4, $$sym7) }
 
 		<> function_declaration →  τfunction binding_identifier? \( formal_parameters? \) { function_body? } 		↦return{ new fn.function_declaration($$sym2, $$sym4, $$sym7) }
 
 
 		<> unique_formal_parameters → formal_parameters
 
-		<> formal_parameters → function_rest_parameter
-			 │ formal_parameter_list
-			 │ formal_parameter_list , 								↦return{ [$sym1] }
-			 │ formal_parameter_list , function_rest_parameter		↦return{ $sym1.push($sym3), $sym1 }
+		<> formal_parameters → function_rest_parameter 				↦return{ new fn.parenthasized($sym1) }
+			 │ formal_parameter_list ,? 							↦return{ new fn.parenthasized(...$sym1) }
+			 │ formal_parameter_list , function_rest_parameter		↦return{ new fn.parenthasized(...$sym1, $sym3) }
 
 		<> formal_parameter_list → formal_parameter 				↦return{ [$sym1] }
-			 │ formal_parameter_list , formal_parameter 			↦return{ $sym1.push($sym3), $sym1 }
+			 │ formal_parameter_list , formal_parameter 			↦return{ $sym1.push($sym3), $sym1 }			
 
-		<> function_rest_parameter → binding_rest_element
+		<> function_rest_parameter → binding_rest_element 			
 
 		<> formal_parameter → binding_element
 
 		<> function_body → function_statement_list
 
-		<> function_statement_list → statement_list 
+		<> function_statement_list → statement_list
 
 	##############################################################################################################
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-arrow-function-definitions
@@ -347,8 +346,8 @@
 
 		<> arrow_function → arrow_parameters => concise_body 							↦return{ new fn.arrow_function_declaration(null, $sym1, $sym3) }
 
-		<> arrow_parameters → binding_identifier 
-			│ cover_parenthesized_expression_and_arrow_parameter_list
+		<> arrow_parameters → binding_identifier 										↦return{ new fn.parenthasized($sym1) }
+			│ cover_parenthesized_expression_and_arrow_parameter_list 				
 
 		<> concise_body → (EXC { ) assignment_expression 
 			│ { function_statement_list }												↦return{ $sym2 }
@@ -373,15 +372,13 @@
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-class-definitions
 	##############################################################################################################
 
-		<> class_expression → class_declaration
 
-		<> class_declaration → τclass binding_identifier class_tail  					↦c ^class_statement
-			│ τclass class_tail															↦c ^class_statement
+		<> class_declaration → τclass binding_identifier class_tail  					↦r {new fn.class_declaration([$$sym2, $$sym3])}
+			│ τclass class_tail															↦r {new fn.class_declaration([null, $$sym3])}
 
-		<> class_tail → class_heritage { class_body } 									↦return{ new fn.class_tail(sym) }
-			│ { class_body }															↦return{ new fn.class_tail([null, ... sym[0]]) }
-			│ class_heritage { }														↦return{ new fn.class_tail([sym[0], null, null]) }
-			│ { }																		↦return{ null }
+		<> class_expression → τclass binding_identifier? class_tail						↦r {new fn.class_expression([$$sym2, $$sym3])}
+
+		<> class_tail → class_heritage? { class_body? } 								↦return{ {h:$$sym1,t:$$sym3} }
 
 		<> class_heritage → τextends left_hand_side_expression 							↦return{ $sym2 }
 
@@ -431,8 +428,8 @@
 		│ meta_property
 		│ τnew member_expression arguments 							↦r { new fn.new_expression($sym2, $sym3) }
 
-	<> super_property → τsuper . identifier_name 					↦c ^supper_expression
-		│ τsuper \[ expression \]									↦c ^supper_expression
+	<> super_property → τsuper . identifier_name 					↦c ^super_expression
+		│ τsuper \[ expression \]									↦c ^super_expression
 
 	<> meta_property → new_target
 
@@ -441,15 +438,15 @@
 	<> call_expression → call_expression . identifier_name 			↦r{new fn.member_expression($sym1,$sym3 ,false)}
 		│ super_call
 		│ call_expression arguments 								↦c ^call_expression
-		│ call_expression \[ expression \] 							↦c ^call_expression
+		│ call_expression \[ expression \] 							↦r{ new fn.member_expression($sym1,$sym3 ,true) }
 		│ cover_call_expression_and_async_arrow_head 
 		#│ call_expression template_literal
 
 	<> super_call → τsuper arguments
 
-	<> arguments → \( argument_list? ,? \)							↦r { new fn.argument_list($$sym2) }
+	<> arguments → \( argument_list? ,? \)							↦r { new fn.parenthasized(...$sym2) }
 
-	<> argument_list → ( assignment_expression │ ... assignment_expression ↦c ^spread_element )(+,)  						
+	<> argument_list → ( assignment_expression │ ... assignment_expression ↦c ^spread_element )(*,)  						
 
 
 ##############################################################################################################
@@ -460,8 +457,8 @@
 		τthis														↦c ^this_literal
 		│ identifier_reference
 		│ literal
-		│ array_literal												↦c ^array_literal
-		│ object_literal											↦c ^object_literal
+		│ array_literal												
+		│ object_literal											
 		│ function_expression
 		│ class_expression
 		# │ generator_expression
@@ -479,7 +476,7 @@
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-object-initializer
 ##############################################################################################################
 
-	<> object_literal →  { property_definition(*,) ,? }				↦return{ $$sym2 }
+	<> object_literal →  { property_definition(*,) ,? }				↦return {new fn.object_literal($$sym2)}
 
 	<> property_definition →  cover_initialized_name 				
 		│ identifier_reference 										
@@ -505,7 +502,7 @@
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-array-initializer
 ##############################################################################################################
 
-	<> array_literal → \[ element_list? elision? \] 				↦return{ $$sym2 }
+	<> array_literal → \[ element_list? elision? \] 				↦return {new fn.array_literal($$sym2)}
 
 	<> element_list →
 		assignment_expression 										↦return{ [sym[0]] }
@@ -669,12 +666,12 @@
 
 		<> cover_parenthesized_expression_and_arrow_parameter_list →
 			\( \)												↦return{ null; }
-			│ \( expression \)									↦return{ new fn.parenthasized(sym[1]) }
-			│ \( expression , \)								↦return{ new fn.parenthasized(sym[1]) }
+			│ \( expression \)									↦return{ new fn.parenthasized($sym2) }
+			│ \( expression , \)								↦return{ new fn.parenthasized($sym2) }
 			│ \( ... binding_identifier \)    					↦return{ new fn.parenthasized(new fn.spread_element(sym.slice(1,3))) }
 			│ \( ... binding_pattern \) 						↦return{ new fn.parenthasized(new fn.spread_element(sym.slice(1,3))) }
-			│ \( expression , ...binding_identifier \)			↦return{ new fn.parenthasized(Array.isArray(sym[0]) ? (sym[1].push(new fn.spread_element(sym.slice(3,5))) , sym[1]) : [sym[0], new fn.spread_element(sym.slice(3,5))]); }
-			│ \( expression , ...binding_pattern \)  			↦return{ new fn.parenthasized(Array.isArray(sym[0]) ? (sym[1].push(new fn.spread_element(sym.slice(3,5))) , sym[1]) : [sym[0], new fn.spread_element(sym.slice(3,5))]); }
+			│ \( expression , ... binding_identifier \)			↦return{ new fn.parenthasized(sym$2, new fn.spread_element(sym.slice(3,5)))}
+			│ \( expression , ... binding_pattern \)  			↦return{ new fn.parenthasized(sym$2, new fn.spread_element(sym.slice(3,5)))}
 
 ##############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#prod-BindingPattern

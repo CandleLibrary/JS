@@ -3,10 +3,8 @@ import types from "./types.mjs";
 
 export default class function_declaration extends base {
     constructor(id, args, body) {
-        
-        args = (Array.isArray(args)) ? args : [args];
 
-        super(id, args || [], body || []);
+        super(id, args || null, body || null);
 
         //This is a declaration and id cannot be a closure variable. 
         if (this.id)
@@ -20,7 +18,10 @@ export default class function_declaration extends base {
     getRootIds(ids, closure) {
         if (this.id)
             this.id.getRootIds(ids, closure);
-        this.args.forEach(e => e.getRootIds(ids, closure));
+        if (this.args)
+            this.args.getRootIds(ids, closure);
+        if (this.body)
+            this.body.getRootIds(ids, closure)
     }
 
     get name() { return this.id.name }
@@ -30,9 +31,9 @@ export default class function_declaration extends base {
     render() {
         const
             body_str = (this.body) ? this.body.render() : "",
-            args_str = this.args.map(e => e.render()).join(","),
+            args_str = this.args.render(),
             id = this.id ? this.id.render() : "";
 
-        return `function ${id}(${args_str}){${body_str}}`;
+        return `function ${id}${args_str}{${body_str}}`;
     }
 }

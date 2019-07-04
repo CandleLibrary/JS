@@ -2,8 +2,10 @@ import base from "./base.mjs";
 import types from "./types.mjs";
 
 export default class array_literal extends base {
-    constructor(sym) {
-        super(sym[0] || []);
+    constructor(list) {
+
+        
+        super(list || []);
     }
 
     get exprs() { return this.vals[0] }

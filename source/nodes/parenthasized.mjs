@@ -1,36 +1,47 @@
 /** cover_parenthesized_expression_and_arrow_parameter_list **/
 
 import base from "./base.mjs";
-
 import types from "./types.mjs";
+
 export default class argument_list extends base {
-    constructor(sym) {
-        super((sym) ? (Array.isArray(sym) )? sym : [sym]  : []);
+    constructor(...sym) {
+        if(!sym || !sym[0])        
+            super()
+        else
+            super(...sym);
+
+        this.looking = this.render() == "($$sym3,$$sym6,env,lex)"
     }
 
     clearRoots(){
-        this.expressions.forEach(a=>a.root = false);
+        this.vals.forEach(a=>a.root = false);
     }
 
-    get expressions() { return this.vals[0] }
+    get args() { return this.vals }
 
-    getRootIds(ids, closure) {
-        this.expressions.forEach(s => s.getRootIds(ids, closure));
+    get length (){
+        return this.vals.length;
     }
 
     replaceNode(original, _new = null) {
+
+        if(this.looking){
+            console.log("AAAAAAAAAAAA11111111111111111AAAAAAAAAAAA11111111111111111AAAAAAAAAAAA11111111111111111AAAAAAAAAAAA11111111111111111")
+            console.log( this.render())
+            console.log("parenthasized", _new)
+        }
         let index = -1;
-        if ((index = super.replaceNode(original, _new, this.vals[0])) > -1) 
-            this.vals[0].splice(index, 1);
+        if ((index = super.replaceNode(original, _new)) > -1) {
+            this.vals.splice(index, 1);
+        }
+        if(this.looking)
+        console.log( this.render())
     }
 
-    * traverseDepthFirst(p) {
-        yield * super.traverseDepthFirst(p, this.vals[0]);
-    }
+    get type() { return types.argument_list }
 
-    get type() { return types.cover_parenthesized_expression_and_arrow_parameter_list }
-
-    render() { 
-        return `(${this.expressions.map(s=>(s.render())).join(",")})` ;
+    render(USE_PARENTHASIS = true) { 
+        const str = this.vals.map(s=>(s.render())).join(",") ;
+        return USE_PARENTHASIS ? `(${str})` : str;
     }
 }

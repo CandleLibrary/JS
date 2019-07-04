@@ -9,7 +9,7 @@ export default class argument_list extends base {
         //if (sym && sym.length == 1)
         //    return sym[0];
         
-        super(sym || []);
+        super( sym || []);
     }
 
     clearRoots(){
@@ -33,9 +33,13 @@ export default class argument_list extends base {
         yield * super.traverseDepthFirst(p, this.vals[0]);
     }
 
+    get length (){
+        return this.args.length;
+    }
+
     get type() { return types.argument_list }
 
-    render() { 
+    render(USE_PARENTHASIZ) { 
         return this.args.map(s=>(s.render())).join(",") ;
     }
 }

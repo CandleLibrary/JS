@@ -5,8 +5,8 @@ import base from "./base.mjs";
 import types from "./types.mjs";
 
 export default class object_literal extends base {
-    constructor(sym) {
-        super(sym[0] || []);
+    constructor(props) {
+        super(props);
     }
 
     get props() { return this.vals[0] }
@@ -16,6 +16,12 @@ export default class object_literal extends base {
         yield this;
         for (const prop of this.props)
             yield* prop.traverseDepthFirst(this);
+    }
+
+    getRootIds(ids, closure) {
+        for(const id of this.props)
+            if(id && id.getRootIds)
+                id.getRootIds(ids, closure);
     }
 
     get type() { return types.object_literal }
