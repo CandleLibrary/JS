@@ -25,17 +25,10 @@ export default class argument_list extends base {
 
     replaceNode(original, _new = null) {
 
-        if(this.looking){
-            console.log("AAAAAAAAAAAA11111111111111111AAAAAAAAAAAA11111111111111111AAAAAAAAAAAA11111111111111111AAAAAAAAAAAA11111111111111111")
-            console.log( this.render())
-            console.log("parenthasized", _new)
-        }
         let index = -1;
         if ((index = super.replaceNode(original, _new)) > -1) {
             this.vals.splice(index, 1);
         }
-        if(this.looking)
-        console.log( this.render())
     }
 
     get type() { return types.argument_list }
