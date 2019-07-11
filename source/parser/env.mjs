@@ -86,6 +86,7 @@ import template_middle from "../nodes/template_middle.mjs";
 import template_tail from "../nodes/template_tail.mjs";
 import super_literal from "../nodes/super_literal.mjs";
 import for_of_statement from "../nodes/for_of_statement.mjs";
+import lexical_expression from "../nodes/lexical_expression.mjs";
 
 //with_statement
 //switch_statement
@@ -104,6 +105,7 @@ const env = {
         script,
         module,
         template,
+        lexical_expression,
 template_head,
 template_middle,
 template_tail,

@@ -87,7 +87,7 @@ import variable_statement from "./nodes/variable_statement.mjs";
 import void_expression from "./nodes/void.mjs";
 import super_literal from "./nodes/super_literal.mjs";
 import for_of_statement from "./nodes/for_of_statement.mjs";
-
+import lexical_expression from "./nodes/lexical_expression.mjs";
 import types from "./nodes/types.mjs";
 import env from "./parser/env.mjs";
 import ecmascript_parser from "./parser/ecmascript.mjs";
@@ -135,6 +135,7 @@ super_literal,
     bit_and_expression,
     bit_or_expression,
     bit_xor_expression,
+    lexical_expression,
     bool_literal,
     call_expression,
     label_statement,

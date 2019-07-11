@@ -16,6 +16,11 @@ export default class identifier extends base {
         }
     }
 
+      addToClosure(closure){
+        this.vals.forEach(a=>closure.add(a.name));   
+    }
+
+
     * traverseDepthFirst(p) {
         this.parent = p;
         yield this;
