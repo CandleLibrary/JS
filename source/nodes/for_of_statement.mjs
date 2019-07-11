@@ -4,9 +4,10 @@ import base from "./base.mjs";
 import types from "./types.mjs";
 export default class for_of_statement extends base {
 
-    get init() { return this.vals[0] }
-    get expression() { return this.vals[1] }
-    get body() { return this.vals[2] }
+    get aait() { return this.vals[0] }
+    get init() { return this.vals[1] }
+    get expression() { return this.vals[2] }
+    get body() { return this.vals[3] }
 
     getRootIds(ids, closure) {  
         if (this.init) this.init.getRootIds(ids, closure);
@@ -27,6 +28,7 @@ export default class for_of_statement extends base {
     get type() { return types.for_of_statement }
 
     render() {
+        debugger
         let init, expression, body;
 
         if (this.init) init = this.init.render();

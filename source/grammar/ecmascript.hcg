@@ -193,7 +193,7 @@
 					│ for_declaration
 				) τof expression \)↦{ env.ASI = true;} statement 			↦return{ (new fn.for_of_statement($$sym2, $$sym4, $$sym6, $$sym8)) }
 
-		<> for_declaration → let_or_const for_binding
+		<> for_declaration → let_or_const for_binding 						↦c ^lexical
 
 		<> for_binding → binding_identifier 
 			│ binding_pattern
