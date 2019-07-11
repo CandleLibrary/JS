@@ -24,6 +24,6 @@ export default class export_statement extends base {
             } else
                 expr_str = this.expr.render();
         }
-        return `return ${expr_str};`;
+        return `export ${expr_str};`;
     }
 }

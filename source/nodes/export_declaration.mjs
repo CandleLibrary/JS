@@ -3,7 +3,7 @@ import types from "./types.mjs";
 
 export default class export_declaration extends base {
     constructor(exports, specifier, DEFAULT = false) {
-
+        
         super(exports, specifier);
 
         this.DEFAULT = DEFAULT

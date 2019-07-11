@@ -79,6 +79,13 @@ import case_statement from "../nodes/case_statement.mjs"
 import default_case_statement from "../nodes/default_case_statement.mjs"
 import empty_statement from "../nodes/empty_statement.mjs";
 import variable_statement from "../nodes/variable_statement.mjs";
+import class_method from "../nodes/class_method.mjs";
+import template from "../nodes/template.mjs";
+import template_head from "../nodes/template_head.mjs";
+import template_middle from "../nodes/template_middle.mjs";
+import template_tail from "../nodes/template_tail.mjs";
+import super_literal from "../nodes/super_literal.mjs";
+import for_of_statement from "../nodes/for_of_statement.mjs";
 
 //with_statement
 //switch_statement
@@ -96,6 +103,13 @@ const env = {
         //JS
         script,
         module,
+        template,
+template_head,
+template_middle,
+template_tail,
+super_literal,
+for_of_statement,
+        class_method,
         throw_statement,
         empty_statement,
         switch_statement,

@@ -9,11 +9,15 @@ export default class arrow_function_declaration extends _function {
 
         if (!this.args)
             this.vals[1] = new argument_list();
+
+        this.args.clearRoots();
     }
 
     getRootIds(ids, closure) {
-        if (this.args)
+        if (this.args){
             this.args.getRootIds(ids, closure);
+            this.args.addToClosure(closure);
+        }
         if (this.body)
             this.body.getRootIds(ids, closure)
     }
@@ -33,8 +37,6 @@ export default class arrow_function_declaration extends _function {
                 "{}"),
             args_str = this.args.render(this.args.length !== 1);
 
-        if (body_str[0] == "{")
-            return `${args_str}=>(${body_str})`;
         return `${args_str}=>${body_str}`;
     }
 }

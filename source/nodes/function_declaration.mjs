@@ -31,7 +31,7 @@ export default class function_declaration extends base {
     render() {
         const
             body_str = (this.body) ? this.body.render() : "",
-            args_str = this.args.render(),
+            args_str = (this.args) ? this.args.render() : "()",
             id = this.id ? this.id.render() : "";
 
         return `function ${id}${args_str}{${body_str}}`;

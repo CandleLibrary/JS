@@ -17,6 +17,10 @@ export default class argument_list extends base {
         this.vals.forEach(a=>a.root = false);
     }
 
+    addToClosure(closure){
+        this.vals.forEach(a=>closure.add(a.name));   
+    }
+
     get args() { return this.vals }
 
     get length (){

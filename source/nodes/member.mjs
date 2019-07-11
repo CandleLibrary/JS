@@ -15,8 +15,8 @@ export default class member_expression extends base {
     get id() { return this.vals[0] }
     get mem() { return this.vals[1] }
 
-    getRootIds(ids, closuere) {
-        this.id.getRootIds(ids, closuere);
+    getRootIds(ids, closure) {
+        this.id.getRootIds(ids, closure);
     }
 
     replaceNode(original, _new = null) {

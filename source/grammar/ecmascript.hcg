@@ -2,7 +2,7 @@
 
 @EXT js
 
-@SYMBOL  ... < > <= >= == != === !== ** ++ -- << >> >>> && || += -= *= %= /= **= <<= >>= >>>= &= |= ^= => // /*
+@SYMBOL  ... < > <= >= == != === !== ** ++ -- << >> >>> && || += -= *= %= /= **= <<= >>= >>>= &= |= ^= => // /* ${
 
 @IGNORE θws θnl
 
@@ -50,7 +50,7 @@
 		<> from_clause → τfrom module_specifier 				 ↦r { $sym2  }
 
 		<> import_specifier → imported_binding  				 ↦r {new fn.import_specifier($sym1)}
-			│ identifier τas imported_binding 					 ↦r {new fn.import_specifier($sym1, $sym2)}
+			│ identifier τas imported_binding 					 ↦r {new fn.import_specifier($sym1, $sym3)}
 
 		<> module_specifier → string_literal
 
@@ -65,20 +65,20 @@
 			│ τexport export_clause ; 							↦r { new fn.export_declaration($$sym2, null, false) }
 			│ τexport variable_statement 						↦r { new fn.export_declaration($$sym2, null, false) }
 			│ τexport declaration 								↦r { new fn.export_declaration($$sym2, null, false) }
-			│ τexport τdefault hoistable_declaration 			↦r { new fn.export_declaration($$sym2, null, true) }
-			│ τexport τdefault class_declaration 				↦r { new fn.export_declaration($$sym2, null, true) }
+			│ τexport τdefault hoistable_declaration 			↦r { new fn.export_declaration($$sym3, null, true) }
+			│ τexport τdefault class_declaration 				↦r { new fn.export_declaration($$sym3, null, true) }
 			│ τexport τdefault 
 
 				(EXC τfunction )
 				(EXC τclass )
 				(EXC τasync τfunction )
 			
-				assignment_expression 							↦r { new fn.export_declaration($$sym2, null, true) }
+				assignment_expression 							↦r { new fn.export_declaration($$sym3, null, true) }
 
 		<> export_clause → { (export_specifier)(*,) ,? } 		↦r { new fn.export_clause($$sym2) }
 
 		<> export_specifier →  identifier  						↦r {new fn.export_specifier($sym1)}
-			│ identifier τas identifier 						↦r {new fn.export_specifier($sym1, $sym2)}
+			│ identifier τas identifier 						↦r {new fn.export_specifier($sym1, $sym3)}
 ## SCRIPT
 
 	##############################################################################################################
@@ -179,19 +179,19 @@
 				)? ; expression? ; expression? \) ↦{ env.ASI = true;} statement  												
 																									↦return{ (new fn.for_statement($$sym3, $$sym5, $$sym7, $$sym9)) }	
 
-			│ τfor \( lexical_declaration expression? ; expression? \) statement   			 		↦return{ (new fn.for_statement($$sym3, $$sym4, $$sym6, $$sym8)) }																			
+			│ τfor \( lexical_declaration expression? ; expression? \)↦{ env.ASI = true;} statement   			 		↦return{ (new fn.for_statement($$sym3, $$sym4, $$sym6, $$sym8)) }																			
 																																																																				
 			│ τfor \( (
 					(EXC τlet \[ ) left_hand_side_expression
 					│ τvar for_binding ↦r {$sym2}
 					│ for_declaration
-				) τin expression \) statement 			↦return{ (new fn.for_in_statement($$sym3, $$sym5, $$sym7)) }
+				) τin expression \)↦{ env.ASI = true;} statement 			↦return{ (new fn.for_in_statement($$sym3, $$sym5, $$sym7)) }
 
 			│ τfor τawait? \( (
 					(EXC τlet \[ ) left_hand_side_expression
 					│ τvar for_binding ↦r {$sym2}
 					│ for_declaration
-				) τof expression \) statement 			↦return{ (new fn.for_of_statement($$sym2, $$sym4, $$sym6, $$sym8)) }
+				) τof expression \)↦{ env.ASI = true;} statement 			↦return{ (new fn.for_of_statement($$sym2, $$sym4, $$sym6, $$sym8)) }
 
 		<> for_declaration → let_or_const for_binding
 
@@ -369,14 +369,13 @@
 ## CLASSES
 	
 	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-class-definitions
+	# https://www.ecma-international.org/ecma-262/index.html#sec-class-definitions
 	##############################################################################################################
 
 
-		<> class_declaration → τclass binding_identifier class_tail  					↦r {new fn.class_declaration([$$sym2, $$sym3])}
-			│ τclass class_tail															↦r {new fn.class_declaration([null, $$sym3])}
+		<> class_declaration → τclass binding_identifier? class_tail  					↦r {new fn.class_declaration($$sym2, $$sym3.h, $$sym3.t)}
 
-		<> class_expression → τclass binding_identifier? class_tail						↦r {new fn.class_expression([$$sym2, $$sym3])}
+		<> class_expression → τclass binding_identifier? class_tail						↦r {new fn.class_declaration($$sym2, $$sym3.h, $$sym3.t)}
 
 		<> class_tail → class_heritage? { class_body? } 								↦return{ {h:$$sym1,t:$$sym3} }
 
@@ -384,8 +383,8 @@
 
 		<> class_body → class_element_list
 
-		<> class_element_list → class_element 											↦return{ [sym[0]] }
-			│ class_element_list class_element 									  		↦return{ (sym[0].push(sym[1])) }
+		<> class_element_list → class_element											↦return{ [$sym1] }
+			│ class_element_list class_element 											↦return{ $sym1.push($sym2), $sym1 }			
 
 		<> class_element → method_definition 
 			│ τstatic method_definition 												↦return{ (sym[1].static = true, sym[1]) }
@@ -395,12 +394,12 @@
 # https://www.ecma-international.org/ecma-262/9.0/index.html#prod-MethodDefinition
 ##############################################################################################################
 
-	<> method_definition → property_name \( unique_formal_parameters \) { function_body } 	↦c ^class_method
+	<> method_definition → property_name \( unique_formal_parameters? \) { function_body? } 	↦r {new fn.class_method($$sym1,$$sym3,$$sym6)}
 		# │ generator_method
 		# │ async_method
 		# │ async_generator_method
-		│ τget property_name \( \) { function_body } 									   	↦c ^class_get_method
-		│ τset property_name \( property_set_parameter_list \) { function_body }		   	↦c ^class_set_method
+		│ τget property_name \( \) { function_body? } 									   	↦r {new fn.class_method($$sym2,null,$$sym6, "get")}
+		│ τset property_name \( property_set_parameter_list \) { function_body? }		   	↦r {new fn.class_method($$sym2,$$sym4,$$sym7, "set")}
 
 	<> property_set_parameter_list → formal_parameter 
 
@@ -423,13 +422,13 @@
 	<> member_expression → primary_expression 				
 		│ member_expression \[ expression \]						↦r{new fn.member_expression($sym1,$sym3 ,true) }
 		│ member_expression . identifier_name 						↦r{new fn.member_expression($sym1,$sym3 ,false)}
-		# │ member_expression template_literal
+		│ member_expression template_literal						↦r{new fn.member_expression($sym1,$sym2 ,false)}
 		│ super_property
 		│ meta_property
 		│ τnew member_expression arguments 							↦r { new fn.new_expression($sym2, $sym3) }
 
-	<> super_property → τsuper . identifier_name 					↦c ^super_expression
-		│ τsuper \[ expression \]									↦c ^super_expression
+	<> super_property → τsuper . identifier_name 					↦r{new fn.member_expression(new fn.super_literal(),$sym3,true)}
+		│ τsuper \[ expression \]									↦r{new fn.member_expression(new fn.super_literal(),$sym3,false)}
 
 	<> meta_property → new_target
 
@@ -440,9 +439,9 @@
 		│ call_expression arguments 								↦c ^call_expression
 		│ call_expression \[ expression \] 							↦r{ new fn.member_expression($sym1,$sym3 ,true) }
 		│ cover_call_expression_and_async_arrow_head 
-		#│ call_expression template_literal
+		│ call_expression template_literal 							↦r{ new fn.member_expression($sym1,$sym2 ,true) }
 
-	<> super_call → τsuper arguments
+	<> super_call → τsuper arguments 								↦r {new fn.call_expression([new fn.super_literal(), $sym2])}
 
 	<> arguments → \( argument_list? ,? \)							↦r { new fn.parenthasized(...$sym2) }
 
@@ -465,11 +464,34 @@
 		# │ async_function_expression
 		# │ async_generator_expression
 		# │ regular_expression_literal
-		# │ template_literal
+		│ template_literal
 		│ cover_parenthesized_expression_and_arrow_parameter_list
 
 
+##############################################################################################################
+#https://www.ecma-international.org/ecma-262/#prod-TemplateLiteral
+##############################################################################################################
 
+<> template_literal → no_substitute_template
+	│ substitute_template
+
+<> no_substitute_template → ` template_characters? `  			↦r {new fn.template($$sym2)}
+
+<> substitute_template → template_head expression template_spans 	↦r {$sym1.vals[1] = $sym2, $sym3.unshift($sym1), new fn.template($sym3)}
+
+<> template_spans → template_tail  								↦r {[$sym1]}
+	│ template_middle_list template_tail						↦r {$sym1.vals[1] = $sym2, $sym1}			
+
+<> template_middle_list → template_middle expression 			↦r {$sym1.vals[1] = $sym2, $sym1}
+	│ template_middle_list template_middle expression 			↦r {$sym2.vals[1] = $sym3, $sym1.push($$sym2), $sym1 }
+
+<> template_head → ` template_characters? \${	 				↦r {new fn.template_head($$sym2)}
+
+<> template_middle → \} template_characters? \${ 				↦r {new fn.template_middle($$sym2)}
+
+<> template_tail → \} template_characters? `					↦r {new fn.template_tail($$sym2)}
+
+<> template_characters → (θany │ θws │ θnl │ θkeyword │ θop │ θsym │ θob │ θcb │ θnum │ θid │ θstr )(*")
 
 
 ##############################################################################################################
@@ -744,8 +766,6 @@
 
 	# <> HTMLExpression → StartTag
 
-
-
 	<> label_identifier → identifier				#↦c ^identifier		
 			#│ τyield 							↦c ^yield_id
 			#│ τawait 							↦c ^await_id
@@ -754,7 +774,7 @@
 			#│ τyield 							↦c ^yield_id
 			#│ τawait 							↦c ^await_id
 
-	<> binding_identifier → identifier				#↦c ^identifier		
+	<> binding_identifier → identifier 	
 			#│ τyield 							↦c ^yield_id
 			#│ τawait 							↦c ^await_id
 
@@ -765,7 +785,3 @@
 	<> identifier_name →  id 				↦c ^identifier				
 
 	<> id → ( \$ │ θid │ \_ ) ( \# │ \$ │ θkeyword │ θid │ θnum │ \_ )(*') (θws │ θnl)?  ↦r { $sym1 + $sym2 }
-
-
-
-			
