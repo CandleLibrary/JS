@@ -45,7 +45,7 @@ export default class base {
 
             if(Array.isArray(node)){
                 yield* this.traverseDepthFirst(p, node);
-            }else{
+            }else if(typeof(node) == "object"){
                 yield* node.traverseDepthFirst(this);
             }
 

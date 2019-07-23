@@ -491,7 +491,7 @@
 
 <> template_tail → \} template_characters? `					↦r {new fn.template_tail($$sym2)}
 
-<> template_characters → (θany │ θws │ θnl │ θkeyword │ θop │ θsym │ θob │ θcb │ θnum │ θid │ θstr )(*")
+<> template_characters → (θany │ θws │ θnl │ θkeyword │ θop │ θsym │ θob │ θcb │ θnum │ θid │ θstr │ " │ ' )(*")
 
 
 ##############################################################################################################
@@ -754,8 +754,8 @@
 			│ numeric_literal		
 
 
-		<> string_literal → \" ( θws │ θid │ θsym │ θnum │ θop │ θob │ θcb )(*") \"		↦c ^string_literal
-			│ \' ( θws │ θid │ θsym │ θnum │ θop │ θob │ θcb )(*") \'					↦c ^string_literal
+		<> string_literal → \" ( θws │ θid │ θsym │ θnum │ θop │ θob │ θcb │ \' )(*") \"		↦c ^string_literal
+			│ \' ( θws │ θid │ θsym │ θnum │ θop │ θob │ θcb │ \" )(*") \'					↦c ^string_literal
 
 		<> numeric_literal → θnum														↦c ^numeric_literal
 
