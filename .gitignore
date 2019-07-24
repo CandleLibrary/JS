@@ -88,3 +88,6 @@ documents/api/*
 
 #sublime  workspace
 *.sublime-workspace
+
+#HCG backup compiler files.
+*.hcgb*
