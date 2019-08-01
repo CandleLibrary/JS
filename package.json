@@ -2,7 +2,7 @@
   "name": "@candlefw/js",
   "version": "0.0.4-0",
   "description": "ECMASCRIPT Parser",
-  "main": "source/ecma.mjs",
+  "main": "source/ecma.js",
   "scripts": {
     "test": "mocha test/test.js -r esm",
     "test.watch": "mocha test/test.js -r esm --watch",
