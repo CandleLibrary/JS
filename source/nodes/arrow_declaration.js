@@ -29,11 +29,12 @@ export default class arrow_function_declaration extends _function {
     get type() { return types.arrow_function_declaration }
 
     render() {
+        
         const
             body_str = ((this.body) ?
                 ((this.body.IS_STATEMENT || (this.body.type == types.statements && this.body.stmts.length > 1)) ?
                     `{${this.body.render()}}` :
-                    if(this.body.type == types.object_literal) ?
+                    (this.body.type == types.object_literal) ?
                         `(${this.body.render()})`
                         :
                     this.body.render()) :

@@ -8,6 +8,7 @@ export default class lexical_expression extends lexical_declaration {
 	constructor(sym) {
         super(sym);
         this.vals[0] = [new binding([this.vals[0]])];
+        this.IS_STATEMENT = false;
     }
     render() { 
     	return super.render().slice(0, -1);

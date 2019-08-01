@@ -9,6 +9,8 @@ export default class class_declaration extends base {
         //This is a declaration and id cannot be a closure variable. 
         if (this.id)
             this.id.root = false;
+
+        this.IS_STATEMENT = true;
     }
 
     get id() { return this.vals[0] }

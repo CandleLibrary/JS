@@ -6,6 +6,7 @@ export default class lexical_declaration extends base {
     constructor(sym) {
         super(sym[1]);
         this.mode = sym[0];
+        this.IS_STATEMENT = true;
     }
 
     get bindings() { return this.vals[0] }

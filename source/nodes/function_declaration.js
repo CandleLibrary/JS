@@ -1,7 +1,7 @@
-import base from "./base.js";
+import {statement} from "./base.js";
 import types from "./types.js";
 
-export default class function_declaration extends base {
+export default class function_declaration extends statement {
     constructor(id, args, body) {
 
         super(id, args || null, body || null);
