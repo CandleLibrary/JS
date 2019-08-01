@@ -1,5 +1,5 @@
 import chai from "chai";
-import js from "../source/ecma.mjs"
+import js from "../source/ecma.js"
 
 chai.should();
 
