@@ -86,6 +86,7 @@ import template_middle from "../nodes/template_middle.js";
 import template_tail from "../nodes/template_tail.js";
 import super_literal from "../nodes/super_literal.js";
 import for_of_statement from "../nodes/for_of_statement.js";
+import for_in_statement from "../nodes/for_of_statement.js";
 import lexical_expression from "../nodes/lexical_expression.js";
 
 //with_statement

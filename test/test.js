@@ -17,4 +17,9 @@ describe("rendering js expressions", function() {
     	ast.render().should.equal("test=>{let d = 1;};")
     })
 
+    it("template literal with multiple args", function() {
+    	var ast = parse("let a = `test ${a} ${b} ${c} this!`")
+    	ast.render().should.equal("`test ${a} ${b} ${c} this!`")
+    })
+
 })

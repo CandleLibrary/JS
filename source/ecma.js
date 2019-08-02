@@ -87,6 +87,7 @@ import variable_statement from "./nodes/variable_statement.js";
 import void_expression from "./nodes/void.js";
 import super_literal from "./nodes/super_literal.js";
 import for_of_statement from "./nodes/for_of_statement.js";
+import for_in_statement from "./nodes/for_in_statement.js";
 import lexical_expression from "./nodes/lexical_expression.js";
 import types from "./nodes/types.js";
 import env from "./parser/env.js";
@@ -145,6 +146,7 @@ export {
     delete_expression,
     divide_expression,
     equality_expression,
+    for_in_statement,
     exponent_expression,
     expression_list,
     expression_statement,

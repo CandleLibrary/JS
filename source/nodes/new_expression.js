@@ -8,7 +8,7 @@ export default class new_expression extends call_expression {
     constructor(id, args) { 
         super([id, args]);
         this.root = false;
-        this.id.root = false;
+        //this.id.root = false;
     }
 
     get type(){return types.new_expression}

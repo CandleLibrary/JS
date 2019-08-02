@@ -6,7 +6,7 @@ import types from "./types.js";
 
 export default class template_middle extends base {
 
-    constructor(sym) { super(sym) }
+    constructor(sym) { super(sym || "") }
 
     get string() { return this.vals[0] }
 

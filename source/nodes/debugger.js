@@ -1,9 +1,9 @@
 /** DEBUGGER STATEMENT  **/
 
-import base from "./base.js";
+import {statement} from "./base.js";
 import types from "./types.js";
 
-export default class debugger_statement extends base {
+export default class debugger_statement extends statement {
     constructor() {
         super();
     }
