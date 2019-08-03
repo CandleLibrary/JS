@@ -19,5 +19,5 @@ export default class extends base {
             this.vals[0] = _new
     }
 
-    render() { return `${this.op}${this.expr.render()}` }
+    render() { return `${this.op} ${this.expr.render()}` }
 }
