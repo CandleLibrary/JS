@@ -8,7 +8,6 @@ import types from "./types.mjs";
 export default class import_declaration extends base {
 
     constructor(specifier, import_clause = null) {
-        console.log(import_clause)
         super((Array.isArray(import_clause)) ? new base(import_clause) : import_clause , specifier);
     }
 

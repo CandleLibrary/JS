@@ -16,7 +16,7 @@ export default class expression_statement extends statement {
     }
 
     replaceNode(original, _new = null) {
-        if(!super.replaceNode(original, _new, this.vals[0]))
+        if(super.replaceNode(original, _new, this.vals) < 0)
             this.replace();
     }
 
