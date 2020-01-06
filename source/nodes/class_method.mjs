@@ -21,3 +21,6 @@ export default class class_method extends function_declaration {
         return `${this.method_type ? this.method_type + " ": ""}${id}${args_str}{${body_str}}`;
     }
 }
+
+
+

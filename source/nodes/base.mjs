@@ -11,7 +11,7 @@ export default class base {
         for (let i = 0; i < vals.length; i++) {
             if (vals[i] === original)
                 if (_new === null) {
-                    return -1;
+                    return -(i+1);
                 } else
                     return vals[i] = _new, i;
         }

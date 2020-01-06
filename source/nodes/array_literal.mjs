@@ -16,8 +16,8 @@ export default class array_literal extends base {
 
     replaceNode(original, _new = null) {
         let index = 0;
-        if ((index = super.replaceNode(original, _new, this.vals[0])) > -1) {
-            this.vals[0].splice(index, 1);
+        if ((index = super.replaceNode(original, _new, this.vals[0])) < 0) {
+            this.vals[0].splice((-(index+1)), 1);
         }
     }
 

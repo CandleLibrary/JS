@@ -21,8 +21,8 @@ export default class member_expression extends base {
 
     replaceNode(original, _new = null) {
         let index = 0;
-        if ((index = super.replaceNode(original, _new, this.vals)) > -1) {
-            if(index == 0)
+        if ((index = super.replaceNode(original, _new, this.vals)) < 0) {
+            if(-(index+1) == 0)
                 this.replace(_new);
             else
                 this.replace(null)

@@ -7,5 +7,5 @@ export default class empty_statement extends base {
         super();
     }
     get type() { return types.empty }
-    render() { return ";" }
+    render() { return "" }
 }

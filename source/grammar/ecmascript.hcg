@@ -384,7 +384,7 @@
 		<> class_body → class_element_list
 
 		<> class_element_list → class_element											↦return{ [$sym1] }
-			│ class_element_list class_element 											↦return{ $sym1.push($sym2), $sym1 }			
+			│ class_element_list class_element 											↦return{ ($sym1.push($sym2), $sym1) }			
 
 		<> class_element → method_definition 
 			│ τstatic method_definition 												↦return{ (sym[1].static = true, sym[1]) }
@@ -757,7 +757,10 @@
 		<> string_literal → \" ( θws │ θid │ θsym │ θnum │ θop │ θob │ θcb │ \' )(*") \"		↦c ^string_literal
 			│ \' ( θws │ θid │ θsym │ θnum │ θop │ θob │ θcb │ \" )(*") \'					↦c ^string_literal
 
-		<> numeric_literal → θnum														↦c ^numeric_literal
+		<> numeric_literal → number														↦c ^numeric_literal
+
+		<> number → θnum (\. θnum? ↦return{ $sym1 + $sym2 } )?							↦return{ $$sym1 + $sym2 }
+		
 
 		<> null_literal →  τnull														↦c ^null_literal
 
@@ -784,4 +787,4 @@
 
 	<> identifier_name →  id 				↦c ^identifier				
 
-	<> id → ( \$ │ θid │ \_ ) ( \# │ \$ │ θkeyword │ θid │ θnum │ \_ )(*') (θws │ θnl)?  ↦r { $sym1 + $sym2 }
+	<> id → ( \$ │ θid │ \_ ) ( \# │ \$  │ θid │ θnum │ \_ )(*') (θws │ θnl)?  ↦r { $sym1 + $sym2 }

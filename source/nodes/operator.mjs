@@ -19,8 +19,8 @@ export default class extends base {
     replaceNode(original, _new = null) {
         var index;
 
-        if ((index = super.replaceNode(original, _new)) > -1){
-            this.replace(this.vals[(index+1)%2]);
+        if ((index = super.replaceNode(original, _new)) < 0){
+            this.replace(this.vals[(-(index))%2]);
         }
     }
 

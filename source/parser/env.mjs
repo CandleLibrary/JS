@@ -80,6 +80,7 @@ import default_case_statement from "../nodes/default_case_statement.mjs"
 import empty_statement from "../nodes/empty_statement.mjs";
 import variable_statement from "../nodes/variable_statement.mjs";
 import class_method from "../nodes/class_method.mjs";
+import class_declaration from "../nodes/class_declaration.mjs";
 import template from "../nodes/template.mjs";
 import template_head from "../nodes/template_head.mjs";
 import template_middle from "../nodes/template_middle.mjs";
@@ -135,6 +136,7 @@ for_of_statement,
         add_expression,
         and_expression,
         array_literal,
+        class_declaration,
         arrow_function_declaration,
         assignment_expression,
         await_expression,

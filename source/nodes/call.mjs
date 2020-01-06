@@ -16,7 +16,7 @@ export default class call_expression extends base {
 
     replaceNode(original, _new = null) {
         let index = 0;
-        if ((index = super.replaceNode(original, _new, this.vals)) > -1) {
+        if ((index = super.replaceNode(original, _new, this.vals)) < 0) {
             if(index == 0)
                 this.replace(_new);
             else

@@ -9,10 +9,10 @@ export default class statements extends statement {
         if (sym[0].length == 1)
             return sym[0][0];
         
-        super(sym[0]);
+        super(...sym[0]);
     }
 
-    get stmts() { return this.vals[0] }
+    get stmts() { return this.vals }
 
     getRootIds(ids, closure) {
         this.stmts.forEach(s => s.getRootIds(ids, closure));
@@ -20,13 +20,13 @@ export default class statements extends statement {
 
     replaceNode(original, _new = null) {
         let index = -1;
-        if ((index = super.replaceNode(original, _new, this.vals[0])) > -1) {
-            this.vals[0].splice(index, 1);
+        if ((index = super.replaceNode(original, _new, this.vals)) < 0) {
+            this.vals.splice(-(index+1), 1);
         }
     }
 
     * traverseDepthFirst(p) {
-        yield * super.traverseDepthFirst(p, this.vals[0]);
+        yield * super.traverseDepthFirst(p, this.vals);
     }
 
     get type() { return types.statements }
