@@ -8,7 +8,7 @@ export default class block_statement extends stmts {
         if (!(sym[1] instanceof stmts))
             return sym[1];
 
-        super(sym[1].vals);
+        super([sym[1].vals]);
     }
 
     getRootIds(ids, closure) {
