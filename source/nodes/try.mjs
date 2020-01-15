@@ -20,6 +20,6 @@ export default class try_statement extends statement {
     get type() { return types.try_statement }
 
     render(){
-        return `try ${this.body}${this.catch ? " "+ this.catch : ""}${this.finally ? " "+this.finally : ""}`
+        return `try ${this.body.type == types.block_statement ? this.body : `{${this.body}}`} ${this.catch ? " "+ this.catch : ""}${this.finally ? " "+this.finally : ""}`
     }
 }
