@@ -10,6 +10,13 @@ export default class for_in_statement extends statement {
 
     get type() { return types.for_in_statement }
 
+    getRootIds(ids, closure) {  
+        if (this.binding) this.binding.getRootIds(ids, closure);
+        if (this.expression) this.expression.getRootIds(ids, closure);
+        if (this.body) this.body.getRootIds(ids, new Set);
+    }
+
+
     render() {
         let binding, expression, body;
 

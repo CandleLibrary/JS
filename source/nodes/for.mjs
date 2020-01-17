@@ -12,12 +12,8 @@ export default class for_statement extends base {
     getRootIds(ids, closure) {  
         if (this.init) this.init.getRootIds(ids, closure);
         if (this.bool) this.bool.getRootIds(ids, closure);
-        if (this.iter) this.iter.getRootIds(ids, closure);
-
-       // closure = new Set([...closure.values()]);
-        
+        if (this.iter) this.iter.getRootIds(ids, closure);        
         if (this.body) this.body.getRootIds(ids, new Set);
-
     }
 
     * traverseDepthFirst(p) {
