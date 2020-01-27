@@ -787,4 +787,4 @@
 
 	<> identifier_name →  id 				↦c ^identifier				
 
-	<> id → ( \$ │ θid │ \_ ) ( \# │ \$  │ θid │ θnum │ \_ )(*') (θws │ θnl)?  ↦r { $sym1 + $sym2 }
+	<> id → ( \$ │ θid │ \_ ) ( \# │ \$  │ θid │ θnum │ θkeyword │ \_ )(*') (θws │ θnl)?  ↦r { $sym1 + $sym2 }
