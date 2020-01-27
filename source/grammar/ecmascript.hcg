@@ -480,10 +480,10 @@
 <> substitute_template → template_head expression template_spans 	↦r {$sym1.vals[1] = $sym2, $sym3.unshift($sym1), new fn.template($sym3)}
 
 <> template_spans → template_tail  								↦r {[$sym1]}
-	│ template_middle_list template_tail						↦r {$sym1.vals[1] = $sym2, $sym1}			
+	│ template_middle_list template_tail						↦r {$sym1.push($sym2), $sym1}			
 
-<> template_middle_list → template_middle expression 			↦r {$sym1.vals[1] = $sym2, $sym1}
-	│ template_middle_list template_middle expression 			↦r {$sym2.vals[1] = $sym3, $sym1.push($$sym2), $sym1 }
+<> template_middle_list → template_middle expression 			↦r {$sym1.vals[1] = $sym2, [$sym1]}
+	│ template_middle_list template_middle expression 			↦r {$sym2.vals[1] = $sym3, $sym1.push($sym2), $sym1 }
 
 <> template_head → ` template_characters? \${	 				↦r {new fn.template_head($$sym2)}
 
