@@ -227,7 +227,7 @@ for_of_statement,
 
             if (env.ASI && lex.tx !== ")" && !lex.END) {
 
-                let ENCOUNTERED_END_CHAR = (lex.tx == "}" || lex.END || lex.tx == "</");
+                let ENCOUNTERED_END_CHAR = (lex.tx == "}" || lex.END);
 
                 while (!ENCOUNTERED_END_CHAR && !prv_lex.END && prv_lex.off < lex.off) {
                     prv_lex.next();
