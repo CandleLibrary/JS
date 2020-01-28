@@ -23,9 +23,7 @@ export default class template extends base {
         }
         else
             super(...sym)
-
-        console.log(this.render())
-
+        
         this.NO_SUBSTITUTE = NO_SUBSTITUTE;
     }
 
