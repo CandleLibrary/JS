@@ -427,8 +427,8 @@
 		│ meta_property
 		│ τnew member_expression arguments 							↦r { new fn.new_expression($sym2, $sym3) }
 
-	<> super_property → τsuper . identifier_name 					↦r{new fn.member_expression(new fn.super_literal(),$sym3,true)}
-		│ τsuper \[ expression \]									↦r{new fn.member_expression(new fn.super_literal(),$sym3,false)}
+	<> super_property → τsuper . identifier_name 					↦r{new fn.member_expression(new fn.super_literal(),$sym3,false)}
+		│ τsuper \[ expression \]									↦r{new fn.member_expression(new fn.super_literal(),$sym3,true)}
 
 	<> meta_property → new_target
 
