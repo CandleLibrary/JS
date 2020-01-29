@@ -55,6 +55,24 @@ export default class base {
         }
     }
 
+    * traverseChildren(vals = this.vals) {
+        for (let i = 0; i < vals.length; i++) {
+            const node = vals[i];
+
+            if (!node) continue;
+
+            if(Array.isArray(node)){
+                yield* this.traverseChildren(node);
+            }else if(typeof(node) == "object"){
+                node.parent = this;
+                yield node;
+            }
+
+            if (vals[i] !== node) // Check to see if node has been replaced. 
+                i--; //Reparse the node
+        }
+    }
+
     skip() {
         this.SKIP = true;
     }
