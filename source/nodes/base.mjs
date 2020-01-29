@@ -36,8 +36,9 @@ export default class base {
             yield this;
 
         for (let i = 0; i < vals.length; i++) {
-            if(this.SKIP == true)
+            if(this.SKIP == true){
                 break;
+            }
 
             const node = vals[i];
 

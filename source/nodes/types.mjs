@@ -72,5 +72,6 @@ import_declaration:70,
 super_literal:72,
 cover_parenthesized_expression_and_arrow_parameter_list:60,
 for_of_statement:73,
-for_in_statement:74
+for_in_statement:74,
+script:75,
 	};
