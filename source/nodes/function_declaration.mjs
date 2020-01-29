@@ -2,13 +2,15 @@ import {statement} from "./base.mjs";
 import types from "./types.mjs";
 
 export default class function_declaration extends statement {
-    constructor(id, args, body) {
+    constructor(id, args, body, _async = false) {
 
         super(id, args || null, body || null);
 
         //This is a declaration and id cannot be a closure variable. 
         if (this.id)
             this.id.root = false;
+
+        this.async = _async;
     }
 
     get id() { return this.vals[0] }
@@ -34,6 +36,6 @@ export default class function_declaration extends statement {
             args_str = (this.args) ? this.args.render() : "()",
             id = this.id ? this.id.render() : "";
 
-        return `function ${id}${args_str}{${body_str}}`;
+        return `${this.async ? "async ": ""}function ${id}${args_str}{${body_str}}`;
     }
 }

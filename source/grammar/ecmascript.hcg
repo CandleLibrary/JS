@@ -131,7 +131,7 @@
 
 		<> hoistable_declaration → function_declaration
 			# │ generator_declaration
-			# │ async_function_declaration
+			│ async_function_declaration
 			# │ async_generator_declaration
 
 		<> breakable_statement → iteration_statement
@@ -322,6 +322,7 @@
 
 		<> function_declaration →  τfunction binding_identifier? \( formal_parameters? \) { function_body? } 		↦return{ new fn.function_declaration($$sym2, $$sym4, $$sym7) }
 
+		<> async_function_declaration → τasync τfunction binding_identifier? \( formal_parameters? \) { function_body? }  ↦return{ new fn.function_declaration($$sym3, $$sym5, $$sym8, true) }
 
 		<> unique_formal_parameters → formal_parameters
 
@@ -396,10 +397,12 @@
 
 	<> method_definition → property_name \( unique_formal_parameters? \) { function_body? } 	↦r {new fn.class_method($$sym1,$$sym3,$$sym6)}
 		# │ generator_method
-		# │ async_method
+		│ async_method
 		# │ async_generator_method
 		│ τget property_name \( \) { function_body? } 									   	↦r {new fn.class_method($$sym2,null,$$sym6, "get")}
 		│ τset property_name \( property_set_parameter_list \) { function_body? }		   	↦r {new fn.class_method($$sym2,$$sym4,$$sym7, "set")}
+
+	<> async_method → τasync property_name \( unique_formal_parameters? \) { function_body? } 		↦r {new fn.class_method($$sym2,$$sym4,$$sym7,"",true)}
 
 	<> property_set_parameter_list → formal_parameter 
 
