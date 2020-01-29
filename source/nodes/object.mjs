@@ -6,10 +6,10 @@ import types from "./types.mjs";
 
 export default class object_literal extends base {
     constructor(props) {
-        super(props);
+        super(...props);
     }
 
-    get props() { return this.vals[0] }
+    get props() { return this.vals }
 
     getRootIds(ids, closure) {
         if(this.props)
