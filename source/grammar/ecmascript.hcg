@@ -8,6 +8,8 @@
 
 @ERROR /* //
 
+@IMPORT ../../node_modules/@candlefw/hydrocarbon/source/grammar/misc/default-productions.hcg as def 
+
 <> javascript → start					↦{ env.IS_MODULE = false } ↦return{ sym[0] }
 
 
@@ -322,8 +324,6 @@
 
 		<> function_declaration →  τfunction binding_identifier? \( formal_parameters? \) { function_body? } 		↦return{ new fn.function_declaration($$sym2, $$sym4, $$sym7) }
 
-		<> async_function_declaration → τasync τfunction binding_identifier? \( formal_parameters? \) { function_body? }  ↦return{ new fn.function_declaration($$sym3, $$sym5, $$sym8, true) }
-
 		<> unique_formal_parameters → formal_parameters
 
 		<> formal_parameters → function_rest_parameter 				↦return{ new fn.parenthasized($sym1) }
@@ -396,11 +396,11 @@
 ##############################################################################################################
 
 	<> method_definition → property_name \( unique_formal_parameters? \) { function_body? } 	↦r {new fn.class_method($$sym1,$$sym3,$$sym6)}
-		# │ generator_method
+		│ generator_method
 		│ async_method
-		# │ async_generator_method
-		│ τget property_name \( \) { function_body? } 									   	↦r {new fn.class_method($$sym2,null,$$sym6, "get")}
-		│ τset property_name \( property_set_parameter_list \) { function_body? }		   	↦r {new fn.class_method($$sym2,$$sym4,$$sym7, "set")}
+		#│ async_generator_method
+		│ τget property_name \( \) { function_body? } 									   			↦r {new fn.class_method($$sym2,null,$$sym6, "get")}
+		│ τset property_name \( property_set_parameter_list \) { function_body? }		   			↦r {new fn.class_method($$sym2,$$sym4,$$sym7, "set")}
 
 	<> async_method → τasync property_name \( unique_formal_parameters? \) { function_body? } 		↦r {new fn.class_method($$sym2,$$sym4,$$sym7,"",true)}
 
@@ -463,13 +463,72 @@
 		│ object_literal											
 		│ function_expression
 		│ class_expression
-		# │ generator_expression
-		# │ async_function_expression
-		# │ async_generator_expression
-		# │ regular_expression_literal
+		│ generator_expression
+		│ async_function_expression
+		#│ async_generator_expression
+		│ regular_expression_literal
 		│ template_literal
 		│ cover_parenthesized_expression_and_arrow_parameter_list
 
+
+##############################################################################################################
+#https://www.ecma-international.org/ecma-262/9.0/index.html#prod-GeneratorExpression
+##############################################################################################################
+
+<> async_function_declaration → τasync τfunction binding_identifier? \( formal_parameters? \) { async_function_body? }  ↦return{ new fn.function_declaration($$sym3, $$sym5, $$sym8, true) }
+
+<> async_function_expression → τasync τfunction \( formal_parameters? \) { async_function_body? }  ↦return{ new fn.function_declaration($$sym3, $$sym5, $$sym8, true) }
+
+<> async_function_method → τasync property_name \( unique_formal_parameters? \) { async_function_body? }  ↦return{ new fn.function_declaration($$sym3, $$sym5, $$sym8, true) }
+
+<> async_function_body → function_body
+
+
+	##############################################################################################################	
+	# https://www.ecma-international.org/ecma-262/9.0/index.html#prod-AwaitExpression
+	##############################################################################################################
+
+		<> await_expression → τawait unary_expression											↦c ^await_expression
+
+##############################################################################################################
+#https://www.ecma-international.org/ecma-262/9.0/index.html#prod-AsyncGeneratorExpression
+##############################################################################################################
+
+<> async_generator_declaration → τasync τfunction /* binding_identifier? \( formal_parameters? \) { async_function_body? }  ↦return{ new fn.function_declaration($$sym3, $$sym5, $$sym8, true) }
+
+<> async_generator_expression → τasync τfunction /* \( formal_parameters? \) { async_function_body? }  ↦return{ new fn.function_declaration($$sym3, $$sym5, $$sym8, true) }
+
+<> async_generator_method → τasync /* property_name \( unique_formal_parameters? \) { async_generator_body? }  ↦return{ new fn.function_declaration($$sym3, $$sym5, $$sym8, true) }
+
+<> async_generator_body → function_body
+
+
+
+##############################################################################################################
+#https://www.ecma-international.org/ecma-262/9.0/index.html#prod-GeneratorExpression
+##############################################################################################################
+
+<> generator_method → \* property_name  \( unique_formal_parameters \) {generator_body}
+
+<> generator_declaration → τfunction binding_identifier \* \( formal_parameters \) {generator_body}
+
+<> generator_expression → τfunction \* \( formal_parameters \) {generator_body}
+
+<> generator_body → function_body
+
+<> yield_expression → τyield
+	│ τyield (EXC θnl) assignment_expression
+	│ τyield (EXC θnl) \* assignment_expression
+
+##############################################################################################################
+#https://www.ecma-international.org/ecma-262/9.0/index.html#sec-async-generator-function-definitions
+##############################################################################################################
+
+<> generator_method → τasync generator_method
+
+<> generator_declaration → τasync generator_declaration
+
+<> generator_expression → τfunction generator_expression
 
 ##############################################################################################################
 #https://www.ecma-international.org/ecma-262/#prod-TemplateLiteral
@@ -679,12 +738,6 @@
 			│ ++ unary_expression																↦c ^pre_increment_expression
 			│ -- unary_expression																↦c ^pre_decrement_expression
 
-	##############################################################################################################	
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#prod-AwaitExpression
-	##############################################################################################################
-
-		<> await_expression → τawait unary_expression											↦c ^await_expression
-
 	##############################################################################################################
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#prod-CoverParenthesizedExpressionAndArrowParameterList
 	##############################################################################################################
@@ -747,6 +800,14 @@
 
 
 	##############################################################################################################
+	# https://www.ecma-international.org/ecma-262/9.0/index.html#prod-RegularExpressionLiteral
+	##############################################################################################################
+
+<> regular_expression_literal → \/ ( θws │ θid │ θsym │ θnum │ θop │ θob │ θcb │ \' )(*") \/ regular_expression_flags
+
+<> regular_expression_flags → identifier
+
+	##############################################################################################################
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-ecmascript-language-lexical-grammar
 	# Incomplete
 	##############################################################################################################
@@ -758,19 +819,15 @@
 
 
 		<> string_literal → \" ( θws │ θid │ θsym │ θnum │ θop │ θob │ θcb │ \' )(*") \"		↦c ^string_literal
-			│ \' ( θws │ θid │ θsym │ θnum │ θop │ θob │ θcb │ \" )(*") \'					↦c ^string_literal
+			│ \' ( θws │ θid │ θsym │ θnum │ θop │ θob │ θcb │ \" )(*") \'						↦c ^string_literal
 
-		<> numeric_literal → number														↦c ^numeric_literal
+		<> numeric_literal → number																↦c ^numeric_literal
 
-		<> number → θnum (\. θnum? ↦return{ $sym1 + $sym2 } )?							↦return{ $$sym1 + $sym2 }
-		
+		<> number → ( def::float	│ def::octal │ def::binary │ def::integer )					↦return{ $$sym1 }
 
-		<> null_literal →  τnull														↦c ^null_literal
+		<> null_literal →  τnull																↦c ^null_literal
 
-		<> boolean_literal → τtrue 														↦c ^bool_literal
-			│ τfalse 																	↦c ^bool_literal
-
-	# <> HTMLExpression → StartTag
+		<> boolean_literal → (τtrue │ τfalse) 													↦c ^bool_literal
 
 	<> label_identifier → identifier				#↦c ^identifier		
 			#│ τyield 							↦c ^yield_id
@@ -790,4 +847,4 @@
 
 	<> identifier_name →  id 				↦c ^identifier				
 
-	<> id → ( \$ │ θid │ \_ ) ( \# │ \$  │ θid │ θnum │ θkeyword │ \_ )(*') (θws │ θnl)?  ↦r { $sym1 + $sym2 }
+	<> id → def::identifier ↦r { $sym1 + $sym2 }
