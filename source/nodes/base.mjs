@@ -2,7 +2,6 @@ import types from "./types.mjs";
 
 export default class base {
     constructor(...vals) {
-
         this.vals = vals;
         this.parent = null;
     }
@@ -15,6 +14,14 @@ export default class base {
                 } else
                     return vals[i] = _new, i;
         }
+    }
+
+    clearRoots(){
+        this.vals.forEach(a=>a.clearRoots());
+    }
+
+    addToClosure(c){
+        this.vals.forEach(a=>a.addToClosure(c));
     }
 
     replace(node) {
