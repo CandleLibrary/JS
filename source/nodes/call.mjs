@@ -2,7 +2,7 @@ import base from "./base.mjs";
 import types from "./types.mjs";
 
 export default class call_expression extends base {
-    constructor(sym) {
+    constructor(sym = []) {
         super(...sym);
     }
 

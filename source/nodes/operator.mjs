@@ -3,7 +3,7 @@
 import base from "./base.mjs";
 export default class extends base {
 
-    constructor(sym) {
+    constructor(sym = []) {
         super(sym[0], sym[2]);
         this.op = "";
     }

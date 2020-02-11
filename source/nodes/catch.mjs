@@ -3,7 +3,7 @@
 import {statement} from "./base.mjs";
 import types from "./types.mjs";
 export default class catch_statement extends statement {
-    constructor(sym) {
+    constructor(sym = []) {
         super(sym[2], sym[4]);
     }
 

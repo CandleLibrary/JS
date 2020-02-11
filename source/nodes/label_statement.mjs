@@ -6,7 +6,7 @@ import types from "./types.mjs";
 
 
 export default class label_statement extends base {
-    constructor(sym) {
+    constructor(sym = []) {
         super(sym[0], sym[1]);
     }
 

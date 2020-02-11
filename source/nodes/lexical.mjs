@@ -3,7 +3,7 @@
 import base from "./base.mjs";
 import types from "./types.mjs";
 export default class lexical_declaration extends base {
-    constructor(sym) {
+    constructor(sym = []) {
         super(sym[1]);
         this.mode = sym[0];
         this.IS_STATEMENT = true;

@@ -4,15 +4,15 @@ import base from "./base.mjs";
 import types from "./types.mjs";
 
 export default class expression_list extends base {
-    constructor(sym) {
+    constructor(sym = []) {
 
-        if (sym[0].length == 1)
+        if (sym[0] && sym[0].length === 1)
             return sym[0][0];
 
-        super(sym[0]);
+        super(...(sym[0] || []));
     }
 
-    get expressions() { return this.vals[0] }
+    get expressions() { return this.vals }
 
     getRootIds(ids, closure) {
         this.expressions.forEach(s => s.getRootIds(ids, closure));

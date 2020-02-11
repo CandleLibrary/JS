@@ -86,12 +86,23 @@ export default class base {
 
     render() { return this.vals.join("") }
 
+    clone(){
+        const clone = Object.assign(new this.constructor(), this);
+
+        clone.vals = clone.vals.map(e=>(e && e.clone) ? e.clone() : e);
+
+        return clone.connect;
+    }
+
+    copy(){
+        return this.clone();
+    }
+
     get connect(){
         this.vals.forEach(v=>{
-            try{
-                v.parent = this
-            }catch(e){
-                
+            if(v instanceof base){
+                v.parent = this;
+                v.connect;
             }
         });
         return this;

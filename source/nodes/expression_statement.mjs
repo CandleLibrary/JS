@@ -5,7 +5,7 @@ import types from "./types.mjs";
 
 export default class expression_statement extends statement {
 
-    constructor(sym) {
+    constructor(sym = []) {
         super(sym[0]);
     }
 

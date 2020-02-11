@@ -3,21 +3,24 @@
 import base from "./base.mjs";
 import types from "./types.mjs";
 export default class identifier extends base {
-    constructor(sym) {
+    constructor(sym = []) {
         super(sym[0]);
         this.root = true;
     }
 
-    get val() { return this.vals[0] }
-
-    getRootIds(ids, closure) { 
-        if(!closure.has(this.val)){
-            ids.add(this.val);
-        }
+    clearRoots(){
+        this.root = false;
     }
 
-      addToClosure(closure){
-        this.vals.forEach(a=>closure.add(a.name));   
+    get val() { return this.vals[0] }
+
+    getRootIds(ids, closure) {
+        if (this.root && !closure.has(this.val)) 
+            ids.add(this.val);
+    }
+
+    addToClosure(closure) {
+        closure.add(this.val);
     }
 
 

@@ -1,10 +1,11 @@
 /** OPERATOR **/
 
 import base from "./base.mjs";
+import types from "./types.mjs";
 
 export default class extends base {
 
-    constructor(sym) {
+    constructor(sym = []) {
         super(sym[0]);
         this.op = "";
     }

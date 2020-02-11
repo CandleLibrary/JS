@@ -5,7 +5,7 @@ import base from "./base.mjs";
 import types from "./types.mjs";
 
 export default class object_literal extends base {
-    constructor(props) {
+    constructor(props = []) {
         super(...props);
     }
 

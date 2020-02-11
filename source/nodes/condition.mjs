@@ -3,7 +3,7 @@
 import base from "./base.mjs";
 import types from "./types.mjs";
 export default class condition_expression extends base {
-    constructor(sym) {
+    constructor(sym = []) {
         super(sym[0], sym[2], sym[4]);
     }
 

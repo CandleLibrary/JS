@@ -5,10 +5,12 @@ import types from "./types.mjs";
 export default class block_statement extends stmts {
 
     constructor(sym) {
-        if (!(sym[1] instanceof stmts))
-            return sym[1];
-
-        super([sym[1].vals]);
+        if (sym) {
+            if (!(sym[1] instanceof stmts))
+                return sym[1];
+            super([sym[1].vals]);
+        } else
+            super();
     }
 
     getRootIds(ids, closure) {

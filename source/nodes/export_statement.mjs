@@ -4,7 +4,7 @@ import base from "./base.mjs";
 import types from "./types.mjs";
 
 export default class export_statement extends base {
-    constructor(sym) {
+    constructor(sym = []) {
         super((sym.length > 2) ? sym[1] : null);
     }
 

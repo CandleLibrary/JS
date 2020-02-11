@@ -5,11 +5,12 @@ import types from "./types.mjs";
 import identifer from "./identifier.mjs";
 
 export default class member_expression extends base {
-    constructor(id, mem, evaluated = false) { 
+    constructor(id, mem = null, evaluated = false) { 
         super(id, mem);
         this.evaluated = evaluated;
         this.root = true;
-        this.mem.root = false;
+        if(this.mem)
+            this.mem.root = false;
     }
 
     get id() { return this.vals[0] }

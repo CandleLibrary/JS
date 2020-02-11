@@ -3,9 +3,9 @@
 import base from "./base.mjs";
 import types from "./types.mjs";
 export default class extends base {
-    constructor(sym) {
+    constructor(sym = []) {
         super(sym[0], sym[1] || null);
-        this.id.root = false;
+        if(this.id) this.id.root = false;
     }
 
     get id() { return this.vals[0] }

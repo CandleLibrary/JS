@@ -1,22 +1,15 @@
 /** ARGUMENT_LIST **/
 
 import base from "./base.mjs";
-
 import types from "./types.mjs";
+
 export default class argument_list extends base {
     constructor(sym) {
 
-        //if (sym && sym.length == 1)
-        //    return sym[0];
-        
-        super( sym || []);
+        super(...sym);
     }
 
-    clearRoots(){
-        this.args.forEach(a=>a.root = false);
-    }
-
-    get args() { return this.vals[0] }
+    get args() { return this.vals }
 
     getRootIds(ids, closure) {
         this.args.forEach(s => s.getRootIds(ids, closure));
@@ -24,13 +17,13 @@ export default class argument_list extends base {
 
     replaceNode(original, _new = null) {
         let index = 0;
-        if ((index = super.replaceNode(original, _new, this.vals[0])) < 0) {
-            this.vals[0].splice(-(index+1), 1);
+        if ((index = super.replaceNode(original, _new, this.vals)) < 0) {
+            this.vals.splice(-(index+1), 1);
         }
     }
 
     * traverseDepthFirst(p) {
-        yield * super.traverseDepthFirst(p, this.vals[0]);
+        yield * super.traverseDepthFirst(p, this.vals);
     }
 
     get length (){

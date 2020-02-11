@@ -14,7 +14,7 @@ class nosubstitute_string extends base{
 }
 
 export default class template extends base {
-    constructor(sym) {
+    constructor(sym = []) {
 
     	const NO_SUBSTITUTE = typeof sym == "string";
 

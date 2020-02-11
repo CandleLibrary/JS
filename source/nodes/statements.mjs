@@ -4,7 +4,7 @@ import {statement} from "./base.mjs";
 
 import types from "./types.mjs";
 export default class statements extends statement {
-    constructor(sym) {
+    constructor(sym = [[]]) {
 
         if (sym[0].length == 1)
             return sym[0][0];

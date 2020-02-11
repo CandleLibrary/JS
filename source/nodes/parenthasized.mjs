@@ -5,20 +5,7 @@ import types from "./types.mjs";
 
 export default class argument_list extends base {
     constructor(...sym) {
-        if (!sym || !sym[0])
-            super()
-        else
-            super(...sym);
-
-        this.looking = this.render() == "($$sym3,$$sym6,env,lex)"
-    }
-
-    clearRoots() {
-        this.vals.forEach(a => a.root = false);
-    }
-
-    addToClosure(closure) {
-        this.vals.forEach(a => closure.add(a.name));
+        super(...sym);
     }
 
     get args() { return this.vals }

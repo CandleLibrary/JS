@@ -2,7 +2,7 @@
 import types from "./types.mjs";
 
 export default class default_import extends base {
-    constructor(sym) {
+    constructor(sym = []) {
         super(sym[0]);
 
     }
