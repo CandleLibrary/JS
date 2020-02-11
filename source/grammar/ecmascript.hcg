@@ -823,7 +823,7 @@
 
 		<> numeric_literal → number																↦c ^numeric_literal
 
-		<> number → ( def::float	│ def::octal │ def::binary │ def::integer )					↦return{ $$sym1 }
+		<> number → ( def::float	│ def::octal │ def::binary │ def::hex )						↦return{ $$sym1 }
 
 		<> null_literal →  τnull																↦c ^null_literal
 
