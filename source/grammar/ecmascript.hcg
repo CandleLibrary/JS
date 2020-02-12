@@ -803,7 +803,7 @@
 	# https://www.ecma-international.org/ecma-262/9.0/index.html#prod-RegularExpressionLiteral
 	##############################################################################################################
 
-<> regular_expression_literal → \/ ( θws │ θid │ θsym │ θnum │ θop │ θob │ θcb │ \' )(*") \/ regular_expression_flags
+<> regular_expression_literal → \/ ( θany │ \\ θany ↦r { $sym1 + $sym2 } )(*") \/ regular_expression_flags? 						↦c ^reg_ex_literal
 
 <> regular_expression_flags → identifier
 
@@ -818,8 +818,15 @@
 			│ numeric_literal		
 
 
-		<> string_literal → \" ( θws │ θid │ θsym │ θnum │ θop │ θob │ θcb │ \' )(*") \"		↦c ^string_literal
-			│ \' ( θws │ θid │ θsym │ θnum │ θop │ θob │ θcb │ \" )(*") \'						↦c ^string_literal
+		<> string_literal → \" (ERR θnl )  ( θws │ θid │ θsym │ θnum │ θop │ θob │ θcb │ \' │ escaped_sequence )(*") (ERR θnl )  \"		↦c ^string_literal
+			│ \' (ERR θnl )  ( θws │ θid │ θsym │ θnum │ θop │ θob │ θcb │ \" │ escaped_sequence )(*") (ERR θnl )  \'					↦c ^string_literal
+
+		<> escaped_sequence → \\ ( ' │ " │ \b │ \f │ \n │ \r │ \y │ \v │ \x │ \u │ \0 │ \1 │ \2 │ \3 │ \4 │ \5 │ \6 │ \7 │ \8 │ \9 │ hex_escape_sequence │ unicode_escape_sequence )   ↦r {$sym1 + $sym2}
+
+		<> hex_escape_sequence → τx def::hex_digit def::hex_digit 									↦r {$sym1 + $sym2 + $sym3 }
+
+		<> unicode_escape_sequence → τu def::hex_digit def::hex_digit def::hex_digit def::hex_digit ↦r {$sym1 + $sym2 + $sym3 + $sym4 + $sym5 }
+			│ τu \{ def::hex \} ↦r { $sym1 + $sym2 + $sym3 + $sym4 }
 
 		<> numeric_literal → number																↦c ^numeric_literal
 
@@ -847,4 +854,4 @@
 
 	<> identifier_name →  id 				↦c ^identifier				
 
-	<> id → def::identifier ↦r { $sym1 + $sym2 }
+	<> id → ( def::identifier_start │ \$ ) (def::identifier_continue │ \$)(*") (θws │ θnl)? ↦r { $sym1 + $sym2 }
