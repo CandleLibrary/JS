@@ -10,495 +10,494 @@
 
 @IMPORT ../../node_modules/@candlefw/hydrocarbon/source/grammar/misc/default-productions.hcg as def 
 
-<> javascript → start					↦{ env.IS_MODULE = false } ↦return{ sym[0] }
+<> javascript → start                   ↦{ env.IS_MODULE = false } ↦return{ sym[0] }
 
 
-<> start → module 						↦return{ (env.IS_MODULE) ? new fn.module($$sym1) : new fn.script($$sym1)  }
-
+<> start → module                       ↦return{ (env.IS_MODULE) ? new env.fn.module($$sym1) : new env.fn.script($$sym1)  }
 
 ## MODULES
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-ecmascript-language-scripts-and-modules
-	##############################################################################################################
-	
-		<> module → module_body 	 
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-ecmascript-language-scripts-and-modules
+    ##########################################################################################################
+    
+        <> module → module_body      
 
-		<> module_body → (module_item)(+)		↦c ^statements
+        <> module_body → (module_item)(+)       ↦c ^statements
 
-		<> module_item → import_declaration 	↦{ env.IS_MODULE = true }
-			│ export_declaration 				↦{ env.IS_MODULE = true }
-			│ statement_list_item
+        <> module_item → import_declaration                                                                         ↦{ env.IS_MODULE = true }
+            │ export_declaration                                                                                    ↦{ env.IS_MODULE = true }
+            │ statement_list_item
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#prod-ImportDeclaration
-	##############################################################################################################
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#prod-ImportDeclaration
+    ##########################################################################################################
 
-		<> import_declaration → τimport import_clause from_clause ; ↦r { new fn.import_declaration($$sym3, $$sym2 ) }
-			│ τimport module_specifier ; 							  ↦r { new fn.import_declaration($$sym2) }			
+        <> import_declaration → τimport import_clause from_clause ; ↦r { new env.fn.import_declaration($$sym3, $$sym2 ) }
+            │ τimport module_specifier ;                              ↦r { new env.fn.import_declaration($$sym2) }          
 
-		<> import_clause → imported_default_binding 				
-			│ name_space_import 									
-			│ named_imports 										
-			│ imported_default_binding , name_space_import 			↦r { [$$sym1, $$sym3]}
-			│ imported_default_binding , named_imports 			 	↦r { [$$sym1, $$sym3]}
+        <> import_clause → imported_default_binding                 
+            │ name_space_import                                     
+            │ named_imports                                         
+            │ imported_default_binding , name_space_import          ↦r { [$$sym1, $$sym3]}
+            │ imported_default_binding , named_imports              ↦r { [$$sym1, $$sym3]}
 
-		<> imported_default_binding → imported_binding 			  ↦c ^default_import	
+        <> imported_default_binding → imported_binding            ↦c ^default_import    
 
-		<> name_space_import → * τas imported_binding 			  ↦c ^name_space_import
+        <> name_space_import → * τas imported_binding             ↦c ^name_space_import
 
-		<> named_imports → { (import_specifier)(*,) ,? }  		 ↦r {new fn.named_imports($$sym2)}
+        <> named_imports → { (import_specifier)(*,) ,? }         ↦r {new env.fn.named_imports($$sym2)}
 
-		<> from_clause → τfrom module_specifier 				 ↦r { $sym2  }
+        <> from_clause → τfrom module_specifier                  ↦r { $sym2  }
 
-		<> import_specifier → imported_binding  				 ↦r {new fn.import_specifier($sym1)}
-			│ identifier τas imported_binding 					 ↦r {new fn.import_specifier($sym1, $sym3)}
+        <> import_specifier → imported_binding                   ↦r {new env.fn.import_specifier($sym1)}
+            │ identifier τas imported_binding                    ↦r {new env.fn.import_specifier($sym1, $sym3)}
 
-		<> module_specifier → string_literal
+        <> module_specifier → string_literal
 
-		<> imported_binding → identifier
+        <> imported_binding → identifier
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-exports
-	##############################################################################################################
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-exports
+    ##########################################################################################################
 
-		<> export_declaration → τexport * from_clause ; 		↦r { new fn.export_declaration(null,   $$sym3, false) }
-			│ τexport export_clause from_clause ; 				↦r { new fn.export_declaration($$sym2, $$sym3, false) }
-			│ τexport export_clause ; 							↦r { new fn.export_declaration($$sym2, null, false) }
-			│ τexport variable_statement 						↦r { new fn.export_declaration($$sym2, null, false) }
-			│ τexport declaration 								↦r { new fn.export_declaration($$sym2, null, false) }
-			│ τexport τdefault hoistable_declaration 			↦r { new fn.export_declaration($$sym3, null, true) }
-			│ τexport τdefault class_declaration 				↦r { new fn.export_declaration($$sym3, null, true) }
-			│ τexport τdefault 
+        <> export_declaration → τexport * from_clause ;         ↦r { new env.fn.export_declaration(null,   $$sym3, false) }
+            │ τexport export_clause from_clause ;               ↦r { new env.fn.export_declaration($$sym2, $$sym3, false) }
+            │ τexport export_clause ;                           ↦r { new env.fn.export_declaration($$sym2, null, false) }
+            │ τexport variable_statement                        ↦r { new env.fn.export_declaration($$sym2, null, false) }
+            │ τexport declaration                               ↦r { new env.fn.export_declaration($$sym2, null, false) }
+            │ τexport τdefault hoistable_declaration            ↦r { new env.fn.export_declaration($$sym3, null, true) }
+            │ τexport τdefault class_declaration                ↦r { new env.fn.export_declaration($$sym3, null, true) }
+            │ τexport τdefault 
 
-				(EXC τfunction )
-				(EXC τclass )
-				(EXC τasync τfunction )
-			
-				assignment_expression 							↦r { new fn.export_declaration($$sym3, null, true) }
+                (EXC τfunction )
+                (EXC τclass )
+                (EXC τasync τfunction )
+            
+                assignment_expression                           ↦r { new env.fn.export_declaration($$sym3, null, true) }
 
-		<> export_clause → { (export_specifier)(*,) ,? } 		↦r { new fn.export_clause($$sym2) }
+        <> export_clause → { (export_specifier)(*,) ,? }        ↦r { new env.fn.export_clause($$sym2) }
 
-		<> export_specifier →  identifier  						↦r {new fn.export_specifier($sym1)}
-			│ identifier τas identifier 						↦r {new fn.export_specifier($sym1, $sym3)}
+        <> export_specifier →  identifier                       ↦r {new env.fn.export_specifier($sym1)}
+            │ identifier τas identifier                         ↦r {new env.fn.export_specifier($sym1, $sym3)}
 ## SCRIPT
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-ecmascript-language-scripts-and-modules
-	##############################################################################################################
-		
-		<> script → script_body 							↦c ^script
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-ecmascript-language-scripts-and-modules
+    ##########################################################################################################
+        
+        <> script → script_body                             ↦c ^script
 
-		<> script_body → statement_list 	
+        <> script_body → statement_list     
 
 ## STATEMENTS
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#prod-Statement
-	##############################################################################################################
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#prod-Statement
+    ##########################################################################################################
 
 
-		<> statement_list → (statement_list_item)(+) 		↦c ^statements
+        <> statement_list → (statement_list_item)(+)        ↦c ^statements
 
-		<> statement_list_item → statement 
-			│ declaration
-
-
-		<> statement → block_statement 
-			│ 
-				(EXC { )
-				(EXC τfunction )
-				(EXC τclass )
-				(EXC τlet \[ )
-				(EXC τasync τfunction )
-
-				expression_statement						
-
-			│ labelled_statement
-			│ variable_statement
-			│ empty_statement
-			│ if_statement
-			│ breakable_statement
-			│ continue_statement
-			│ break_statement
-			│ return_statement
-			│ with_statement
-			│ throw_statement
-			│ try_statement
-			│ debugger_statement
-
-		<> declaration → class_declaration
-			│ hoistable_declaration
-			│ lexical_declaration
-
-		<> hoistable_declaration → function_declaration
-			# │ generator_declaration
-			│ async_function_declaration
-			# │ async_generator_declaration
-
-		<> breakable_statement → iteration_statement
-		 	│ switch_statement
+        <> statement_list_item → statement 
+            │ declaration
 
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-block
-	##############################################################################################################
+        <> statement → block_statement 
+            │ 
+                (EXC { )
+                (EXC τfunction )
+                (EXC τclass )
+                (EXC τlet \[ )
+                (EXC τasync τfunction )
 
-		<> block_statement → block 					 		
+                expression_statement                        
 
-		<> block → { statement_list }					↦c ^block_statement
+            │ labelled_statement
+            │ variable_statement
+            │ empty_statement
+            │ if_statement
+            │ breakable_statement
+            │ continue_statement
+            │ break_statement
+            │ return_statement
+            │ with_statement
+            │ throw_statement
+            │ try_statement
+            │ debugger_statement
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-empty-statement
-	##############################################################################################################
+        <> declaration → class_declaration
+            │ hoistable_declaration
+            │ lexical_declaration
 
-		<> empty_statement → ; 							 ↦c ^empty_statement
+        <> hoistable_declaration → function_declaration
+            │ generator_declaration
+            │ async_function_declaration
+            │ async_generator_declaration
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-expression-statement
-	##############################################################################################################
-
-		<> expression_statement → expression ;  			↦c ^expression_statement
-
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-expression-statement
-	##############################################################################################################
-
-		<> if_statement → τif \( expression \) statement τelse statement 				↦c ^if_statement
-			│ τif \( expression \) statement 											↦c ^if_statement
-
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-iteration-statements
-	##############################################################################################################
-
-		<> iteration_statement → τdo statement τwhile \( expression \) ; 							↦c ^do_while_statement
-
-			│ τwhile \( expression \) statement 													↦c ^while_statement
-			
-			│ τfor \( ↦{ env.ASI = false;} (
-				(EXC τlet \[ ) expression 
-				│ τvar variable_declaration_list ↦c ^variable_statement
-				)? ; expression? ; expression? \) ↦{ env.ASI = true;} statement  												
-																									↦return{ (new fn.for_statement($$sym3, $$sym5, $$sym7, $$sym9)) }	
-
-			│ τfor \( lexical_declaration expression? ; expression? \)↦{ env.ASI = true;} statement   			 		↦return{ (new fn.for_statement($$sym3, $$sym4, $$sym6, $$sym8)) }																			
-																																																																				
-			│ τfor \( (
-					(EXC τlet \[ ) left_hand_side_expression
-					│ τvar for_binding ↦r {$sym2}
-					│ for_declaration
-				) τin expression \)↦{ env.ASI = true;} statement 			↦return{ (new fn.for_in_statement($$sym3, $$sym5, $$sym7)) }
-
-			│ τfor τawait? \( (
-					(EXC τlet \[ ) left_hand_side_expression
-					│ τvar for_binding ↦r {$sym2}
-					│ for_declaration
-				) τof expression \)↦{ env.ASI = true;} statement 			↦return{ (new fn.for_of_statement($$sym2, $$sym4, $$sym6, $$sym8)) }
-
-		<> for_declaration → let_or_const for_binding 						↦c ^lexical_expression
-
-		<> for_binding → binding_identifier 
-			│ binding_pattern
-
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-continue-statement
-	##############################################################################################################
-
-		<> continue_statement → τcontinue label_identifier? ; 			↦return{ (new fn.continue_statement($$sym2)) }	
-
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-break-statement
-	##############################################################################################################
-
-		<> break_statement → τbreak label_identifier? ;  				↦return{ (new fn.break_statement($$sym2)) }
+        <> breakable_statement → iteration_statement
+            │ switch_statement
 
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-return-statement
-	##############################################################################################################
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-block
+    ##########################################################################################################
 
-		<> return_statement → τreturn expression? ; 					↦r { new fn.return_statement($$sym2) }
+        <> block_statement → block                          
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-throw-statement
-	##############################################################################################################
+        <> block → { statement_list }                   ↦c ^block_statement
 
-		<> throw_statement → τthrow expression ; 						↦r { new fn.throw_statement($$sym2) }
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-empty-statement
+    ##########################################################################################################
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-with-statement
-	##############################################################################################################
+        <> empty_statement → ;                           ↦c ^empty_statement
 
-		<> with_statement → τwith \( expression \) statement 			↦r { new fn.with_statement($$sym3, $$sym5) }
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-expression-statement
+    ##########################################################################################################
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-switch-statement
-	##############################################################################################################
+        <> expression_statement → expression ;              ↦c ^expression_statement
 
-		<> switch_statement → τswitch \( expression \) case_block 		↦r{ new fn.switch_statement($$sym3, $$sym5)}
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-expression-statement
+    ##########################################################################################################
 
-		<> case_block → { } 											↦return{ [] }
-			│ { case_clauses default_clause case_clause } 				↦return{ sym[1].concat(sym[2].concat(sym[3])) }
-			│ { case_clauses default_clause } 							↦return{ sym[1].concat(sym[2]) }
-			│ { default_clause case_clauses } 							↦return{ sym[1].concat(sym[2]) }
-			│ { default_clause } 										↦return{ sym[1] }
-			│ { case_clauses } 											↦return{ sym[1] }
+        <> if_statement → τif \( expression \) statement τelse statement                ↦c ^if_statement
+            │ τif \( expression \) statement                                            ↦c ^if_statement
 
-		<> case_clauses → case_clause 									↦return{ [sym[0]] }
-			│ case_clauses case_clause 									↦return{ sym[0].concat(sym[1]) }
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-iteration-statements
+    ##########################################################################################################
 
-		<> case_clause → τcase expression : statement_list? 			↦return{ (new fn.case_statement($sym2, $$sym4)) }
+        <> iteration_statement → τdo statement τwhile \( expression \) ;                            ↦c ^do_while_statement
 
-		<> default_clause → τdefault : statement_list? 					↦return{ (new fn.default_case_statement($$sym3)) }
+            │ τwhile \( expression \) statement                                                     ↦c ^while_statement
+            
+            │ τfor \( ↦{ env.ASI = false;} (
+                (EXC τlet \[ ) expression 
+                │ τvar variable_declaration_list ↦c ^variable_statement
+                )? ; expression? ; expression? \) ↦{ env.ASI = true;} statement                                                 
+                                                                                                                        ↦return{ (new env.fn.for_statement($$sym3, $$sym5, $$sym7, $$sym9)) }   
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-labelled-statements
-	##############################################################################################################
+            │ τfor \( lexical_declaration expression? ; expression? \)↦{ env.ASI = true;} statement                     ↦return{ (new env.fn.for_statement($$sym3, $$sym4, $$sym6, $$sym8)) }                                                                           
+                                                                                                                                                                                                                                                                                
+            │ τfor \( (
+                    (EXC τlet \[ ) left_hand_side_expression
+                    │ τvar for_binding ↦r {$sym2}
+                    │ for_declaration
+                ) τin expression \)↦{ env.ASI = true;} statement            ↦return{ (new env.fn.for_in_statement($$sym3, $$sym5, $$sym7)) }
 
-		<> labelled_statement → label_identifier label_assign 			↦c ^label_statement
+            │ τfor τawait? \( (
+                    (EXC τlet \[ ) left_hand_side_expression
+                    │ τvar for_binding ↦r {$sym2}
+                    │ for_declaration
+                ) τof expression \)↦{ env.ASI = true;} statement            ↦return{ (new env.fn.for_of_statement($$sym2, $$sym4, $$sym6, $$sym8)) }
 
-		<> label_assign → : labelled_item 								↦return{ sym[1] }
+        <> for_declaration → let_or_const for_binding                       ↦c ^lexical_expression
 
-		<> labelled_item → statement
-			│ function_declaration
+        <> for_binding → binding_identifier 
+            │ binding_pattern
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-try-statement
-	##############################################################################################################
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-continue-statement
+    ##########################################################################################################
 
-		<> try_statement → τtry block catch 							↦return{ (new fn.try_statement(sym[1],sym[2])) }
-			│ τtry block finally										↦return{ (new fn.try_statement(sym[1],null,sym[2])) }
-			│ τtry block catch finally 									↦return{ (new fn.try_statement(sym[1], sym[2], sym[3])) }
+        <> continue_statement → τcontinue label_identifier? ;           ↦return{ (new env.fn.continue_statement($$sym2)) }  
 
-		<> catch → τcatch \( catch_parameter \) block 					↦c ^catch_statement
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-break-statement
+    ##########################################################################################################
 
-		<> finally → τfinally block 									↦c ^finally_statement
+        <> break_statement → τbreak label_identifier? ;                 ↦return{ (new env.fn.break_statement($$sym2)) }
 
-		<> catch_parameter → binding_identifier 
-			│ binding_pattern
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-debugger-statement
-	##############################################################################################################
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-return-statement
+    ##########################################################################################################
 
-		<> debugger_statement → τdebugger ;								↦c ^debugger_statement
+        <> return_statement → τreturn expression? ;                     ↦r { new env.fn.return_statement($$sym2) }
+
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-throw-statement
+    ##########################################################################################################
+
+        <> throw_statement → τthrow expression ;                        ↦r { new env.fn.throw_statement($$sym2) }
+
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-with-statement
+    ##########################################################################################################
+
+        <> with_statement → τwith \( expression \) statement            ↦r { new env.fn.with_statement($$sym3, $$sym5) }
+
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-switch-statement
+    ##########################################################################################################
+
+        <> switch_statement → τswitch \( expression \) case_block       ↦r{ new env.fn.switch_statement($$sym3, $$sym5)}
+
+        <> case_block → { }                                             ↦return{ [] }
+            │ { case_clauses default_clause case_clause }               ↦return{ sym[1].concat(sym[2].concat(sym[3])) }
+            │ { case_clauses default_clause }                           ↦return{ sym[1].concat(sym[2]) }
+            │ { default_clause case_clauses }                           ↦return{ sym[1].concat(sym[2]) }
+            │ { default_clause }                                        ↦return{ sym[1] }
+            │ { case_clauses }                                          ↦return{ sym[1] }
+
+        <> case_clauses → case_clause                                   ↦return{ [sym[0]] }
+            │ case_clauses case_clause                                  ↦return{ sym[0].concat(sym[1]) }
+
+        <> case_clause → τcase expression : statement_list?             ↦return{ (new env.fn.case_statement($sym2, $$sym4)) }
+
+        <> default_clause → τdefault : statement_list?                  ↦return{ (new env.fn.default_case_statement($$sym3)) }
+
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-labelled-statements
+    ##########################################################################################################
+
+        <> labelled_statement → label_identifier label_assign           ↦c ^label_statement
+
+        <> label_assign → : labelled_item                               ↦return{ sym[1] }
+
+        <> labelled_item → statement
+            │ function_declaration
+
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-try-statement
+    ##########################################################################################################
+
+        <> try_statement → τtry block catch                             ↦return{ (new env.fn.try_statement(sym[1],sym[2])) }
+            │ τtry block finally                                        ↦return{ (new env.fn.try_statement(sym[1],null,sym[2])) }
+            │ τtry block catch finally                                  ↦return{ (new env.fn.try_statement(sym[1], sym[2], sym[3])) }
+
+        <> catch → τcatch \( catch_parameter \) block                   ↦c ^catch_statement
+
+        <> finally → τfinally block                                     ↦c ^finally_statement
+
+        <> catch_parameter → binding_identifier 
+            │ binding_pattern
+
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-debugger-statement
+    ##########################################################################################################
+
+        <> debugger_statement → τdebugger ;                             ↦c ^debugger_statement
 
 ## DECLARATIONS
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-variable-statement
-	##############################################################################################################
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-variable-statement
+    ##########################################################################################################
 
-		<> variable_statement → τvar variable_declaration_list ; 		↦c ^variable_statement
+        <> variable_statement → τvar variable_declaration_list ;        ↦c ^variable_statement
 
-		<> variable_declaration_list → variable_declaration 			↦return{ [$sym1] }
-			│ variable_declaration_list , variable_declaration 			↦return{ $sym1.push($sym3), $sym1 }
+        <> variable_declaration_list → variable_declaration             ↦return{ [$sym1] }
+            │ variable_declaration_list , variable_declaration          ↦return{ $sym1.push($sym3), $sym1 }
 
-		<> variable_declaration → binding_identifier initializer 		↦c ^binding
-			│ binding_identifier 										↦c ^binding
-			│ binding_pattern initializer 								↦c ^binding
+        <> variable_declaration → binding_identifier initializer        ↦c ^binding
+            │ binding_identifier                                        ↦c ^binding
+            │ binding_pattern initializer                               ↦c ^binding
 
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-let-and-const-declarations
-	##############################################################################################################
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-let-and-const-declarations
+    ##########################################################################################################
 
-		<> lexical_declaration → let_or_const binding_list ;			↦c ^lexical
+        <> lexical_declaration → let_or_const binding_list ;            ↦c ^lexical
 
-		<> let_or_const → τlet 											↦return{ "let" }
-			│ τconst													↦return{ "const" }
+        <> let_or_const → τlet                                          ↦return{ "let" }
+            │ τconst                                                    ↦return{ "const" }
 
-		<> binding_list → lexical_binding 								↦return{ [$sym1] }
-			│ binding_list , lexical_binding							↦return{ $sym1.push($sym3), $sym1 }
+        <> binding_list → lexical_binding                               ↦return{ [$sym1] }
+            │ binding_list , lexical_binding                            ↦return{ $sym1.push($sym3), $sym1 }
 
-		<> lexical_binding → binding_identifier initializer 			↦c ^binding
-			│ binding_pattern initializer 								↦c ^binding
+        <> lexical_binding → binding_identifier initializer             ↦c ^binding
+            │ binding_pattern initializer                               ↦c ^binding
 
 ## FUNCTIONS
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-function-definitions
-	##############################################################################################################
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-function-definitions
+    ##########################################################################################################
 
-		<> function_expression → τfunction binding_identifier? \( formal_parameters? \) { function_body? } 		↦return{ new fn.function_declaration($$sym2, $$sym4, $$sym7) }
+        <> function_expression → τfunction binding_identifier? \( formal_parameters? \) { function_body? }          ↦return{ new env.fn.function_declaration($$sym2, $$sym4, $$sym7) }
 
-		<> function_declaration →  τfunction binding_identifier? \( formal_parameters? \) { function_body? } 		↦return{ new fn.function_declaration($$sym2, $$sym4, $$sym7) }
+        <> function_declaration →  τfunction binding_identifier? \( formal_parameters? \) { function_body? }        ↦return{ new env.fn.function_declaration($$sym2, $$sym4, $$sym7) }
 
-		<> unique_formal_parameters → formal_parameters
+        <> unique_formal_parameters → formal_parameters
 
-		<> formal_parameters → function_rest_parameter 				↦return{ new fn.parenthasized($sym1) }
-			 │ formal_parameter_list ,? 							↦return{ new fn.parenthasized(...$sym1) }
-			 │ formal_parameter_list , function_rest_parameter		↦return{ new fn.parenthasized(...$sym1, $sym3) }
+        <> formal_parameters → function_rest_parameter                                                              ↦return{ new env.fn.parenthasized($sym1) }
+             │ formal_parameter_list ,?                                                                             ↦return{ new env.fn.parenthasized(...$sym1) }
+             │ formal_parameter_list , function_rest_parameter                                                      ↦return{ new env.fn.parenthasized(...$sym1, $sym3) }
 
-		<> formal_parameter_list → formal_parameter 				↦return{ [$sym1] }
-			 │ formal_parameter_list , formal_parameter 			↦return{ $sym1.push($sym3), $sym1 }			
+        <> formal_parameter_list → formal_parameter                                                                 ↦return{ [$sym1] }
+             │ formal_parameter_list , formal_parameter                                                             ↦return{ $sym1.push($sym3), $sym1 }         
 
-		<> function_rest_parameter → binding_rest_element 			
+        <> function_rest_parameter → binding_rest_element           
 
-		<> formal_parameter → binding_element
+        <> formal_parameter → binding_element
 
-		<> function_body → function_statement_list
+        <> function_body → function_statement_list
 
-		<> function_statement_list → statement_list
+        <> function_statement_list → statement_list
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-arrow-function-definitions
-	##############################################################################################################
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-arrow-function-definitions
+    ##########################################################################################################
 
-		<> arrow_function → arrow_parameters => concise_body 							↦return{ new fn.arrow_function_declaration(null, $sym1, $sym3) }
+        <> arrow_function → arrow_parameters => concise_body                            ↦return{ new env.fn.arrow_function_declaration(null, $sym1, $sym3) }
 
-		<> arrow_parameters → binding_identifier 										↦return{ new fn.parenthasized($sym1) }
-			│ cover_parenthesized_expression_and_arrow_parameter_list 				
+        <> arrow_parameters → binding_identifier                                        ↦return{ new env.fn.parenthasized($sym1) }
+            │ cover_parenthesized_expression_and_arrow_parameter_list               
 
-		<> concise_body → (EXC { ) assignment_expression 
-			│ { function_statement_list }												↦return{ $sym2 }
+        <> concise_body → (EXC { ) assignment_expression 
+            │ { function_statement_list }                                               ↦return{ $sym2 }
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-async-arrow-function-definitions
-	##############################################################################################################
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-async-arrow-function-definitions
+    ##########################################################################################################
 
-		<> async_arrow_function → τasync async_arrow_parameters => async_concise_body	↦c ^async_arrow
+        <> async_arrow_function → τasync async_arrow_parameters => async_concise_body   ↦c ^async_arrow
 
-		<> async_arrow_parameters → binding_identifier 
-			│ cover_call_expression_and_async_arrow_head
+        <> async_arrow_parameters → binding_identifier 
+            │ cover_call_expression_and_async_arrow_head
 
-		<> async_concise_body → (EXC { ) assignment_expression 
-			│ { function_statement_list }												↦return{ $sym2 }
+        <> async_concise_body → (EXC { ) assignment_expression 
+            │ { function_statement_list }                                               ↦return{ $sym2 }
 
-		<> cover_call_expression_and_async_arrow_head → member_expression arguments 	↦c ^call_expression
+        <> cover_call_expression_and_async_arrow_head → member_expression arguments     ↦c ^call_expression
 
 ## CLASSES
-	
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/index.html#sec-class-definitions
-	##############################################################################################################
+    
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/index.html#sec-class-definitions
+    ##########################################################################################################
 
 
-		<> class_declaration → τclass binding_identifier? class_tail  					↦r {new fn.class_declaration($$sym2, $$sym3.h, $$sym3.t)}
+        <> class_declaration → τclass binding_identifier? class_tail                    ↦r {new env.fn.class_declaration($$sym2, $$sym3.h, $$sym3.t)}
 
-		<> class_expression → τclass binding_identifier? class_tail						↦r {new fn.class_declaration($$sym2, $$sym3.h, $$sym3.t)}
+        <> class_expression → τclass binding_identifier? class_tail                     ↦r {new env.fn.class_declaration($$sym2, $$sym3.h, $$sym3.t)}
 
-		<> class_tail → class_heritage? { class_body? } 								↦return{ {h:$$sym1,t:$$sym3} }
+        <> class_tail → class_heritage? { class_body? }                                 ↦return{ {h:$$sym1,t:$$sym3} }
 
-		<> class_heritage → τextends left_hand_side_expression 							↦return{ $sym2 }
+        <> class_heritage → τextends left_hand_side_expression                          ↦return{ $sym2 }
 
-		<> class_body → class_element_list
+        <> class_body → class_element_list
 
-		<> class_element_list → class_element											↦return{ [$sym1] }
-			│ class_element_list class_element 											↦return{ ($sym1.push($sym2), $sym1) }			
+        <> class_element_list → class_element                                           ↦return{ [$sym1] }
+            │ class_element_list class_element                                          ↦return{ ($sym1.push($sym2), $sym1) }           
 
-		<> class_element → method_definition 
-			│ τstatic method_definition 												↦return{ (sym[1].static = true, sym[1]) }
-			│ ;
+        <> class_element → method_definition 
+            │ τstatic method_definition                                                 ↦return{ (sym[1].static = true, sym[1]) }
+            │ ;
 
 ##############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#prod-MethodDefinition
 ##############################################################################################################
 
-	<> method_definition → property_name \( unique_formal_parameters? \) { function_body? } 	↦r {new fn.class_method($$sym1,$$sym3,$$sym6)}
-		│ generator_method
-		│ async_method
-		#│ async_generator_method
-		│ τget property_name \( \) { function_body? } 									   			↦r {new fn.class_method($$sym2,null,$$sym6, "get")}
-		│ τset property_name \( property_set_parameter_list \) { function_body? }		   			↦r {new fn.class_method($$sym2,$$sym4,$$sym7, "set")}
+    <> method_definition → property_name \( unique_formal_parameters? \) { function_body? }     ↦r {new env.fn.class_method($$sym1,$$sym3,$$sym6)}
+        │ generator_method
+        │ async_method
+        #│ async_generator_method
+        │ τget property_name \( \) { function_body? }                                               ↦r {new env.fn.class_method($$sym2,null,$$sym6, "get")}
+        │ τset property_name \( property_set_parameter_list \) { function_body? }                   ↦r {new env.fn.class_method($$sym2,$$sym4,$$sym7, "set")}
 
-	<> async_method → τasync property_name \( unique_formal_parameters? \) { function_body? } 		↦r {new fn.class_method($$sym2,$$sym4,$$sym7,"",true)}
+    <> async_method → τasync property_name \( unique_formal_parameters? \) { function_body? }       ↦r {new env.fn.class_method($$sym2,$$sym4,$$sym7,"",true)}
 
-	<> property_set_parameter_list → formal_parameter 
+    <> property_set_parameter_list → formal_parameter 
 
 ##############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-comma-operator
 ##############################################################################################################
 
-	<> expression → (assignment_expression)(+,) 					↦c ^expression_list
-					
+    <> expression → (assignment_expression)(+,)                     ↦c ^expression_list
+                    
 ##############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-left-hand-side-expressions
 ##############################################################################################################
 
-	<> left_hand_side_expression → new_expression 		
-		│ call_expression 								
+    <> left_hand_side_expression → new_expression       
+        │ call_expression                               
 
-	<> new_expression → member_expression 
-		│ τnew new_expression 										↦r { new fn.new_expression($sym2, null) }
+    <> new_expression → member_expression 
+        │ τnew new_expression                                       ↦r { new env.fn.new_expression($sym2, null) }
 
-	<> member_expression → primary_expression 				
-		│ member_expression \[ expression \]						↦r{new fn.member_expression($sym1,$sym3 ,true) }
-		│ member_expression . identifier_name 						↦r{new fn.member_expression($sym1,$sym3 ,false)}
-		│ member_expression template_literal						↦r{new fn.member_expression($sym1,$sym2 ,false)}
-		│ super_property
-		│ meta_property
-		│ τnew member_expression arguments 							↦r { new fn.new_expression($sym2, $sym3) }
+    <> member_expression → primary_expression               
+        │ member_expression \[ expression \]                        ↦r{new env.fn.member_expression($sym1,$sym3 ,true) }
+        │ member_expression . identifier_name                       ↦r{new env.fn.member_expression($sym1,$sym3 ,false)}
+        │ member_expression template_literal                        ↦r{new env.fn.member_expression($sym1,$sym2 ,false)}
+        │ super_property
+        │ meta_property
+        │ τnew member_expression arguments                          ↦r { new env.fn.new_expression($sym2, $sym3) }
 
-	<> super_property → τsuper . identifier_name 					↦r{new fn.member_expression(new fn.super_literal(),$sym3,false)}
-		│ τsuper \[ expression \]									↦r{new fn.member_expression(new fn.super_literal(),$sym3,true)}
+    <> super_property → τsuper . identifier_name                    ↦r{new env.fn.member_expression(new env.fn.super_literal(),$sym3,false)}
+        │ τsuper \[ expression \]                                   ↦r{new env.fn.member_expression(new env.fn.super_literal(),$sym3,true)}
 
-	<> meta_property → new_target
+    <> meta_property → new_target
 
-	<> new_target → τnew . τtarget									↦c ^new_target_expression
+    <> new_target → τnew . τtarget                                  ↦c ^new_target_expression
 
-	<> call_expression → call_expression . identifier_name 			↦r{new fn.member_expression($sym1,$sym3 ,false)}
-		│ super_call
-		│ call_expression arguments 								↦c ^call_expression
-		│ call_expression \[ expression \] 							↦r{ new fn.member_expression($sym1,$sym3 ,true) }
-		│ cover_call_expression_and_async_arrow_head 
-		│ call_expression template_literal 							↦r{ new fn.member_expression($sym1,$sym2 ,true) }
+    <> call_expression → call_expression . identifier_name          ↦r{new env.fn.member_expression($sym1,$sym3 ,false)}
+        │ super_call
+        │ call_expression arguments                                 ↦c ^call_expression
+        │ call_expression \[ expression \]                          ↦r{ new env.fn.member_expression($sym1,$sym3 ,true) }
+        │ cover_call_expression_and_async_arrow_head 
+        │ call_expression template_literal                          ↦r{ new env.fn.member_expression($sym1,$sym2 ,true) }
 
-	<> super_call → τsuper arguments 								↦r {new fn.call_expression([new fn.super_literal(), $sym2])}
+    <> super_call → τsuper arguments                                ↦r {new env.fn.call_expression([new env.fn.super_literal(), $sym2])}
 
-	<> arguments → \( argument_list? ,? \)							↦r { new fn.parenthasized(...$sym2) }
+    <> arguments → \( argument_list? ,? \)                          ↦r { new env.fn.parenthasized(...$sym2) }
 
-	<> argument_list → ( assignment_expression │ ... assignment_expression ↦c ^spread_element )(*,)  						
+    <> argument_list → ( assignment_expression │ ... assignment_expression ↦c ^spread_element )(*,)                         
 
 
 ##############################################################################################################
 #https://www.ecma-international.org/ecma-262/9.0/index.html#sec-primary-expression
 ##############################################################################################################
 
-	<> primary_expression →
-		τthis														↦c ^this_literal
-		│ identifier_reference
-		│ literal
-		│ array_literal												
-		│ object_literal											
-		│ function_expression
-		│ class_expression
-		│ generator_expression
-		│ async_function_expression
-		#│ async_generator_expression
-		│ regular_expression_literal
-		│ template_literal
-		│ cover_parenthesized_expression_and_arrow_parameter_list
+    <> primary_expression →
+        τthis                                                       ↦c ^this_literal
+        │ identifier_reference
+        │ literal
+        │ array_literal                                             
+        │ object_literal                                            
+        │ function_expression
+        │ class_expression
+        │ generator_expression
+        │ async_function_expression
+        │ async_generator_expression
+        │ regular_expression_literal
+        │ template_literal
+        │ cover_parenthesized_expression_and_arrow_parameter_list
 
 
 ##############################################################################################################
 #https://www.ecma-international.org/ecma-262/9.0/index.html#prod-GeneratorExpression
 ##############################################################################################################
 
-<> async_function_declaration → τasync τfunction binding_identifier? \( formal_parameters? \) { async_function_body? }  ↦return{ new fn.function_declaration($$sym3, $$sym5, $$sym8, true) }
+<> async_function_declaration → τasync τfunction binding_identifier? \( formal_parameters? \) { async_function_body? }      ↦return{ new env.fn.function_declaration($$sym3, $$sym5, $$sym8, true) }
 
-<> async_function_expression → τasync τfunction \( formal_parameters? \) { async_function_body? }  ↦return{ new fn.function_declaration($$sym3, $$sym5, $$sym8, true) }
+<> async_function_expression → τasync τfunction \( formal_parameters? \) { async_function_body? }                           ↦return{ new env.fn.function_declaration(null, $$sym4, $$sym7, true) }
 
-<> async_function_method → τasync property_name \( unique_formal_parameters? \) { async_function_body? }  ↦return{ new fn.function_declaration($$sym3, $$sym5, $$sym8, true) }
+<> async_function_method → τasync property_name \( unique_formal_parameters? \) { async_function_body? }                    ↦return{ new env.fn.class_method($$sym3, $$sym5, $$sym8, true) }
 
 <> async_function_body → function_body
 
 
-	##############################################################################################################	
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#prod-AwaitExpression
-	##############################################################################################################
+    ##########################################################################################################  
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#prod-AwaitExpression
+    ##########################################################################################################
 
-		<> await_expression → τawait unary_expression											↦c ^await_expression
+        <> await_expression → τawait unary_expression                                                                       ↦c ^await_expression
 
 ##############################################################################################################
 #https://www.ecma-international.org/ecma-262/9.0/index.html#prod-AsyncGeneratorExpression
 ##############################################################################################################
 
-<> async_generator_declaration → τasync τfunction /* binding_identifier? \( formal_parameters? \) { async_function_body? }  ↦return{ new fn.function_declaration($$sym3, $$sym5, $$sym8, true) }
+<> async_generator_method → τasync \* property_name \( unique_formal_parameters? \) { async_generator_body? }               ↦return{ new env.fn.class_method($$sym3, $$sym5, $$sym8, true, true) }
 
-<> async_generator_expression → τasync τfunction /* \( formal_parameters? \) { async_function_body? }  ↦return{ new fn.function_declaration($$sym3, $$sym5, $$sym8, true) }
+<> async_generator_declaration → τasync τfunction \* binding_identifier? \( formal_parameters? \) { async_function_body? }  ↦return{ new env.fn.function_declaration($$sym4, $$sym6, $$sym9, true, true) }
 
-<> async_generator_method → τasync /* property_name \( unique_formal_parameters? \) { async_generator_body? }  ↦return{ new fn.function_declaration($$sym3, $$sym5, $$sym8, true) }
+<> async_generator_expression → τasync τfunction \* \( formal_parameters? \) { async_function_body? }                       ↦return{ new env.fn.function_declaration(null, $$sym5, $$sym8, true, true) }
 
 <> async_generator_body → function_body
 
@@ -508,50 +507,41 @@
 #https://www.ecma-international.org/ecma-262/9.0/index.html#prod-GeneratorExpression
 ##############################################################################################################
 
-<> generator_method → \* property_name  \( unique_formal_parameters \) {generator_body}
+<> generator_method → \* property_name  \( unique_formal_parameters? \) { generator_body }                                   ↦return{ new env.fn.class_method($$sym2, $$sym4, $$sym7, false, true) }
 
-<> generator_declaration → τfunction binding_identifier \* \( formal_parameters \) {generator_body}
+<> generator_declaration → τfunction \* binding_identifier \( formal_parameters? \) { generator_body }                       ↦return{ new env.fn.function_declaration($$sym3, $$sym5, $$sym8, false, true) }
 
-<> generator_expression → τfunction \* \( formal_parameters \) {generator_body}
+<> generator_expression → τfunction \* \( formal_parameters? \) {generator_body}                                             ↦return{ new env.fn.function_declaration($$sym2, $$sym4, $$sym7, false, true) }
 
 <> generator_body → function_body
 
-<> yield_expression → τyield
-	│ τyield (EXC θnl) assignment_expression
-	│ τyield (EXC θnl) \* assignment_expression
+<> yield_expression → τyield                                                                                                ↦c ^yield_expression
+    │ τyield (EXC θnl) assignment_expression                                                                                ↦c ^yield_expression
+    │ τyield (EXC θnl) \* assignment_expression                                                                             ↦c ^yield_expression
 
-##############################################################################################################
-#https://www.ecma-international.org/ecma-262/9.0/index.html#sec-async-generator-function-definitions
-##############################################################################################################
-
-<> generator_method → τasync generator_method
-
-<> generator_declaration → τasync generator_declaration
-
-<> generator_expression → τfunction generator_expression
 
 ##############################################################################################################
 #https://www.ecma-international.org/ecma-262/#prod-TemplateLiteral
 ##############################################################################################################
 
 <> template_literal → no_substitute_template
-	│ substitute_template
+    │ substitute_template
 
-<> no_substitute_template → ` template_characters? `  			↦r {new fn.template($$sym2)}
+<> no_substitute_template → ` template_characters? `                                                                        ↦r {new env.fn.template($$sym2)}
 
-<> substitute_template → template_head expression template_spans 	↦r {$sym1.vals[1] = $sym2, $sym3.unshift($sym1), new fn.template($sym3)}
+<> substitute_template → template_head expression template_spans                                                            ↦r {$sym1.vals[1] = $sym2, $sym3.unshift($sym1), new env.fn.template($sym3)}
 
-<> template_spans → template_tail  								↦r {[$sym1]}
-	│ template_middle_list template_tail						↦r {$sym1.push($sym2), $sym1}			
+<> template_spans → template_tail                                                                                           ↦r {[$sym1]}
+    │ template_middle_list template_tail                                                                                    ↦r {$sym1.push($sym2), $sym1}           
 
-<> template_middle_list → template_middle expression 			↦r {$sym1.vals[1] = $sym2, [$sym1]}
-	│ template_middle_list template_middle expression 			↦r {$sym2.vals[1] = $sym3, $sym1.push($sym2), $sym1 }
+<> template_middle_list → template_middle expression                                                                        ↦r {$sym1.vals[1] = $sym2, [$sym1]}
+    │ template_middle_list template_middle expression                                                                       ↦r {$sym2.vals[1] = $sym3, $sym1.push($sym2), $sym1 }
 
-<> template_head → ` template_characters? \${	 				↦r {new fn.template_head($$sym2)}
+<> template_head → ` template_characters? \${                                                                               ↦r {new env.fn.template_head($$sym2)}
 
-<> template_middle → \} template_characters? \${ 				↦r {new fn.template_middle($$sym2)}
+<> template_middle → \} template_characters? \${                                                                            ↦r {new env.fn.template_middle($$sym2)}
 
-<> template_tail → \} template_characters? `					↦r {new fn.template_tail($$sym2)}
+<> template_tail → \} template_characters? `                                                                                ↦r {new env.fn.template_tail($$sym2)}
 
 <> template_characters → (θany │ θws │ θnl │ θkeyword │ θop │ θsym │ θob │ θcb │ θnum │ θid │ θstr │ " │ ' )(*")
 
@@ -560,298 +550,297 @@
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-object-initializer
 ##############################################################################################################
 
-	<> object_literal →  { property_definition(*,) ,? }				↦return {new fn.object_literal($$sym2)}
+    <> object_literal →  { property_definition(*,) ,? }                                                                     ↦return {new env.fn.object_literal($$sym2)}
 
-	<> property_definition →  cover_initialized_name 				
-		│ identifier_reference 										
-	 	│ method_definition											
-		│ ... assignment_expression 								↦c ^spread_element
-		│ property_name : assignment_expression						↦c ^property_binding		
+    <> property_definition →  cover_initialized_name                
+        │ identifier_reference                                      
+        │ method_definition                                         
+        │ ... assignment_expression                                                                                         ↦c ^spread_element
+        │ property_name : assignment_expression                                                                             ↦c ^property_binding        
 
-	<> property_name → literal_property_name
-		│ computed_property_name
+    <> property_name → literal_property_name
+        │ computed_property_name
 
-	<> literal_property_name → identifier_name
-		│ string_literal
-		│ numeric_literal
+    <> literal_property_name → identifier_name
+        │ string_literal
+        │ numeric_literal
 
-	<> computed_property_name → \[ assignment_expression \] 		↦return{ $sym2 }
+    <> computed_property_name → \[ assignment_expression \]                                                                 ↦c ^computed_property
 
-	<> cover_initialized_name → identifier_reference initializer 	↦c ^binding
+    <> cover_initialized_name → identifier_reference initializer                                                            ↦c ^binding
 
-	<> initializer → = assignment_expression						↦return{ $sym2 }
+    <> initializer → = assignment_expression                                                                                ↦return{ $sym2 }
 
 
 ##############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-array-initializer
 ##############################################################################################################
 
-	<> array_literal → \[ element_list? elision? \] 				↦return {new fn.array_literal($$sym2)}
+    <> array_literal → \[ element_list? elision? \]                                                                         ↦return {new env.fn.array_literal($$sym2)}
 
-	<> element_list →
-		assignment_expression 										↦return{ [sym[0]] }
-		│ spread_element											↦return{ [sym[0]] }
-		│ elision assignment_expression 							↦return{ [sym[1]] }
-		│ elision spread_element									↦return{ [sym[1]] }
-		│ element_list , assignment_expression     					↦return{ (sym[0].push(sym[2]),sym[0]) }
-		│ element_list , spread_element 							↦return{ (sym[0].push(sym[2]),sym[0]) }
-		│ element_list , elision assignment_expression 				↦return{ (sym[0].push(sym[2]),sym[0]) }
-		│ element_list , elision assignment_expression 				↦return{ (sym[0].push(sym[2]),sym[0]) }
+    <> element_list →
+        assignment_expression                                                                                               ↦return{ [sym[0]] }
+        │ spread_element                                                                                                    ↦return{ [sym[0]] }
+        │ elision assignment_expression                                                                                     ↦return{ [sym[1]] }
+        │ elision spread_element                                                                                            ↦return{ [sym[1]] }
+        │ element_list , assignment_expression                                                                              ↦return{ (sym[0].push(sym[2]),sym[0]) }
+        │ element_list , spread_element                                                                                     ↦return{ (sym[0].push(sym[2]),sym[0]) }
+        │ element_list , elision assignment_expression                                                                      ↦return{ (sym[0].push(sym[2]),sym[0]) }
+        │ element_list , elision assignment_expression                                                                      ↦return{ (sym[0].push(sym[2]),sym[0]) }
 
-	<> elision → ,
-		│ elision ,
+    <> elision → ,
+        │ elision ,
 
-	<> spread_element → ... assignment_expression 					↦c ^spread_element
+    <> spread_element → ... assignment_expression                                                                           ↦c ^spread_element
 
 ## SIMPLE EXPRESSIONS
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#prod-AssignmentExpression
-	##############################################################################################################
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#prod-AssignmentExpression
+    ##########################################################################################################
 
-		<> assignment_expression → conditional_expression 
-			# │ yield_expression
-			│ arrow_function
-			#│ async_arrow_function
-			│ left_hand_side_expression = assignment_expression  					↦c ^assignment_expression
-			│ left_hand_side_expression assignement_operator assignment_expression	↦c ^assignment_expression
+        <> assignment_expression → conditional_expression 
+            # │ yield_expression
+            │ arrow_function
+            #│ async_arrow_function
+            │ left_hand_side_expression = assignment_expression                                                             ↦c ^assignment_expression
+            │ left_hand_side_expression assignement_operator assignment_expression                                          ↦c ^assignment_expression
 
-		<> assignement_operator → *= 														
-			│ /= 																		
-			│ %= 																		
-			│ += 																		
-			│ -= 																		
-			│ <<= 																		
-			│ >>= 																		
-			│ >>>= 																		
-			│ &= 																		
-			│ ^= 																		
-			│ |= 																		
-			│ **= 																		
+        <> assignement_operator → *=                                                        
+            │ /=                                                                        
+            │ %=                                                                        
+            │ +=                                                                        
+            │ -=                                                                        
+            │ <<=                                                                       
+            │ >>=                                                                       
+            │ >>>=                                                                      
+            │ &=                                                                        
+            │ ^=                                                                        
+            │ |=                                                                        
+            │ **=                                                                       
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#prod-ConditionalExpression
-	##############################################################################################################
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#prod-ConditionalExpression
+    ##########################################################################################################
 
-		<> conditional_expression → logical_or_expression
-			│ logical_or_expression \? assignment_expression : assignment_expression 			↦c ^condition_expression
+        <> conditional_expression → logical_or_expression
+            │ logical_or_expression \? assignment_expression : assignment_expression                                        ↦c ^condition_expression
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-binary-logical-operators
-	##############################################################################################################
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-binary-logical-operators
+    ##########################################################################################################
 
-		<> logical_or_expression → logical_and_expression 
-			│ logical_or_expression || logical_and_expression									↦c ^or_expression
+        <> logical_or_expression → logical_and_expression 
+            │ logical_or_expression || logical_and_expression                                                               ↦c ^or_expression
 
-		<> logical_and_expression → bitwise_or_expression 
-			│ logical_and_expression && bitwise_or_expression									↦c ^and_expression
+        <> logical_and_expression → bitwise_or_expression 
+            │ logical_and_expression && bitwise_or_expression                                                               ↦c ^and_expression
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-binary-bitwise-operators
-	##############################################################################################################
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-binary-bitwise-operators
+    ##########################################################################################################
 
-		<> bitwise_or_expression → bitwise_xor_expression 
-			│ bitwise_or_expression | bitwise_xor_expression									↦c ^bit_or_expression
+        <> bitwise_or_expression → bitwise_xor_expression 
+            │ bitwise_or_expression | bitwise_xor_expression                                                                ↦c ^bit_or_expression
 
-		<> bitwise_xor_expression → bitwise_and_expression 
-			│ bitwise_xor_expression ^ bitwise_and_expression									↦c ^bit_xor_expression
+        <> bitwise_xor_expression → bitwise_and_expression 
+            │ bitwise_xor_expression ^ bitwise_and_expression                                                               ↦c ^bit_xor_expression
 
-		<> bitwise_and_expression → equality_expression 
-			│ bitwise_and_expression & equality_expression										↦c ^bit_and_expression
+        <> bitwise_and_expression → equality_expression 
+            │ bitwise_and_expression & equality_expression                                                                  ↦c ^bit_and_expression
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-equality-operators
-	##############################################################################################################
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-equality-operators
+    ##########################################################################################################
 
-		<> equality_expression → relational_expression 
-			│ equality_expression == relational_expression										↦c ^equality_expression
-			│ equality_expression != relational_expression										↦c ^equality_expression
-			│ equality_expression === relational_expression										↦c ^equality_expression
-			│ equality_expression !== relational_expression										↦c ^equality_expression
+        <> equality_expression → relational_expression 
+            │ equality_expression == relational_expression                                                                  ↦c ^equality_expression
+            │ equality_expression != relational_expression                                                                  ↦c ^equality_expression
+            │ equality_expression === relational_expression                                                                 ↦c ^equality_expression
+            │ equality_expression !== relational_expression                                                                 ↦c ^equality_expression
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-relational-operators
-	##############################################################################################################
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-relational-operators
+    ##########################################################################################################
 
-		<> relational_expression → shift_expression 
-			│ relational_expression < shift_expression											↦c ^equality_expression
-			│ relational_expression >  shift_expression											↦c ^equality_expression
-			│ relational_expression <= shift_expression											↦c ^equality_expression	
-			│ relational_expression >= shift_expression											↦c ^equality_expression
-			│ relational_expression τinstanceof shift_expression								↦c ^instanceof_expression
-			│ relational_expression τin shift_expression										↦c ^in_expression	
+        <> relational_expression → shift_expression 
+            │ relational_expression < shift_expression                                                                      ↦c ^equality_expression
+            │ relational_expression >  shift_expression                                                                     ↦c ^equality_expression
+            │ relational_expression <= shift_expression                                                                     ↦c ^equality_expression 
+            │ relational_expression >= shift_expression                                                                     ↦c ^equality_expression
+            │ relational_expression τinstanceof shift_expression                                                            ↦c ^instanceof_expression
+            │ relational_expression τin shift_expression                                                                    ↦c ^in_expression   
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-bitwise-shift-operators
-	##############################################################################################################
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-bitwise-shift-operators
+    ##########################################################################################################
 
-		<> shift_expression → additive_expression 
-			│ shift_expression << additive_expression											↦c ^left_shift_expression
-			│ shift_expression >> additive_expression											↦c ^right_shift_expression
-			│ shift_expression >>> additive_expression											↦c ^right_shift_fill_expression
-	
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-additive-operators
-	##############################################################################################################
+        <> shift_expression → additive_expression 
+            │ shift_expression << additive_expression                                                                       ↦c ^left_shift_expression
+            │ shift_expression >> additive_expression                                                                       ↦c ^right_shift_expression
+            │ shift_expression >>> additive_expression                                                                      ↦c ^right_shift_fill_expression
+    
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-additive-operators
+    ##########################################################################################################
 
-		<> additive_expression → multiplicative_expression 
-			│ additive_expression + multiplicative_expression   								↦c ^add_expression
-			│ additive_expression - multiplicative_expression									↦c ^subtract_expression
+        <> additive_expression → multiplicative_expression 
+            │ additive_expression + multiplicative_expression                                                               ↦c ^add_expression
+            │ additive_expression - multiplicative_expression                                                               ↦c ^subtract_expression
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-multiplicative-operators
-	##############################################################################################################
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-multiplicative-operators
+    ##########################################################################################################
 
-		<> multiplicative_expression → exponentiation_expression 
-			│ multiplicative_expression * exponentiation_expression 							↦c ^multiply_expression
-			│ multiplicative_expression / exponentiation_expression 							↦c ^divide_expression
-			│ multiplicative_expression % exponentiation_expression 							↦c ^modulo_expression
+        <> multiplicative_expression → exponentiation_expression 
+            │ multiplicative_expression * exponentiation_expression                                                         ↦c ^multiply_expression
+            │ multiplicative_expression / exponentiation_expression                                                         ↦c ^divide_expression
+            │ multiplicative_expression % exponentiation_expression                                                         ↦c ^modulo_expression
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-exp-operator
-	##############################################################################################################
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-exp-operator
+    ##########################################################################################################
 
-		<> exponentiation_expression → unary_expression 
-			│ update_expression ** exponentiation_expression									↦c ^exponent_expression
+        <> exponentiation_expression → unary_expression 
+            │ update_expression ** exponentiation_expression                                                                ↦c ^exponent_expression
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-unary-operators
-	##############################################################################################################
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-unary-operators
+    ##########################################################################################################
 
-		<> unary_expression → update_expression 
-			│ τdelete unary_expression															↦c ^delete_expression
-			│ τvoid unary_expression															↦c ^void_expression
-			│ τtypeof unary_expression															↦c ^typeof_expression
-			│ + unary_expression																↦c ^plus_expression
-			│ - unary_expression																↦c ^negate_expression
-			│ ~ unary_expression																↦c ^unary_or_expression
-			│ ! unary_expression																↦c ^unary_not_expression
-			│ await_expression
+        <> unary_expression → update_expression 
+            │ τdelete unary_expression                                                                                      ↦c ^delete_expression
+            │ τvoid unary_expression                                                                                        ↦c ^void_expression
+            │ τtypeof unary_expression                                                                                      ↦c ^typeof_expression
+            │ + unary_expression                                                                                            ↦c ^plus_expression
+            │ - unary_expression                                                                                            ↦c ^negate_expression
+            │ ~ unary_expression                                                                                            ↦c ^unary_or_expression
+            │ ! unary_expression                                                                                            ↦c ^unary_not_expression
+            │ await_expression
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-update-expressions
-	##############################################################################################################
- 	
-		<> update_expression →  left_hand_side_expression 
-			│ left_hand_side_expression  ++														↦c ^post_increment_expression
-			│ left_hand_side_expression  --														↦c ^post_decrement_expression
-			│ ++ unary_expression																↦c ^pre_increment_expression
-			│ -- unary_expression																↦c ^pre_decrement_expression
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-update-expressions
+    ##########################################################################################################
+    
+        <> update_expression →  left_hand_side_expression 
+            │ left_hand_side_expression  ++                                                                                 ↦c ^post_increment_expression
+            │ left_hand_side_expression  --                                                                                 ↦c ^post_decrement_expression
+            │ ++ unary_expression                                                                                           ↦c ^pre_increment_expression
+            │ -- unary_expression                                                                                           ↦c ^pre_decrement_expression
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#prod-CoverParenthesizedExpressionAndArrowParameterList
-	##############################################################################################################
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#prod-CoverParenthesizedExpressionAndArrowParameterList
+    ##########################################################################################################
 
-		<> cover_parenthesized_expression_and_arrow_parameter_list →
-			\( \)												↦return{ null; }
-			│ \( expression \)									↦return{ new fn.parenthasized($sym2) }
-			│ \( expression , \)								↦return{ new fn.parenthasized($sym2) }
-			│ \( ... binding_identifier \)    					↦return{ new fn.parenthasized(new fn.spread_element(sym.slice(1,3))) }
-			│ \( ... binding_pattern \) 						↦return{ new fn.parenthasized(new fn.spread_element(sym.slice(1,3))) }
-			│ \( expression , ... binding_identifier \)			↦return{ new fn.parenthasized(sym$2, new fn.spread_element(sym.slice(3,5)))}
-			│ \( expression , ... binding_pattern \)  			↦return{ new fn.parenthasized(sym$2, new fn.spread_element(sym.slice(3,5)))}
+        <> cover_parenthesized_expression_and_arrow_parameter_list →
+            \( \)                                                                                                           ↦return{ null; }
+            │ \( expression \)                                                                                              ↦return{ new env.fn.parenthasized($sym2) }
+            │ \( expression , \)                                                                                            ↦return{ new env.fn.parenthasized($sym2) }
+            │ \( ... binding_identifier \)                                                                                  ↦return{ new env.fn.parenthasized(new env.fn.spread_element(sym.slice(1,3))) }
+            │ \( ... binding_pattern \)                                                                                     ↦return{ new env.fn.parenthasized(new env.fn.spread_element(sym.slice(1,3))) }
+            │ \( expression , ... binding_identifier \)                                                                     ↦return{ new env.fn.parenthasized(sym$2, new env.fn.spread_element(sym.slice(3,5)))}
+            │ \( expression , ... binding_pattern \)                                                                        ↦return{ new env.fn.parenthasized(sym$2, new env.fn.spread_element(sym.slice(3,5)))}
 
 ##############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#prod-BindingPattern
 ##############################################################################################################
 
-	<> binding_pattern → object_binding_pattern
-		│	array_binding_pattern
+    <> binding_pattern → object_binding_pattern
+        │   array_binding_pattern
 
-	<> object_binding_pattern → { }
-		│ { binding_rest_property }
-		│ { binding_property_list }
-		│ { binding_property_list , binding_rest_property}
-		│ { binding_property_list , }
+    <> object_binding_pattern → { }
+        │ { binding_rest_property }
+        │ { binding_property_list }
+        │ { binding_property_list , binding_rest_property}
+        │ { binding_property_list , }
 
-	<> array_binding_pattern → \[ \] 
-		│ \[ elision binding_rest_element \]
-		│ \[ elision \]
-		│ \[ binding_rest_element \]
-		│ \[ binding_element_list \]
-		│ \[ binding_element_list , \]
-		│ \[ binding_element_list , elision \]
-		│ \[ binding_element_list , elision binding_rest_element \]
-		│ \[ binding_element_list , binding_rest_element \]
+    <> array_binding_pattern → \[ \] 
+        │ \[ elision binding_rest_element \]
+        │ \[ elision \]
+        │ \[ binding_rest_element \]
+        │ \[ binding_element_list \]
+        │ \[ binding_element_list , \]
+        │ \[ binding_element_list , elision \]
+        │ \[ binding_element_list , elision binding_rest_element \]
+        │ \[ binding_element_list , binding_rest_element \]
 
-	<> binding_rest_property → ... binding_identifier 
+    <> binding_rest_property → ... binding_identifier                                                                       ↦return{ new env.fn.spread_element(sym.slice(1,2)) }
 
-	<> binding_property_list → binding_property
-		│ binding_property_list , binding_property
+    <> binding_property_list → binding_property
+        │ binding_property_list , binding_property
 
-	<> binding_element_list → binding_elison_element 
-		│ binding_element_list , binding_elison_element
+    <> binding_element_list → binding_elison_element 
+        │ binding_element_list , binding_elison_element
 
-	<> binding_elison_element → elision binding_element 
-		│ binding_element
+    <> binding_elison_element → elision binding_element 
+        │ binding_element
 
-	<> binding_property → single_name_binding 
-		│ property_name : binding_element
+    <> binding_property → single_name_binding 
+        │ property_name : binding_element
 
-	<> binding_element → single_name_binding
-		│ binding_pattern initializer
-		│ binding_pattern
+    <> binding_element → single_name_binding
+        │ binding_pattern initializer
+        │ binding_pattern
 
-	<> single_name_binding → binding_identifier initializer
-		│ binding_identifier
+    <> single_name_binding → binding_identifier initializer
+        │ binding_identifier
 
-	<> binding_rest_element → ... binding_identifier 
-		│ ... binding_pattern
+    <> binding_rest_element → ... binding_identifier                                                                      ↦return{ new env.fn.spread_element(sym.slice(1,2)) }
+        │ ... binding_pattern                                                                                             ↦return{ new env.fn.spread_element(sym.slice(1,2)) }
 
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#prod-RegularExpressionLiteral
-	##############################################################################################################
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#prod-RegularExpressionLiteral
+    ##########################################################################################################
 
-<> regular_expression_literal → \/ ( θany │ \\ θany ↦r { $sym1 + $sym2 } )(*") \/ regular_expression_flags? 						↦c ^reg_ex_literal
+<> regular_expression_literal → \/ ( θany │ \\ θany ↦r { $sym1 + $sym2 } )(*") \/ regular_expression_flags?                         ↦c ^reg_ex_literal
 
 <> regular_expression_flags → identifier
 
-	##############################################################################################################
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-ecmascript-language-lexical-grammar
-	# Incomplete
-	##############################################################################################################
+    ##########################################################################################################
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-ecmascript-language-lexical-grammar
+    ##########################################################################################################
 
-		<> literal → boolean_literal				
-			│ null_literal
-			│ string_literal					
-			│ numeric_literal		
+        <> literal → boolean_literal                
+            │ null_literal
+            │ string_literal                    
+            │ numeric_literal       
 
 
-		<> string_literal → \" (ERR θnl )  ( θws │ θid │ θsym │ θnum │ θop │ θob │ θcb │ \' │ escaped_sequence )(*") (ERR θnl )  \"		↦c ^string_literal
-			│ \' (ERR θnl )  ( θws │ θid │ θsym │ θnum │ θop │ θob │ θcb │ \" │ escaped_sequence )(*") (ERR θnl )  \'					↦c ^string_literal
+        <> string_literal → \" (ERR θnl )  ( θws │ θid │ θsym │ θnum │ θop │ θob │ θcb │ \' │ escaped_sequence )(*") (ERR θnl )  \"     ↦c ^string_literal
+            │ \' (ERR θnl )  ( θws │ θid │ θsym │ θnum │ θop │ θob │ θcb │ \" │ escaped_sequence )(*") (ERR θnl )  \'                   ↦c ^string_literal
 
-		<> escaped_sequence → \\ ( ' │ " │ \b │ \f │ \n │ \r │ \y │ \v │ \x │ \u │ \0 │ \1 │ \2 │ \3 │ \4 │ \5 │ \6 │ \7 │ \8 │ \9 │ hex_escape_sequence │ unicode_escape_sequence )   ↦r {$sym1 + $sym2}
+        <> escaped_sequence → \\ ( ' │ " │ τb │ τf │ τn │ τr │ τy │ τv │ τx │ τu │ 0 │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ hex_escape_sequence │ unicode_escape_sequence )   ↦r {$sym1 + $sym2}
 
-		<> hex_escape_sequence → τx def::hex_digit def::hex_digit 									↦r {$sym1 + $sym2 + $sym3 }
+        <> hex_escape_sequence → τx def::hex_digit def::hex_digit                                                                       ↦r {$sym1 + $sym2 + $sym3 }
 
-		<> unicode_escape_sequence → τu def::hex_digit def::hex_digit def::hex_digit def::hex_digit ↦r {$sym1 + $sym2 + $sym3 + $sym4 + $sym5 }
-			│ τu \{ def::hex \} ↦r { $sym1 + $sym2 + $sym3 + $sym4 }
+        <> unicode_escape_sequence → τu def::hex_digit def::hex_digit def::hex_digit def::hex_digit                                     ↦r {$sym1 + $sym2 + $sym3 + $sym4 + $sym5 }
+            │ τu \{ def::hex \}                                                                                                         ↦r { $sym1 + $sym2 + $sym3 + $sym4 }
 
-		<> numeric_literal → number																↦c ^numeric_literal
+        <> numeric_literal → number                                                                                                     ↦c ^numeric_literal
 
-		<> number → ( def::float	│ def::octal │ def::binary │ def::hex )						↦return{ $$sym1 }
+        <> number → ( def::float    │ def::octal │ def::binary │ def::hex )                                                             ↦return{ $$sym1 }
 
-		<> null_literal →  τnull																↦c ^null_literal
+        <> null_literal →  τnull                                                                                                        ↦c ^null_literal
 
-		<> boolean_literal → (τtrue │ τfalse) 													↦c ^bool_literal
+        <> boolean_literal → (τtrue │ τfalse)                                                                                           ↦c ^bool_literal
 
-	<> label_identifier → identifier				#↦c ^identifier		
-			#│ τyield 							↦c ^yield_id
-			#│ τawait 							↦c ^await_id
+    <> label_identifier → identifier           #↦c ^identifier     
+            │ τyield                           #↦c ^yield_id
+            │ τawait                           #↦c ^await_id
 
-	<> identifier_reference → identifier			#↦c ^identifier		
-			#│ τyield 							↦c ^yield_id
-			#│ τawait 							↦c ^await_id
+    <> identifier_reference → identifier            #↦c ^identifier     
+            │ τyield                           #↦c ^yield_id
+            │ τawait                           #↦c ^await_id
 
-	<> binding_identifier → identifier 	
-			#│ τyield 							↦c ^yield_id
-			#│ τawait 							↦c ^await_id
+    <> binding_identifier → identifier  
+            │ τyield                           #↦c ^yield_id
+            │ τawait                           #↦c ^await_id
 
-	<> identifier → identifier_name				
+    <> identifier → identifier_name             
 
-	# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-names-and-keywords
+    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-names-and-keywords
 
-	<> identifier_name →  id 				↦c ^identifier				
+    <> identifier_name →  id                ↦c ^identifier              
 
-	<> id → ( def::identifier_start │ \$ ) (def::identifier_continue │ \$)(*") (θws │ θnl)? ↦r { $sym1 + $sym2 }
+    <> id → ( def::identifier_start │ \$ ) (def::identifier_continue │ \$)(*") (θws │ θnl)? ↦r { $sym1 + $sym2 }

@@ -2,8 +2,7 @@
 
 import base from "./base.mjs";
 import types from "./types.mjs";
-
-
+import URL from "@candlefw/url"
 
 export default class import_declaration extends base {
 
@@ -25,5 +24,9 @@ export default class import_declaration extends base {
             return `import ${this.import_clause.render()} from ${this.specifier.render()};`
         else
             return `import ${this.specifier.render()};`
+    }
+
+    async retrieveData(base_url){
+        return URL.resolveRelative(this.specifier.render(), base_url).fetchText();
     }
 }

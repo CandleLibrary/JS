@@ -3,7 +3,7 @@
 import base from "./base.mjs";
 import types from "./types.mjs";
 
-export default class argument_list extends base {
+export default class extends base {
     constructor(sym) {
 
         super(...sym);
@@ -32,7 +32,7 @@ export default class argument_list extends base {
 
     get type() { return types.argument_list }
 
-    render(USE_PARENTHASIZ) { 
-        return this.args.map(s=>(s.render())).join(",") ;
+    toRenderLines() {
+        return [this.args.map(s=>(s.toRenderLines().join("") + ","))];
     }
 }

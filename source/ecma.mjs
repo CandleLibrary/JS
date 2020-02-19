@@ -89,14 +89,27 @@ import super_literal from "./nodes/super_literal.mjs";
 import for_of_statement from "./nodes/for_of_statement.mjs";
 import for_in_statement from "./nodes/for_in_statement.mjs";
 import lexical_expression from "./nodes/lexical_expression.mjs";
+import yield_expression from "./nodes/yield.mjs";
+import reg_ex_literal from "./nodes/regex.mjs"
+
+
 import types from "./nodes/types.mjs";
 import env from "./parser/env.mjs";
-import ecmascript_parser from "./parser/ecmascript.mjs";
-import whind from "@candlefw/whind";
+import ecmascript_parser_data from "./parser/ecmascript.mjs";
+import Whind from "@candlefw/whind";
+import { lrParse } from "@candlefw/hydrocarbon";
+
+function ecmascript_parser(lex) {
+    if (typeof lex == "string")
+        lex = new Whind(lex);
+    return lrParse(lex, ecmascript_parser_data, env);
+}
 
 export {
     types,
     env,
+    yield_expression,
+    reg_ex_literal,
     template,
     template_head,
     template_middle,
@@ -110,9 +123,9 @@ export {
     case_statement,
     switch_statement,
     empty_statement,
-	default_case_statement,
+    default_case_statement,
     break_statement,
-	continue_statement,
+    continue_statement,
     import_declaration,
     import_clause,
     throw_statement,
@@ -187,9 +200,6 @@ export {
     unary_or_expression,
     unary_xor_expression,
     void_expression,
-    argument_list
-}
-
-export function parse(string) {
-    return ecmascript_parser(whind(string), env);
+    argument_list,
+    ecmascript_parser as parser
 }

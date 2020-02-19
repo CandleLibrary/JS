@@ -20,6 +20,6 @@ export default class array_literal extends base {
     }
 
     get type() { return types.array_literal }
-
+    
     render() { return `[${this.exprs.map(a=>a.render()).join(",")}]` }
 }

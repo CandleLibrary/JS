@@ -73,5 +73,8 @@ export default {
 	for_in_statement: 74,
 	script: 75,
 	switch_statement: 76,
-	case_statement:77
+	case_statement:77,
+	computed_property:78,
+	yield_expression:79,
+	regex:80
 };

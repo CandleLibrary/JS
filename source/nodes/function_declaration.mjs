@@ -2,7 +2,7 @@ import {statement} from "./base.mjs";
 import types from "./types.mjs";
 
 export default class function_declaration extends statement {
-    constructor(id, args, body, _async = false) {
+    constructor(id, args, body, _async = false, generator = false) {
 
         super(id, args || null, body || null);
 
@@ -11,6 +11,7 @@ export default class function_declaration extends statement {
             this.id.root = false;
 
         this.async = _async;
+        this.gen = generator;
     }
 
     get id() { return this.vals[0] }
@@ -36,6 +37,6 @@ export default class function_declaration extends statement {
             args_str = (this.args) ? this.args.render() : "()",
             id = this.id ? this.id.render() : "";
 
-        return `${this.async ? "async ": ""}function ${id}${args_str}{${body_str}}`;
+        return `${this.async ? "async ": ""}function ${this.gen ? "* ": ""}${id}${args_str}{${body_str}}`;
     }
 }

@@ -89,14 +89,8 @@ import super_literal from "../nodes/super_literal.mjs";
 import for_of_statement from "../nodes/for_of_statement.mjs";
 import for_in_statement from "../nodes/for_of_statement.mjs";
 import lexical_expression from "../nodes/lexical_expression.mjs";
-
-//with_statement
-//switch_statement
-//label_statement
-//finally_statement
-//variable_statement
-//class_statement
-
+import yield_expression from "../nodes/yield.mjs";
+import reg_ex_literal from "../nodes/regex.mjs";
 
 const env = {
     table: {},
@@ -108,11 +102,11 @@ const env = {
         module,
         template,
         lexical_expression,
-template_head,
-template_middle,
-template_tail,
-super_literal,
-for_of_statement,
+        template_head,
+        template_middle,
+        template_tail,
+        super_literal,
+        for_of_statement,
         class_method,
         throw_statement,
         empty_statement,
@@ -195,6 +189,8 @@ for_of_statement,
         void_expression,
         argument_list,
         variable_statement,
+        yield_expression,
+    reg_ex_literal,
         while_stmt: function(sym) {
             this.bool = sym[1];
             this.body = sym[3];
