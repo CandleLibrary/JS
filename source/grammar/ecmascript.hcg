@@ -843,4 +843,7 @@
 
     <> identifier_name →  id                ↦c ^identifier              
 
-    <> id → ( def::identifier_start │ \$ ) (def::identifier_continue │ \$)(*") (θws │ θnl)? ↦r { $sym1 + $sym2 }
+    <> id → id (θws │ θnl)?                 ↦r { $sym1 }
+            │ id \$                         ↦r { $sym1 + $sym2 }
+            │ def::identifier
+            │ \$  

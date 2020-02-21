@@ -15,5 +15,5 @@ export default class variable_declaration extends statement {
 
     get type() { return types.variable_declaration }
 
-    render() { return `var ${this.bindings.map(b=>b.render()).join(",")};` }
+    render() { return `var ${this.bindings.map(b=>b.render()).join(", ")};` }
 }

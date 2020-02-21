@@ -5,7 +5,7 @@
   "main": "source/ecma.mjs",
   "type": "module",
   "scripts": {
-    "test": "mocha test/test.js -r esm",
+    "test": "cfw_test test/test.js",
     "test.watch": "mocha test/test.js -r esm --watch",
     "build": "rollup --config ./build/config/config.js",
     "build.watch": "rollup --config  ./build/config/config.js --watch",

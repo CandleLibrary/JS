@@ -17,5 +17,5 @@ export default class lexical_declaration extends base {
 
     get type() { return types.lexical_declaration }
 
-    render() { return `${this.mode} ${this.bindings.map(b=>b.render()).join(",")};` }
+    render() { return `${this.mode} ${this.bindings.map(b=>b.render()).join(", ")};` }
 }

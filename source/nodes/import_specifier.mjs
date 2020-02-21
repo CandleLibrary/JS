@@ -27,6 +27,6 @@
      render() {
 		if (this.alt_id)
             return `${this.id.render()} as ${this.alt_id.render()}`
-         else return `${this.id.render()} `
+         else return `${this.id.render()}`
      }
  }

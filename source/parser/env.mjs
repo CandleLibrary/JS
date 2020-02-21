@@ -190,7 +190,7 @@ const env = {
         argument_list,
         variable_statement,
         yield_expression,
-    reg_ex_literal,
+        reg_ex_literal,
         while_stmt: function(sym) {
             this.bool = sym[1];
             this.body = sym[3];
