@@ -30,7 +30,7 @@
     
         <> module → module_body      
 
-        <> module_body → (module_item)(+)                                                                         
+        <> module_body → module_item(+)                                                                         
 
         <> module_item → import_declaration                                                                         ↦{ env.IS_MODULE = true }
             │ export_declaration                                                                                    ↦{ env.IS_MODULE = true }
@@ -53,7 +53,7 @@
 
         <> name_space_import → * τas imported_binding                                                               ↦r { {type:"NameSpaceImport", vals:$$sym3, pos } }
 
-        <> named_imports → { (import_specifier)(*,) ,? }                                                            ↦r { {type:"NamedImports", vals:$$sym2 || [], pos } }
+        <> named_imports → { import_specifier(*,) ,? }                                                              ↦r { {type:"NamedImports", vals:$$sym2 || [], pos } }
 
         <> from_clause → τfrom module_specifier                                                                     ↦r { {type:"FromClause", value:$sym2, pos } }
 
@@ -82,7 +82,7 @@
             
                 assignment_expression                                                                               ↦r { {type:"ExportDeclaration", vals:[$sym1, null], DEFAULT:true, pos } }
 
-        <> export_clause → { (export_specifier)(*,) ,? }                                                            ↦r { {type:"ExportClause", vals:[$$sym2], pos } }
+        <> export_clause → { export_specifier(*,) ,? }                                                            ↦r { {type:"ExportClause", vals:[$$sym2], pos } }
 
         <> export_specifier →  identifier                                                                           ↦r { {type:"Specifier", vals:[$sym1], pos } }
             │ identifier τas identifier                                                                             ↦r { {type:"Specifier", vals:[$sym1, $sym3], pos } }
@@ -380,13 +380,13 @@
     # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-arrow-function-definitions
     ##########################################################################################################
 
-        <> arrow_function → τasync? arrow_parameters => concise_body                                                    ↦r { { type:"ArrowFunction", ASYNC:!!$$sym1, vals:[$$sym2,$$sym4], pos } }
+    <> arrow_function → τasync? arrow_parameters => concise_body                                                        ↦r { { type:"ArrowFunction", ASYNC:!!$$sym1, vals:[$$sym2,$$sym4], pos } }
 
-        <> arrow_parameters → binding_identifier                                                                        
-            │ cover_parenthesized_expression_and_arrow_parameter_list               
+    <> arrow_parameters → binding_identifier                                                                        
+        │ cover_parenthesized_expression_and_arrow_parameter_list               
 
-        <> concise_body → (EXC { ) assignment_expression 
-            │ { function_statement_list }                                                                               ↦r { { type: "BlockStatement", vals: $sym2, pos } }
+    <> concise_body → (EXC { ) assignment_expression 
+        │ { function_statement_list }                                                                                   ↦r { { type: "BlockStatement", vals: $sym2, pos } }
 
     ##########################################################################################################
     # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-async-arrow-function-definitions
@@ -492,12 +492,13 @@
         │ object_literal                                            
         │ function_expression
         │ class_expression
-        #│ generator_expression
-        #│ async_function_expression
-        #│ async_generator_expression
         │ regular_expression_literal
         │ template_literal
         │ parenthasized
+
+        #│ generator_expression
+        #│ async_function_expression
+        #│ async_generator_expression
 
 ##########################################################################################################  
 # https://www.ecma-international.org/ecma-262/9.0/index.html#prod-AwaitExpression
@@ -525,7 +526,7 @@
 
 <> template_head → ` template_characters? \${                                                                               ↦r { { type:"TemplateHead", vals:[$sym2], pos  } }
 
-<> template_middle → \} template_characters? ${                                                                              ↦r { { type:"TemplateMiddle", vals:[$sym2],  pos  } }
+<> template_middle → \} template_characters? ${                                                                             ↦r { { type:"TemplateMiddle", vals:[$sym2],  pos  } }
 
 <> template_tail → \} template_characters? `                                                                                ↦r { { type:"TemplateTail", vals:[$sym2],  pos  } }
 
@@ -562,16 +563,14 @@
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-array-initializer
 ##############################################################################################################
 
-    <> array_literal → \[ element_list? elision? \]                                                                         ↦r { {type: "ArrayLiteral", vals:$$sym2||[], pos } }
+    <> array_literal → \[ elision? \]                                                                                       ↦r { {type: "ArrayLiteral", vals:[], pos } }
+        │ \[ element_list \]                                                                                                ↦r { {type: "ArrayLiteral", vals:$$sym2, pos } }
+        │ \[ element_list , elision? \]                                                                                     ↦r { {type: "ArrayLiteral", vals:$$sym2, pos } }
 
-    <> element_list → assignment_expression                                                                                 ↦r { [sym[0]] }
-        │ spread_element                                                                                                    ↦r { [sym[0]] }
-        │ elision assignment_expression                                                                                     ↦r { [sym[1]] }
-        │ elision spread_element                                                                                            ↦r { [sym[1]] }
-        │ element_list , assignment_expression                                                                              ↦r { (sym[0].push(sym[2]),sym[0]) }
-        │ element_list , spread_element                                                                                     ↦r { (sym[0].push(sym[2]),sym[0]) }
-        │ element_list , elision assignment_expression                                                                      ↦r { (sym[0].push(sym[2]),sym[0]) }
-        │ element_list , elision assignment_expression                                                                      ↦r { (sym[0].push(sym[2]),sym[0]) }
+    <> element_list → elision? assignment_expression                                                                        ↦r { [ $sym2 ] }
+        │ elision? spread_element                                                                                           ↦r { [ $sym2 ] }
+        │ element_list , elision? assignment_expression                                                                     ↦r { [ ...$sym1, $sym2 ] }
+        │ element_list , elision? spread_element                                                                            ↦r { [ ...$sym1, $sym2 ] }
 
     <> elision → ,(+)
 
@@ -586,9 +585,10 @@
         <> assignment_expression → conditional_expression 
             │ yield_expression
             │ arrow_function
-            #│ async_arrow_function
             │ left_hand_side_expression = assignment_expression                                                             ↦r { {type: "AssignmentExpression", operator:"=",  vals:[$sym1,$sym3], pos } }
             │ left_hand_side_expression assignement_operator assignment_expression                                          ↦r { {type: "AssignmentExpression", operator:$sym2,  vals:[$sym1,$sym3], pos} }
+            
+            #│ async_arrow_function
 
         <> assignement_operator → *=                                                        
             │ /=                                                                        
@@ -715,13 +715,15 @@
     ##########################################################################################################
     # https://www.ecma-international.org/ecma-262/9.0/index.html#prod-CoverParenthesizedExpressionAndArrowParameterList
     ##########################################################################################################
-        <> parenthasized → \( expression \)                                                                                 ↦r { {type: "Parenthasized", vals:[$$sym1], pos} }
-        <> cover_parenthesized_expression_and_arrow_parameter_list → \( \)                                                  ↦r { {type: "Parenthasized", vals:[], pos} }
-            │ \( expression ,? \)                                                                                           ↦r { {type: "Parenthasized", vals:[$$sym1], pos} }
-            │ \( ... binding_identifier  \)                                                                                 ↦r { {type: "Parenthasized", vals:[{type:"Spread", vals:[$$sym1]}], pos} }
-            │ \( ... binding_pattern \)                                                                                     ↦r { {type: "Parenthasized", vals:[{type:"Spread", vals:[$$sym1]}], pos} }
-            │ \( expression , ... binding_identifier  \)                                                                    ↦r { {type: "Parenthasized", vals:[$$sym1, {type:"Spread", vals:[$$sym3]}], pos} }
-            │ \( expression , ... binding_pattern  \)                                                                       ↦r { {type: "Parenthasized", vals:[$$sym1, {type:"Spread", vals:[$$sym3]}], pos} }
+
+        <> parenthasized → \( expression \)                                                                                 ↦r { {type: "Parenthasized", vals:[$$sym2], pos} }
+
+        <> cover_parenthesized_expression_and_arrow_parameter_list → \( \)                                                  ↦r { {type: "Parameters", vals:[], pos} }
+            │ \( expression ,? \)                                                                                           ↦r { {type: "Parameters", vals:[$$sym2], pos} }
+            │ \( ... binding_identifier  \)                                                                                 ↦r { {type: "Parameters", vals:[{type:"Spread", vals:[$$sym3]}], pos} }
+            │ \( ... binding_pattern \)                                                                                     ↦r { {type: "Parameters", vals:[{type:"Spread", vals:[$$sym3]}], pos} }
+            │ \( expression , ... binding_identifier  \)                                                                    ↦r { {type: "Parameters", vals:[$$sym2, {type:"Spread", vals:[$$sym4]}], pos} }
+            │ \( expression , ... binding_pattern  \)                                                                       ↦r { {type: "Parameters", vals:[$$sym2, {type:"Spread", vals:[$$sym4]}], pos} }
 
 ##############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#prod-BindingPattern
@@ -742,8 +744,8 @@
         │ \[ binding_rest_element \]                                                                                        ↦r { {type: "ArrayBinding", vals:[$sym1], pos} }    
         │ \[ binding_element_list \]                                                                                        ↦r { {type: "ArrayBinding", vals:[$sym1], pos} }    
         │ \[ binding_element_list , \]                                                                                      ↦r { {type: "ArrayBinding", vals:[$sym1], pos} }    
-        │ \[ binding_element_list , elision \]                                                                              ↦r { {type: "ArrayBinding", vals:[$sym1], pos} }    
-        │ \[ binding_element_list , elision binding_rest_element \]                                                         ↦r { {type: "ArrayBinding", vals:[$sym1, $sym3], pos} }    
+        │ \[ binding_element_list , elision? \]                                                                             ↦r { {type: "ArrayBinding", vals:[$sym1], pos} }    
+        │ \[ binding_element_list , elision? binding_rest_element \]                                                        ↦r { {type: "ArrayBinding", vals:[$sym1, $sym3], pos} }    
         │ \[ binding_element_list , binding_rest_element \]                                                                 ↦r { {type: "ArrayBinding", vals:[$sym1, $sym3], pos} }    
 
     <> binding_rest_property → ... binding_identifier                                                                       ↦r=>Spread
@@ -786,10 +788,10 @@
         │ numeric_literal       
 
 
-    <> string_literal → \" (ERR θnl )  ( θws │ θid │ θsym │ θnum │ θop │ θob │ θcb │ \' │ escaped_sequence )(*") (ERR θnl )  \"     ↦r { { type: "StringLiteral", value:$sym1,  pos  } }
-        │ \' (ERR θnl )  ( θws │ θid │ θsym │ θnum │ θop │ θob │ θcb │ \" │ escaped_sequence )(*") (ERR θnl )  \'                   ↦r { { type: "StringLiteral", value:$sym1,  pos  } }
+    <> string_literal → \" (ERR θnl )  ( θany │ escaped_sequence )(*") (ERR θnl )  \"                                               ↦r { { type: "StringLiteral", value:$sym2,  pos  } }
+        │ \' (ERR θnl )  ( θany │ escaped_sequence )(*") (ERR θnl )  \'                                                             ↦r { { type: "StringLiteral", value:$sym2,  pos  } }
 
-    <> escaped_sequence → \\ ( ' │ " │ τb │ τf │ τn │ τr │ τy │ τv │ τx │ τu │ 0 │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ hex_escape_sequence │ unicode_escape_sequence )   
+    <> escaped_sequence → \\ ( ' │ " │ τb │ τf │ τn │ τr │ τy │ τv │ 0 │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ hex_escape_sequence │ unicode_escape_sequence )   
                                                                                                                                     ↦r { $sym1 + $sym2}
 
     <> hex_escape_sequence → τx def::hex_digit def::hex_digit                                                                       ↦r { $sym1 + $sym2 + $sym3 }
