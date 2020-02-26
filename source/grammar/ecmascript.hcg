@@ -18,7 +18,7 @@
 
 #### End Functions
 
-<> javascript → variable_statement                                                                                               ↦{ env.IS_MODULE = false } ↦r { env.fn.buildJSAST(sym[0]) }
+<> javascript → start                                                                                               ↦{ env.IS_MODULE = false } ↦r { env.fn.buildJSAST(sym[0]) }
 
 <> start → module                                                                                                   ↦r{ { type:(env.IS_MODULE) ? "Module" : "Script", vals:$sym1, pos  } }
 
@@ -103,7 +103,7 @@
     ##########################################################################################################
 
 
-        <> statement_list → (statement_list_item)(+)                                                                ↦r { $$sym1.length > 1 ? {type: "StatementList", vals: $sym1, pos} : $sym1[0] }                               
+        <> statement_list → statement_list_item(+)                                                                ↦r { $$sym1.length > 1 ? {type: "StatementList", vals: $sym1, pos} : $sym1[0] }                               
 
         <> statement_list_item → statement 
             │ declaration
@@ -315,10 +315,10 @@
     ## Modified to include async and function generator elements
 
         <> function_declaration →  τasync? τfunction \*? binding_identifier? 
-                                    \( formal_parameters? \) { function_body? }                                         ↦r { { type:"Function", ASYNC:!!$sym1, GENERATOR:!!$sym3, vals:[$$sym4,$$sym6,$$sym9], pos } }
+                                    \( formal_parameters? \) { function_body? }                                         ↦r { { type:"Function", ASYNC:!!$$sym1, GENERATOR:!!$$sym3, vals:[$$sym4,$$sym6,$$sym9], pos } }
 
         <> function_expression → τasync? τfunction \*? binding_identifier? 
-                                    \( formal_parameters? \) { function_body? }                                         ↦r { { type:"Function", ASYNC:!!$sym1, GENERATOR:!!$sym3, vals:[$$sym4,$$sym6,$$sym9], pos } }
+                                    \( formal_parameters? \) { function_body? }                                         ↦r { { type:"Function", ASYNC:!!$$sym1, GENERATOR:!!$$sym3, vals:[$$sym4,$$sym6,$$sym9], pos } }
 
         <> unique_formal_parameters → formal_parameters
 
@@ -361,7 +361,7 @@
     # <> async_generator_body → function_body
 
     ##############################################################################################################
-    #https://www.ecma-international.org/ecma-262/9.0/index.html#prod-GeneratorExpression
+    #https://www.ecma-international.org/ecma-262/10.0/index.html#prod-GeneratorExpression
     ##############################################################################################################
 
     # <> generator_method → \* property_name  \( unique_formal_parameters? \) { generator_body }                                  
@@ -372,7 +372,7 @@
 
     # <> generator_body → function_body
 
-    <> yield_expression → τyield θnl?                                                                                   ↦r { {type: "YieldExpression", vals:[], pos} }
+    <> yield_expression → τyield (RED θnl)                                                                              ↦r { {type: "YieldExpression", vals:[], pos} }
         │ τyield \*? assignment_expression                                                                              ↦r { {type: "YieldExpression", vals:$$sym3, pos, GENERATOR:!!$$sym2} }
 
 
@@ -380,7 +380,7 @@
     # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-arrow-function-definitions
     ##########################################################################################################
 
-        <> arrow_function → τasync? arrow_parameters => concise_body                                                    ↦r { { type:"ArrowFunction", ASYNC:!!$sym1, vals:[$$sym2,$$sym4], pos } }
+        <> arrow_function → τasync? arrow_parameters => concise_body                                                    ↦r { { type:"ArrowFunction", ASYNC:!!$$sym1, vals:[$$sym2,$$sym4], pos } }
 
         <> arrow_parameters → binding_identifier                                                                        
             │ cover_parenthesized_expression_and_arrow_parameter_list               
@@ -400,7 +400,7 @@
     #    <> async_concise_body → (EXC { ) assignment_expression 
     #        │ { function_statement_list }                                               ↦r { $sym2 }
 
-    # <> cover_call_expression_and_async_arrow_head → member_expression arguments        
+    <> cover_call_expression_and_async_arrow_head → member_expression arguments                                         ↦r { { type: "CallMemberExpression", vals:[$sym1, $sym2], pos } }
 
 ## CLASSES
     
@@ -424,7 +424,7 @@
 # https://www.ecma-international.org/ecma-262/9.0/index.html#prod-MethodDefinition
 ##############################################################################################################
 
-    <> method_definition → τasync? \*? property_name \( unique_formal_parameters? \) { function_body? }                 ↦r { { type:"Method", ASYNC:!!$sym1, GENERATOR:!!$sym3, vals:[$$sym3, $$sym5, $$sum6], pos } } 
+    <> method_definition → τasync? \*? property_name \( unique_formal_parameters? \) { function_body? }                 ↦r { { type:"Method", ASYNC:!!$$sym1, GENERATOR:!!$$sym3, vals:[$$sym3, $$sym5, $$sum6], pos } } 
         │ τget property_name \( \) { function_body? }                                                                   ↦r { { type:"GetterMethod", vals:[$$sym3, $$sym5, $$sum6], pos } }
         │ τset property_name \( property_set_parameter_list \) { function_body? }                                       ↦r { { type:"SetterMethod", vals:[$$sym3, $$sym5, $$sum6], pos } }
 
@@ -469,22 +469,23 @@
         │ super_call
         │ call_expression arguments                                                                                     ↦r { {type: "CallExpression", vals:sym, pos, TEMPLATE:true } }
         │ call_expression \[ expression \]                                                                              ↦r { {type: "MemberExpression", vals:[$$sym1, $$sym3], pos, COMPUTED:true } }
-       # │ cover_call_expression_and_async_arrow_head 
+        │ cover_call_expression_and_async_arrow_head                                                                    ↦r { {type: "CallExpression", vals:sym, pos, TEMPLATE:true } }
         │ call_expression template_literal                                                                              ↦r { {type: "CallExpression", vals:sym, pos, TEMPLATE:true } }
 
     <> super_call → τsuper arguments                                                                                    ↦r { {type: "SuperCall", vals:$$sym2, pos } }
 
-    <> arguments → \( argument_list? ,? \)                                                                              ↦r { {type: "Arguments", vals:$$sym2||[], pos } }
+    <> arguments → \( \)                                                                                                ↦r { {type: "Arguments", vals:[], pos } }
+        │ \( argument_list ,? \)                                                                                        ↦r { {type: "Arguments", vals:$$sym2, pos } }
 
-    <> argument_list → ( assignment_expression │ ... assignment_expression ↦r=>Spread )(*,)                         
+    <> argument_list → (assignment_expression │ ... assignment_expression ↦r=>Spread  )(+,)
+                               
 
 
 ##############################################################################################################
 #https://www.ecma-international.org/ecma-262/9.0/index.html#sec-primary-expression
 ##############################################################################################################
 
-    <> primary_expression →
-        τthis                                                                                                               ↦r { {type: "ThisLiteral", pos } }
+    <> primary_expression → τthis                                                                                       ↦r { {type: "ThisLiteral", pos } }
         │ identifier_reference
         │ literal
         │ array_literal                                             
@@ -496,7 +497,7 @@
         #│ async_generator_expression
         │ regular_expression_literal
         │ template_literal
-        │ cover_parenthesized_expression_and_arrow_parameter_list
+        │ parenthasized
 
 ##########################################################################################################  
 # https://www.ecma-international.org/ecma-262/9.0/index.html#prod-AwaitExpression
@@ -522,13 +523,13 @@
 <> template_middle_list → template_middle expression                                                                        ↦r { $sym1.vals[1] = $sym2, [$sym1] }
     │ template_middle_list template_middle expression                                                                       ↦r { $sym2.vals[1] = $sym3, $sym1.push($sym2), $sym1 }
 
-<> template_head → ` template_characters? \${                                                                               ↦r { { type:"TemplateHead", vals:$sym2, pos  } }
+<> template_head → ` template_characters? \${                                                                               ↦r { { type:"TemplateHead", vals:[$sym2], pos  } }
 
-<> template_middle → \} template_characters? ${                                                                              ↦r { { type:"TemplateMiddle", vals:$sym2,  pos  } }
+<> template_middle → \} template_characters? ${                                                                              ↦r { { type:"TemplateMiddle", vals:[$sym2],  pos  } }
 
-<> template_tail → \} template_characters? `                                                                                ↦r { { type:"TemplateTail", vals:$sym2,  pos  } }
+<> template_tail → \} template_characters? `                                                                                ↦r { { type:"TemplateTail", vals:[$sym2],  pos  } }
 
-<> template_characters → (θany │ θws │ θnl │ θkeyword │ θop │ θsym │ θob │ θcb │ θnum │ θid │ θstr │ " │ ' )(*")            ↦r { { type:"StringLiteral", vals:$sym1,  pos  } }
+<> template_characters → (θany │ θws │ θnl │ θkeyword │ θop │ θsym │ θob │ θcb │ θnum │ θid │ θstr │ " │ ' )(*")            ↦r { { type:"StringLiteral", vals:[$sym1],  pos  } }
 
 
 ##############################################################################################################
@@ -563,8 +564,7 @@
 
     <> array_literal → \[ element_list? elision? \]                                                                         ↦r { {type: "ArrayLiteral", vals:$$sym2||[], pos } }
 
-    <> element_list →
-        assignment_expression                                                                                               ↦r { [sym[0]] }
+    <> element_list → assignment_expression                                                                                 ↦r { [sym[0]] }
         │ spread_element                                                                                                    ↦r { [sym[0]] }
         │ elision assignment_expression                                                                                     ↦r { [sym[1]] }
         │ elision spread_element                                                                                            ↦r { [sym[1]] }
@@ -715,13 +715,13 @@
     ##########################################################################################################
     # https://www.ecma-international.org/ecma-262/9.0/index.html#prod-CoverParenthesizedExpressionAndArrowParameterList
     ##########################################################################################################
-
-        <> cover_parenthesized_expression_and_arrow_parameter_list →                                                       
-            │ \( (expression ,? ↦r{$sym1})? \)                                                                              ↦r { {type: "Parenthasized", vals:[$$sym1], pos} }
-            │ \( (... binding_identifier ↦r=>Spread) \)                                                                     ↦r { {type: "Parenthasized", vals:[$$sym1], pos} }
-            │ \( (... binding_pattern ↦r=>Spread) \)                                                                        ↦r { {type: "Parenthasized", vals:[$$sym1], pos} }
-            │ \( expression , (... binding_identifier ↦r=>Spread) \)                                                        ↦r { {type: "Parenthasized", vals:[$$sym1, $$sym3], pos} }
-            │ \( expression , (... binding_pattern ↦r=>Spread) \)                                                           ↦r { {type: "Parenthasized", vals:[$$sym1, $$sym3], pos} }
+        <> parenthasized → \( expression \)                                                                                 ↦r { {type: "Parenthasized", vals:[$$sym1], pos} }
+        <> cover_parenthesized_expression_and_arrow_parameter_list → \( \)                                                  ↦r { {type: "Parenthasized", vals:[], pos} }
+            │ \( expression ,? \)                                                                                           ↦r { {type: "Parenthasized", vals:[$$sym1], pos} }
+            │ \( ... binding_identifier  \)                                                                                 ↦r { {type: "Parenthasized", vals:[{type:"Spread", vals:[$$sym1]}], pos} }
+            │ \( ... binding_pattern \)                                                                                     ↦r { {type: "Parenthasized", vals:[{type:"Spread", vals:[$$sym1]}], pos} }
+            │ \( expression , ... binding_identifier  \)                                                                    ↦r { {type: "Parenthasized", vals:[$$sym1, {type:"Spread", vals:[$$sym3]}], pos} }
+            │ \( expression , ... binding_pattern  \)                                                                       ↦r { {type: "Parenthasized", vals:[$$sym1, {type:"Spread", vals:[$$sym3]}], pos} }
 
 ##############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#prod-BindingPattern
@@ -799,11 +799,15 @@
 
     <> numeric_literal → number                                                                                                     ↦r { { type: "NumericLiteral", value:parseFloat($sym1), pos} }
 
-    <> number → ( def::float    │ def::octal │ def::binary │ def::hex )                                                            
+    <> number →  def::float 
+        │ def::octal 
+        │ def::binary 
+        │ def::hex                                                             
 
     <> null_literal →  τnull                                                                                                        ↦r { { type: "NullLiteral", pos  } }
 
-    <> boolean_literal → (τtrue │ τfalse)                                                                                           ↦r { { type: "BooleanLiteral", value: !!$sym1,  pos  } }
+    <> boolean_literal → τtrue                                                                                                      ↦r { { type: "BooleanLiteral", value: !!$$sym1,  pos  } }
+        │ τfalse                                                                                                                    ↦r { { type: "BooleanLiteral", value: !!$$sym1,  pos  } }
 
     <> label_identifier → identifier           #↦c ^identifier     
             #│ τyield                           #↦c ^yield_id
