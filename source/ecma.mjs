@@ -95,15 +95,7 @@ import reg_ex_literal from "./nodes/regex.mjs"
 
 import types from "./nodes/types.mjs";
 import env from "./parser/env.mjs";
-import ecmascript_parser_data from "./parser/ecmascript.mjs";
-import Whind from "@candlefw/whind";
-import { lrParse } from "@candlefw/hydrocarbon";
-
-function ecmascript_parser(lex) {
-    if (typeof lex == "string")
-        lex = new Whind(lex);
-    return lrParse(lex, ecmascript_parser_data, env);
-}
+import ecmascript_parser from "./parser/parser.js";
 
 export {
     types,

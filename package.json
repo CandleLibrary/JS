@@ -5,7 +5,7 @@
   "main": "source/ecma.mjs",
   "type": "module",
   "scripts": {
-    "test": "cfw_test test/test.js",
+    "test": "cfw_test ./test/test.js",
     "test.watch": "mocha test/test.js -r esm --watch",
     "build": "rollup --config ./build/config/config.js",
     "build.watch": "rollup --config  ./build/config/config.js --watch",
@@ -13,8 +13,8 @@
     "compile": "hydrocarbon compile --unattended --parser glalr -u -o ./source/parser -e ./source/parser/env.mjs -t mjs ./source/grammar/ecmascript.hcg",
     "compile.attended": "hydrocarbon compile -o ./source/parser -e ./source/parser/env.mjs -t mjs ./source/grammar/ecmascript.hcg",
     "compile.test": "hydrocarbon compile --unattended -d -u -e ./source/parser/env.mjs -t mjs ./source/grammar/ecmascript.hcg",
-    "compile.mount": "hydrocarbon compile -d -e ./source/parser/env.mjs -m ./source/grammar/ecmascript.hcg",
-    "test.mount": "hydrocarbon mount -e ./source/parser/env.mjs ./source/parser/ecmascript.mjs"
+    "compile.mount": "hydrocarbon compile -d -e ./source/parser/env.mjs -m ./source/grammar/ecmascript.hcg  ",
+    "test.mount": "hydrocarbon mount -e ./source/parser/env.mjs ./source/parser/ecmascript.mjs --string 'let a = `test ${a} ${b} ${2.323} this!`'"
   },
   "repository": {
     "type": "git",

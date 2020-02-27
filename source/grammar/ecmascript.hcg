@@ -14,7 +14,7 @@
 #### Repeated Functions
 ###############################################################################################################
 
-↦BindingExpression{ { type:"BindingExpression", operator:"=", vals: [$sym1, $sym2],  pos  } }
+↦BindingExpression{ { type:"BindingExpression", operator:":", vals: [$sym1, $sym2],  pos  } }
 
 ↦Spread{ { type:"SpreadExpression", vals: $sym2,  pos  } }
 
@@ -68,7 +68,7 @@
 
     <> named_imports → { import_specifier(*,) ,? }                                                              ↦r { { type:"NamedImports", vals:$$sym2 || [], pos } }
 
-    <> from_clause → τfrom module_specifier                                                                     ↦r { { type:"FromClause", value:$sym2, pos } }
+    <> from_clause → τfrom module_specifier                                                                     ↦r { { type:"FromClause", vals:[$sym2], pos } }
 
     <> import_specifier → imported_binding                                                                      ↦r { { type:"Specifier", vals:[$sym1], pos } }
         │ identifier τas imported_binding                                                                       ↦r { { type:"Specifier", vals:[$sym1, $sym3], pos } }
@@ -297,7 +297,7 @@
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-debugger-statement
 ###############################################################################################################
 
-        <> debugger_statement → τdebugger ;                                                                     ↦r { { type:"DebuggerStatement", pos } }
+    <> debugger_statement → τdebugger ;                                                                         ↦r { { type:"DebuggerStatement", pos } }
 
 ###############################################################################################################
 ###############################################################################################################
@@ -322,7 +322,7 @@
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-let-and-const-declarations
 ###############################################################################################################
 
-        <> lexical_declaration → let_or_const binding_list ;                                                    ↦r { { type:"LexicalDecleration", type:$sym1, vals:$sym2, pos } }
+        <> lexical_declaration → let_or_const binding_list ;                                                    ↦r { { type:"LexicalDecleration", symbol:$sym1, vals:$sym2, pos } }
 
         <> let_or_const → τlet                                                                                  ↦r { "let" }
             │ τconst                                                                                            ↦r { "const" }
@@ -536,82 +536,6 @@
 
     <> await_expression → τawait unary_expression                                                               ↦r { { type: "AwaitExpression", vals:$$sym2, pos } }
 
-
-###############################################################################################################
-#https://www.ecma-international.org/ecma-262/#prod-TemplateLiteral
-###############################################################################################################
-
-    <> template_literal → no_substitute_template
-        │ substitute_template 
-
-    <> no_substitute_template → ` template_characters? `                                                        ↦r { { type: "Template", vals:[ $$sym2 ], pos } }
-
-    <> substitute_template → template_head expression template_spans                                            ↦r { $sym1.vals[1] = $sym2, $sym3.unshift($sym1), { type: "Template", vals:$$sym3, pos } }
-
-    <> template_spans → template_tail                                                                           ↦r { [ $sym1 ] }
-        │ template_middle_list template_tail                                                                    ↦r { $sym1.push($sym2), $sym1 }           
-
-    <> template_middle_list → template_middle expression                                                        ↦r { $sym1.vals[1] = $sym2, [ $sym1 ] }
-        │ template_middle_list template_middle expression                                                       ↦r { $sym2.vals[1] = $sym3, $sym1.push($sym2), $sym1 }
-
-    <> template_head → ` template_characters? \${                                                               ↦r { { type:"TemplateHead", vals:[ $sym2 ], pos  } }
-
-    <> template_middle → \} template_characters? \${                                                            ↦r { { type:"TemplateMiddle", vals:[$sym2],  pos  } }
-
-    <> template_tail → \} template_characters? `                                                                ↦r { { type:"TemplateTail", vals:[$sym2],  pos  } }
-
-    <> template_characters → (θany │ θws │ θnl │ θkeyword │ θop │ θsym │ θob │ θcb │ θnum │ θid │ θstr │ " │ ' )(*")
-
-                                                                                                                ↦r { { type:"StringLiteral", vals:[$sym1],  pos  } }
-
-
-###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-object-initializer
-###############################################################################################################
-
-    <> object_literal →  { }                                                                                    ↦r { { type:"ObjectLiteral", vals:[],  pos  } }
-        │ { property_definition_list ,? }                                                                       ↦r { { type:"ObjectLiteral", vals:$sym2,  pos  } }
-
-    <> property_definition_list → property_definition                                                           ↦r { [$sym1] }
-        │ property_definition_list property_definition                                                          ↦r { $sym1.push($sym2), $sym1 }       
-
-    <> property_definition →  cover_initialized_name                
-        │ identifier_reference                                      
-        │ method_definition                                         
-        │ ... assignment_expression                                                                             ↦r=>Spread
-        │ property_name : assignment_expression                                                                 ↦r { { type:"PropertyBinding", vals:[$sym1, $sym2],  pos  } }       
-
-    <> property_name → literal_property_name
-        │ computed_property_name
-
-    <> literal_property_name → identifier_name
-        │ string_literal
-        │ numeric_literal
-
-    <> computed_property_name → \[ assignment_expression \]                                                     ↦r { { type: "ComputedProperty", vals:$sym2, pos } }
-
-    <> cover_initialized_name → identifier_reference initializer                                                ↦r=>BindingExpression
-
-    <> initializer → = assignment_expression                                                                    ↦r { $sym2 }
-
-
-###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-array-initializer
-###############################################################################################################
-
-    <> array_literal → \[ elision? \]                                                                           ↦r { { type: "ArrayLiteral", vals:[], pos } }
-        │ \[ element_list \]                                                                                    ↦r { { type: "ArrayLiteral", vals:$$sym2, pos } }
-        │ \[ element_list , elision? \]                                                                         ↦r { { type: "ArrayLiteral", vals:$$sym2, pos } }
-
-    <> element_list → elision? assignment_expression                                                            ↦r { [ $sym2 ] }
-        │ elision? spread_element                                                                               ↦r { [ $sym2 ] }
-        │ element_list , elision? assignment_expression                                                         ↦r { [ ...$sym1, $sym4 ] }
-        │ element_list , elision? spread_element                                                                ↦r { [ ...$sym1, $sym4 ] }
-
-    <> elision → elision? ,                                                                     
-
-    <> spread_element → ... assignment_expression                                                               ↦r=>Spread
-
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#prod-BindingExpression
 ###############################################################################################################
@@ -767,21 +691,21 @@
     <> binding_pattern → object_binding_pattern
         │   array_binding_pattern
 
-    <> object_binding_pattern → { }                                                                             ↦r { { type: "ObjectBinding", vals:[], pos } }
-        │ { binding_rest_property }                                                                             ↦r { { type: "ObjectBinding", vals:[$sym1], pos } }
-        │ { binding_property_list }                                                                             ↦r { { type: "ObjectBinding", vals:[$sym1], pos } }    
-        │ { binding_property_list , binding_rest_property}                                                      ↦r { { type: "ObjectBinding", vals:[$sym1, $sym2], pos } }    
-        │ { binding_property_list , }                                                                           ↦r { { type: "ObjectBinding", vals:[$sym1], pos } }    
+    <> object_binding_pattern → { }                                                                             ↦r { { type: "ObjectLiteral", vals:[], pos } }
+        │ { binding_rest_property }                                                                             ↦r { { type: "ObjectLiteral", vals:[$sym1], pos } }
+        │ { binding_property_list }                                                                             ↦r { { type: "ObjectLiteral", vals:[$sym1], pos } }    
+        │ { binding_property_list , binding_rest_property}                                                      ↦r { { type: "ObjectLiteral", vals:[$sym1, $sym2], pos } }    
+        │ { binding_property_list , }                                                                           ↦r { { type: "ObjectLiteral", vals:[$sym1], pos } }    
 
-    <> array_binding_pattern → \[ \]                                                                            ↦r { { type: "ArrayBinding", vals:[], pos } }
-        │ \[ elision binding_rest_element \]                                                                    ↦r { { type: "ArrayBinding", vals:[$sym2], pos } }
-        │ \[ elision \]                                                                                         ↦r { { type: "ArrayBinding", vals:[], pos } }    
-        │ \[ binding_rest_element \]                                                                            ↦r { { type: "ArrayBinding", vals:[$sym1], pos } }    
-        │ \[ binding_element_list \]                                                                            ↦r { { type: "ArrayBinding", vals:[$sym1], pos } }    
-        │ \[ binding_element_list , \]                                                                          ↦r { { type: "ArrayBinding", vals:[$sym1], pos } }    
-        │ \[ binding_element_list , elision? \]                                                                 ↦r { { type: "ArrayBinding", vals:[$sym1], pos } }    
-        │ \[ binding_element_list , elision? binding_rest_element \]                                            ↦r { { type: "ArrayBinding", vals:[$sym1, $sym3], pos } }    
-        │ \[ binding_element_list , binding_rest_element \]                                                     ↦r { { type: "ArrayBinding", vals:[$sym1, $sym3], pos } }    
+    <> array_binding_pattern → \[ \]                                                                            ↦r { { type: "ArrayLiteral", vals:[], pos } }
+        │ \[ elision binding_rest_element \]                                                                    ↦r { { type: "ArrayLiteral", vals:[$sym2], pos } }
+        │ \[ elision \]                                                                                         ↦r { { type: "ArrayLiteral", vals:[], pos } }    
+        │ \[ binding_rest_element \]                                                                            ↦r { { type: "ArrayLiteral", vals:[$sym1], pos } }    
+        │ \[ binding_element_list \]                                                                            ↦r { { type: "ArrayLiteral", vals:[$sym1], pos } }    
+        │ \[ binding_element_list , \]                                                                          ↦r { { type: "ArrayLiteral", vals:[$sym1], pos } }    
+        │ \[ binding_element_list , elision? \]                                                                 ↦r { { type: "ArrayLiteral", vals:[$sym1], pos } }    
+        │ \[ binding_element_list , elision? binding_rest_element \]                                            ↦r { { type: "ArrayLiteral", vals:[$sym1, $sym3], pos } }    
+        │ \[ binding_element_list , binding_rest_element \]                                                     ↦r { { type: "ArrayLiteral", vals:[$sym1, $sym3], pos } }    
 
     <> binding_rest_property → ... binding_identifier                                                           ↦r=>Spread
 
@@ -815,6 +739,82 @@
     <> regular_expression_flags → identifier
 
 ###############################################################################################################
+#https://www.ecma-international.org/ecma-262/#prod-TemplateLiteral
+###############################################################################################################
+
+    <> template_literal → no_substitute_template
+        │ substitute_template 
+
+    <> no_substitute_template → ` template_characters? `                                                        ↦r { { type: "Template", vals:[ $$sym2 ], pos } }
+
+    <> substitute_template → template_head expression template_spans                                            ↦r { $sym1.vals[1] = $sym2, $sym3.unshift($sym1), { type: "Template", vals:$$sym3, pos } }
+
+    <> template_spans → template_tail                                                                           ↦r { [ $sym1 ] }
+        │ template_middle_list template_tail                                                                    ↦r { $sym1.push($sym2), $sym1 }           
+
+    <> template_middle_list → template_middle expression                                                        ↦r { $sym1.vals[1] = $sym2, [ $sym1 ] }
+        │ template_middle_list template_middle expression                                                       ↦r { $sym2.vals[1] = $sym3, $sym1.push($sym2), $sym1 }
+
+    <> template_head → ` template_characters? \${                                                               ↦r { { type:"TemplateHead", vals:[ $sym2 ], pos  } }
+
+    <> template_middle → \} template_characters? \${                                                            ↦r { { type:"TemplateMiddle", vals:[ $sym2 ],  pos  } }
+
+    <> template_tail → \} template_characters? `                                                                ↦r { { type:"TemplateTail", vals:[ $sym2 ],  pos  } }
+
+    <> template_characters → string_data 
+        │ string_data θnl                                                                                       ↦r { $sym1.val += $sym2 , $sym1 }
+        │ θnl                                                                                                   ↦r { { type: "StringLiteral", val:$sym1,  pos  } }                                 
+
+                                                                                                                
+
+###############################################################################################################
+# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-object-initializer
+###############################################################################################################
+
+    <> object_literal →  { }                                                                                    ↦r { { type:"ObjectLiteral", vals:[],  pos  } }
+        │ { property_definition_list ,? }                                                                       ↦r { { type:"ObjectLiteral", vals:$sym2,  pos  } }
+
+    <> property_definition_list → property_definition                                                           ↦r { [$sym1] }
+        │ property_definition_list property_definition                                                          ↦r { $sym1.push($sym2), $sym1 }       
+
+    <> property_definition →  cover_initialized_name                
+        │ identifier_reference                                      
+        │ method_definition                                         
+        │ ... assignment_expression                                                                             ↦r=>Spread
+        │ property_name : assignment_expression                                                                 ↦r { { type:"PropertyBinding", vals:[$sym1, $sym2],  pos  } }       
+
+    <> property_name → literal_property_name
+        │ computed_property_name
+
+    <> literal_property_name → identifier_name
+        │ string_literal
+        │ numeric_literal
+
+    <> computed_property_name → \[ assignment_expression \]                                                     ↦r { { type: "ComputedProperty", vals:$sym2, pos } }
+
+    <> cover_initialized_name → identifier_reference initializer                                                ↦r=>BindingExpression
+
+    <> initializer → = assignment_expression                                                                    ↦r { $sym2 }
+
+
+###############################################################################################################
+# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-array-initializer
+###############################################################################################################
+
+    <> array_literal → \[ elision? \]                                                                           ↦r { { type: "ArrayLiteral", vals:[], pos } }
+        │ \[ element_list \]                                                                                    ↦r { { type: "ArrayLiteral", vals:$$sym2, pos } }
+        │ \[ element_list , elision? \]                                                                         ↦r { { type: "ArrayLiteral", vals:$$sym2, pos } }
+
+    <> element_list → elision? assignment_expression                                                            ↦r { [ $sym2 ] }
+        │ elision? spread_element                                                                               ↦r { [ $sym2 ] }
+        │ element_list , elision? assignment_expression                                                         ↦r { [ ...$sym1, $sym4 ] }
+        │ element_list , elision? spread_element                                                                ↦r { [ ...$sym1, $sym4 ] }
+
+    <> elision → elision? ,                                                                     
+
+    <> spread_element → ... assignment_expression                                                               ↦r=>Spread
+
+###############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-ecmascript-language-lexical-grammar
 ###############################################################################################################
 
@@ -823,9 +823,11 @@
         │ string_literal                    
         │ numeric_literal       
 
+    <> string_literal → \" (ERR θnl ) string_data (ERR θnl ) \"                                                 ↦r { $sym2.quote_type = $sym1,  $sym2 }
+        │ \' (ERR θnl ) string_data (ERR θnl ) \'                                                               ↦r { $sym2.quote_type = $sym1,  $sym2 }
 
-    <> string_literal → \" (ERR θnl )  ( θany │ escaped_sequence )(*") (ERR θnl )  \"                           ↦r { { type: "StringLiteral", value:$sym2,  pos  } }
-        │ \' (ERR θnl )  ( θany │ escaped_sequence )(*") (ERR θnl )  \'                                         ↦r { { type: "StringLiteral", value:$sym2,  pos  } }
+    <> string_data → ( θws │ θany │ escaped_sequence )(*")                                                      ↦r { { type: "StringLiteral", val:$sym1,  pos  } }
+        │ ( θws │ θany │ escaped_sequence )(*")                                                                 ↦r { { type: "StringLiteral", val:$sym1,  pos  } }
 
     <> escaped_sequence → \\ ( ' │ " │ τb │ τf │ τn │ τr │ τy │ τv │ 0 │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ hex_escape_sequence │ unicode_escape_sequence )   
                                                                                                                 ↦r { $sym1 + $sym2}
@@ -835,7 +837,7 @@
     <> unicode_escape_sequence → τu def::hex_digit def::hex_digit def::hex_digit def::hex_digit                 ↦r { $sym1 + $sym2 + $sym3 + $sym4 + $sym5 }
         │ τu \{ def::hex \}                                                                                     ↦r { $sym1 + $sym2 + $sym3 + $sym4 }
 
-    <> numeric_literal → number                                                                                 ↦r { { type: "NumericLiteral", value:parseFloat($sym1), pos } }
+    <> numeric_literal → number                                                                                 ↦r { { type: "NumericLiteral", val:$sym1, pos } }
 
     <> number →  def::float 
         │ def::octal 
@@ -844,8 +846,8 @@
 
     <> null_literal →  τnull                                                                                    ↦r { { type: "NullLiteral", pos  } }
 
-    <> boolean_literal → τtrue                                                                                  ↦r { { type: "BooleanLiteral", value: !!$$sym1,  pos  } }
-        │ τfalse                                                                                                ↦r { { type: "BooleanLiteral", value: !!$$sym1,  pos  } }
+    <> boolean_literal → τtrue                                                                                  ↦r { { type: "BooleanLiteral", val: !!$$sym1,  pos  } }
+        │ τfalse                                                                                                ↦r { { type: "BooleanLiteral", val: !!$$sym1,  pos  } }
 
     <> label_identifier → identifier                                                   
             #│ τyield                          
@@ -863,4 +865,4 @@
 
     # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-names-and-keywords
 
-    <> identifier_name →  def::id                                                                               ↦r { { type: "Identifier", value:$sym1,  pos  } }              
+    <> identifier_name →  def::js_identifier                                                                   ↦r { { type: "Identifier", val:$sym1,  pos  } }              
