@@ -1,5 +1,4 @@
-const env = {
-    table: {},
+const env =  {
     ASI: true,
     functions: {
 
@@ -23,7 +22,7 @@ const env = {
                 return lu(lex.next());
             }
 
-            /*USED for ASI*/
+            /*USED for Automatic Semicolon Insertion*/
             if (env.ASI && lex.tx !== ")" && !lex.END) {
 
                 let ENCOUNTERED_END_CHAR = (lex.tx == "}" || lex.END);
@@ -58,7 +57,6 @@ const env = {
     options: {
         integrate: false,
         onstart: () => {
-            env.table = {};
             env.ASI = true;
         }
     }
