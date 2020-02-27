@@ -14,7 +14,7 @@
 #### Repeated Functions
 ###############################################################################################################
 
-↦BindingExpression{ { type:"BindingExpression", operator:":", vals: [$sym1, $sym2],  pos  } }
+↦BindingExpression{ { type:"BindingExpression", operator:"=", vals: [$sym1, $sym2],  pos  } }
 
 ↦Spread{ { type:"SpreadExpression", vals: $sym2,  pos  } }
 
@@ -322,14 +322,14 @@
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-let-and-const-declarations
 ###############################################################################################################
 
-        <> lexical_declaration → let_or_const binding_list ;                                                    ↦r { { type:"LexicalDecleration", symbol:$sym1, vals:$sym2, pos } }
+        <> lexical_declaration → let_or_const binding_list ;                                                    ↦r { { type:"LexicalDeclaration", symbol:$sym1, vals:$sym2, pos } }
 
         <> let_or_const → τlet                                                                                  ↦r { "let" }
             │ τconst                                                                                            ↦r { "const" }
 
         <> binding_list → lexical_binding(+,)                                                                            
 
-        <> lexical_binding → binding_identifier initializer                                                     ↦r=>BindingExpression
+        <> lexical_binding → binding_identifier initializer?                                                    ↦r=>BindingExpression
             │ binding_pattern initializer                                                                       ↦r=>BindingExpression
 
 ###############################################################################################################
@@ -654,10 +654,10 @@
         │ τdelete unary_expression                                                                              ↦r { { type: "DeleteExpression", vals:$$sym2, pos } }
         │ τvoid unary_expression                                                                                ↦r { { type: "VoidExpression", vals:$$sym2, pos } }
         │ τtypeof unary_expression                                                                              ↦r { { type: "TypeofExpression", vals:$$sym2, pos } }
-        │ + unary_expression                                                                                    ↦r { { type: "UnaryExpression", vals:[$$sym1,$$sym2], pos } }
-        │ - unary_expression                                                                                    ↦r { { type: "UnaryExpression", vals:[$$sym1,$$sym2], pos } }
-        │ ~ unary_expression                                                                                    ↦r { { type: "UnaryExpression", vals:[$$sym1,$$sym2], pos } }
-        │ ! unary_expression                                                                                    ↦r { { type: "UnaryExpression", vals:[$$sym1,$$sym2], pos } }
+        │ + unary_expression                                                                                    ↦r { { type: "UnaryExpression", symbol:$sym1, vals:[$$sym1,$$sym2], pos } }
+        │ - unary_expression                                                                                    ↦r { { type: "UnaryExpression", symbol:$sym1, vals:[$$sym1,$$sym2], pos } }
+        │ ~ unary_expression                                                                                    ↦r { { type: "UnaryExpression", symbol:$sym1, vals:[$$sym1,$$sym2], pos } }
+        │ ! unary_expression                                                                                    ↦r { { type: "UnaryExpression", symbol:$sym1, vals:[$$sym1,$$sym2], pos } }
         │ await_expression
 
 ###############################################################################################################
@@ -837,7 +837,7 @@
     <> unicode_escape_sequence → τu def::hex_digit def::hex_digit def::hex_digit def::hex_digit                 ↦r { $sym1 + $sym2 + $sym3 + $sym4 + $sym5 }
         │ τu \{ def::hex \}                                                                                     ↦r { $sym1 + $sym2 + $sym3 + $sym4 }
 
-    <> numeric_literal → number                                                                                 ↦r { { type: "NumericLiteral", val:$sym1, pos } }
+    <> numeric_literal → number                                                                                 ↦r { { type: "NumericLiteral", original_val:$sym1.original_val, val:$sym1, pos } }
 
     <> number →  def::float 
         │ def::octal 

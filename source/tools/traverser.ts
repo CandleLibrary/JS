@@ -1,5 +1,4 @@
-
-import ecmascript_parser from "./parser/parser.js";
+import ecmascript_parser from "../parser/parser.js";
 
 const Yielder = { yield : node => node, complete : node=>node };
 
@@ -56,8 +55,7 @@ export function* traverse(mintree, yielder = Yielder) {
 }
 
 export function reduce(mintree, yielder = Yielder) {
-
-	//Extract Yielders from the object
+	
 	const gen = traverse(mintree, yielder);
 
 	let result = gen.next();
