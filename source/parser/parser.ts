@@ -1,31 +1,23 @@
 import { lrParse } from "@candlefw/hydrocarbon";
-import Whind from "@candlefw/whind";
+import { Lexer } from "@candlefw/whind";
 
-import { MinTreeNode } from "../nodes/mintree_nodes.js";
-import ecmascript_parser_data from "./ecmascript.mjs";
+import { MinTreeNode } from "../nodes/MinTreeNode";
+import ecmascript_parser_data from "./ecmascript.js";
 import env from "./env.js";
-
-interface WhindLexer {
-    pos: number;
-    char: number;
-    tx: string;
-    tk: number;
-    pk: WhindLexer;
-    copy: () => WhindLexer;
-    next: () => WhindLexer;
-    nx: () => WhindLexer;
-    find: (args: string) => string;
-}
 
 interface ParserResult {
     error: string;
     value: any;
 }
-
-export default function ecmascript_parser(lex: string | WhindLexer): MinTreeNode {
+/**
+ * Parses an input string and returns a MinTree AST data structure. 
+ * @throws it will throw a SyntaxError if the input could be completly parsed.
+ * @param lex Either a string or a cfw.Whind Lexer that contains the string data to be parsed.
+ */
+export default function ecmascript_parser(lex: string | Lexer): MinTreeNode {
 
     if (typeof lex === "string")
-        lex = new Whind(lex);
+        lex = new Lexer(lex);
 
     const result: ParserResult = lrParse(lex, ecmascript_parser_data, env);
 

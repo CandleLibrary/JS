@@ -1,519 +1,462 @@
-interface Lex {
-    char: number;
-    line: number;
-}
-
-export interface MinTreeNode {
-    pos: Lex,
-    type: string,
-    vals: Array<MinTreeNode | any>
-}
-enum ntype {
-    $expression = 1 << 0,
-    $statement = 1 << 1,
-    $literal = 1 << 2,
-    $import = 1 << 3,
-    $export = 1 << 4,
-    $number = 1 << 5,
-    $boolean = 1 << 6,
-    $string = 1 << 7,
-    $return = 1 << 8,
-    $array = 1 << 9,
-    $null = 1 << 10,
-    $identifier = 1 << 11,
-    $regex = 1 << 12,
-    $class = 1 << 13,
-    $call = 1 << 14,
-    $yield = 1 << 15,
-    $while = 1 << 16,
-    $block = 1 << 17,
-    $function = 1 << 18,
-    $object = 1 << 19,
-    $this = 1 << 20,
-    $property = 1 << 21,
-    $template = 1 << 22,
-    $spread = 1 << 23,
-    $script = 1 << 24,
-    $undef_17 = 1 << 25,
-    $undef_18 = 1 << 26,
-    $undef_19 = 1 << 27,
-    $undef_20 = 1 << 28,
-    $undef_21 = 1 << 29,
-    $undef_22 = 1 << 30,
-    $undef_23 = 1 << 31
-}
-
-export class MinTreeNodeDefinition {
-
-    name: string;
-    getters: Array<any>;
-    template_pattern: string | object;
-    node_type: ntype;
-
-    constructor(name: string, getters: Array<any>, template_pattern: string | object, node_type: ntype) {
-        this.name = name;
-        this.getters = getters;
-        this.template_pattern = template_pattern;
-        this.node_type = node_type;
-    }
-}
+import { MinTreeNodeDefinition } from "./MinTreeNodeDefinition";
+import { MinTreeNodeType } from "./ntype";
 
 export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         "AdditiveExpression", 
         ["left", "right", { symbol: "symbol", type: String }], 
         "$1 $symbol $2", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "Arguments", 
         ["expressions"], 
         "($...)", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "ArrayLiteral", 
         ["members"], 
         "[$...]", 
-        ntype.$literal | ntype.$array),
+        MinTreeNodeType.$literal | MinTreeNodeType.$array),
     new MinTreeNodeDefinition(
         "ArrowFunction", 
         ["arguments", "body", { isASYNC: "async", type: Boolean }], 
         "$async? $1 => $2", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "AssignmentExpression", 
         ["condition", "expression1", "expression2"], 
         "$1 $symbol $2", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "AwaitExpression", 
         ["expression"], 
         "await $1", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "BindingExpression", 
         ["property", "expression"], 
         "$1 = $2", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "BlockStatement", 
         ["statements"], 
         "{$...}", 
-        ntype.$statement),
+        MinTreeNodeType.$statement),
     new MinTreeNodeDefinition(
         "BooleanLiteral", 
         [], 
         "$val", 
-        ntype.$literal | ntype.$boolean),
+        MinTreeNodeType.$literal | MinTreeNodeType.$boolean),
     new MinTreeNodeDefinition(
         "BreakStatement", 
         [], 
         "break;", 
-        ntype.$statement),
+        MinTreeNodeType.$statement),
     new MinTreeNodeDefinition(
         "CallExpression", 
         ["object", "arguments"], 
         "$1($...)", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "CallMemberExpression", 
         ["object", "member"], { COMPUTED: "$1[$2]", default: "$1.$2" }, 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "CaseBlock", 
         ["expression"], 
         "case $1:", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "CaseClause", 
         ["statements"], 
         "$...", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "CatchClause", 
         ["expression", "body"], 
         "catch($1){$2}", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "Class", 
         ["name", "heritage", "body"], { $2: "class $1 extends $2 {$3}", default: "class $1 {$3}" }, 
-        ntype.$class),
+        MinTreeNodeType.$class),
     new MinTreeNodeDefinition(
         "ComputedProperty", 
         [], 
         "[$1]", 
-        ntype.$property),
+        MinTreeNodeType.$property),
     new MinTreeNodeDefinition(
         "ContinueStatement", 
         [], 
         "continue;", 
-        ntype.$statement),
+        MinTreeNodeType.$statement),
     new MinTreeNodeDefinition(
         "ContitionalExpression", 
         [], 
         "$1 ? $2 : $3", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "DebuggerStatement", 
         [], 
         "debugger;", 
-        ntype.$statement),
+        MinTreeNodeType.$statement),
     new MinTreeNodeDefinition(
         "DeleteExpression", 
         [], 
         "delete $1", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "DoStatement", 
         [], 
         "do{ $1 }while ($2)", 
-        ntype.$statement),
+        MinTreeNodeType.$statement),
     new MinTreeNodeDefinition(
         "EmptyStatement", 
         [], 
         ";", 
-        ntype.$statement),
+        MinTreeNodeType.$statement),
     new MinTreeNodeDefinition(
         "EqualityExpression", 
         [], 
         "$1 $symbol $2", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "ExponentationExpression", 
         [], 
         "$1 ** $2", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "ExportClause", 
         [], 
         "{$...}", 
-        ntype.$expression | ntype.$export),
+        MinTreeNodeType.$expression | MinTreeNodeType.$export),
     new MinTreeNodeDefinition(
         "ExportDeclaration", 
         [], { DEFAULT: "export default $1", $1: "export $1 $2", default: "export * $2" }, 
-        ntype.$expression | ntype.$export),
+        MinTreeNodeType.$expression | MinTreeNodeType.$export),
     new MinTreeNodeDefinition(
         "ExpressionList", 
         [], 
         "", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "ExpressionStatement", 
         [], 
         "", 
-        ntype.$statement),
+        MinTreeNodeType.$statement),
     new MinTreeNodeDefinition(
         "FinallyClause", 
         [], 
         "", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "ForInStatement", 
         [], 
         "", 
-        ntype.$statement),
+        MinTreeNodeType.$statement),
     new MinTreeNodeDefinition(
         "ForOfStatement", 
         [], 
         "", 
-        ntype.$statement),
+        MinTreeNodeType.$statement),
     new MinTreeNodeDefinition(
         "ForStatement", 
         [], 
         "", 
-        ntype.$statement),
+        MinTreeNodeType.$statement),
     new MinTreeNodeDefinition(
         "FormalPerameters", 
         [], 
         "", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "FromClause", 
         [], 
         "", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "Function", 
         [], 
         "", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "GetterMethod", 
         [], 
         "", 
-        ntype.$function),
+        MinTreeNodeType.$function),
     new MinTreeNodeDefinition(
         "Identifier", 
         [], 
         "$val", 
-        ntype.$literal | ntype.$identifier),
+        MinTreeNodeType.$literal | MinTreeNodeType.$identifier),
     new MinTreeNodeDefinition(
         "IfStatement", 
         [], 
         "", 
-        ntype.$statement),
+        MinTreeNodeType.$statement),
     new MinTreeNodeDefinition(
         "ImportClause", 
         [], 
         "", 
-        ntype.$expression | ntype.$import),
+        MinTreeNodeType.$expression | MinTreeNodeType.$import),
     new MinTreeNodeDefinition(
         "ImportDeclaration", 
         [], 
         "", 
-        ntype.$expression | ntype.$import),
+        MinTreeNodeType.$expression | MinTreeNodeType.$import),
     new MinTreeNodeDefinition(
         "InExpression", 
         [], 
         "", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "InstanceOfExpression", 
         [], 
         "", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "LabeledStatement", 
         [], 
         "", 
-        ntype.$statement),
+        MinTreeNodeType.$statement),
     new MinTreeNodeDefinition(
         "LexicalBinding", 
         [], 
         "", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "LexicalDecleration", 
         [], 
         "$symbol $...;", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "LogicalExpression", 
         [], 
         "", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "MemberExpression", 
         [], 
         "", 
-        ntype.$expression | ntype.$call),
+        MinTreeNodeType.$expression | MinTreeNodeType.$call),
     new MinTreeNodeDefinition(
         "Method", 
         [], 
         "", 
-        ntype.$function),
+        MinTreeNodeType.$function),
     new MinTreeNodeDefinition(
         "ModuleSpecifier", 
         [], 
         "", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "MultiplicativeExpression", 
         [], 
         "", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "NameSpaceImport", 
         [], 
         "", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "NamedImports", 
         [], 
         "", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "NewExpression", 
         [], 
         "", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "NewInstanceExpression", 
         [], 
         "", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "NewTarget", 
         [], 
         "new.target", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "NullLiteral", 
         [], 
         "null", 
-        ntype.$literal | ntype.$null),
+        MinTreeNodeType.$literal | MinTreeNodeType.$null),
     new MinTreeNodeDefinition(
         "NumericLiteral", 
         [], 
         "$val", 
-        ntype.$literal | ntype.$number),
+        MinTreeNodeType.$literal | MinTreeNodeType.$number),
     new MinTreeNodeDefinition(
         "ObjectLiteral", 
         [], 
         "{$...}", 
-        ntype.$literal | ntype.$object),
+        MinTreeNodeType.$literal | MinTreeNodeType.$object),
     new MinTreeNodeDefinition(
         "Parameters", 
         [], 
         "$...", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "Parenthasized", 
         [], 
         "", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "PostExpression", 
         [], 
         "", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "PreExpression", 
         [], 
         "", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "PropertyBinding", 
         [], 
         "", 
-        ntype.$property),
+        MinTreeNodeType.$property),
     new MinTreeNodeDefinition(
         "RegexLiteral", 
         [], 
         "", 
-        ntype.$literal | ntype.$regex),
+        MinTreeNodeType.$literal | MinTreeNodeType.$regex),
     new MinTreeNodeDefinition(
         "RelationalExpression", 
         [], 
         "", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "ReturnStatement", 
         [], 
         "", 
-        ntype.$statement),
+        MinTreeNodeType.$statement),
     new MinTreeNodeDefinition(
         "Script", 
         [], 
         "$...", 
-        ntype.$script),
+        MinTreeNodeType.$script),
     new MinTreeNodeDefinition(
         "SetterMethod", 
         [], 
         "", 
-        ntype.$function),
+        MinTreeNodeType.$function),
     new MinTreeNodeDefinition(
         "ShiftExpression", 
         [], 
         "", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "Specifier", 
         [], 
         "", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "Spread", 
         [], 
         "...$1", 
-        ntype.$spread),
+        MinTreeNodeType.$spread),
     new MinTreeNodeDefinition(
         "SpreadExpression", 
         [], 
         "", 
-        ntype.$expression | ntype.$spread),
+        MinTreeNodeType.$expression | MinTreeNodeType.$spread),
     new MinTreeNodeDefinition(
         "StringLiteral", 
         [], 
         "", 
-        ntype.$literal | ntype.$string),
+        MinTreeNodeType.$literal | MinTreeNodeType.$string),
     new MinTreeNodeDefinition(
         "SuperCall", 
         [], 
         "", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "SuperExpression", 
         [], 
         "", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "SwitchStatement", 
         [], 
         "", 
-        ntype.$statement),
+        MinTreeNodeType.$statement),
     new MinTreeNodeDefinition(
         "Template", 
         [], 
         "", 
-        ntype.$string | ntype.$template),
+        MinTreeNodeType.$string | MinTreeNodeType.$template),
     new MinTreeNodeDefinition(
         "TemplateHead", 
         [], 
         "", 
-        ntype.$string | ntype.$template),
+        MinTreeNodeType.$string | MinTreeNodeType.$template),
     new MinTreeNodeDefinition(
         "TemplateMiddle", 
         [], 
         "", 
-        ntype.$string | ntype.$template),
+        MinTreeNodeType.$string | MinTreeNodeType.$template),
     new MinTreeNodeDefinition(
         "TemplateTail", 
         [], 
         "", 
-        ntype.$string | ntype.$template),
+        MinTreeNodeType.$string | MinTreeNodeType.$template),
     new MinTreeNodeDefinition(
         "ThisLiteral", 
         [], 
         "this", 
-        ntype.$literal | ntype.$this),
+        MinTreeNodeType.$literal | MinTreeNodeType.$this),
     new MinTreeNodeDefinition(
         "ThrowStatement", 
         [], 
         "", 
-        ntype.$statement),
+        MinTreeNodeType.$statement),
     new MinTreeNodeDefinition(
         "TryStatement", 
         [], 
         "", 
-        ntype.$statement),
+        MinTreeNodeType.$statement),
     new MinTreeNodeDefinition(
         "TypeofExpression", 
         [], 
         "typeof $1", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "UnaryExpression", 
         [], 
         "$symbol $1", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "VarDeclaration", 
         [], 
         "var $1", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "VariableStatement", 
         [], 
         "var $...;", 
-        ntype.$statement),
+        MinTreeNodeType.$statement),
     new MinTreeNodeDefinition(
         "VoidExpression", 
         [], 
         "void $1", 
-        ntype.$expression),
+        MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
         "WhileStatement", 
         [], 
         "while($1){$2}", 
-        ntype.$statement),
+        MinTreeNodeType.$statement),
     new MinTreeNodeDefinition(
         "WithStatement", 
         [], 
         "with($1){$2}", 
-        ntype.$statement),
+        MinTreeNodeType.$statement),
     new MinTreeNodeDefinition(
         "YieldExpression", 
         [], 
         "yield $1", 
-        ntype.$expression)
+        MinTreeNodeType.$expression)
 ]

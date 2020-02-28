@@ -94,3 +94,4 @@ documents/api/*
 
 #JS Build files.
 *.js
+./build

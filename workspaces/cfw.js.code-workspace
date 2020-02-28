@@ -3,5 +3,9 @@
 		{
 			"path": "../"
 		}
-	]
+	],
+	"settings": {
+		"typescript.autoClosingTags": true,
+		"typescript.format.enable": true
+	}
 }

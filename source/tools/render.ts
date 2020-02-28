@@ -1,4 +1,6 @@
-import { MinTreeNode, MinTreeNodeDefinitions, MinTreeNodeDefinition } from "../nodes/mintree_nodes.js";
+import { MinTreeNodeDefinitions } from "../nodes/mintree_nodes.js";
+import { MinTreeNode } from "../nodes/MinTreeNode";
+import { MinTreeNodeDefinition } from "../nodes/MinTreeNodeDefinition";
 
 type RenderStub = (arg0: MinTreeNode) => string;
 
@@ -127,9 +129,10 @@ function buildRendererFromTemplateString(template_pattern : string) : RenderActi
     return new RenderAction(action_list);
 }
 
-/*
-    Builds a string renderer from a MinTreeNodeDefinition
-*/
+/**
+ *   Builds a string renderer from a MinTreeNodeDefinition
+ *   @param node_definition
+ */
 function buildRenderer(node_definition : MinTreeNodeDefinition) : NodeRenderer {
 
     /* 
@@ -182,10 +185,12 @@ function buildRenderer(node_definition : MinTreeNodeDefinition) : NodeRenderer {
 
 }
 
-/* 
-    Creates a map of NodeRenderers  
-*/
-function RendererBuilder (node_definitions) : Map<string, NodeRenderer> {
+/**
+ * Creates a map of NodeRenderers  
+ * 
+ *  @param node_definitions
+ */ 
+function RendererBuilder (node_definitions : Array<MinTreeNodeDefinition>) : Map<string, NodeRenderer> {
     
     const renderers : Map<string, NodeRenderer> = new Map();
 
@@ -202,9 +207,9 @@ function RendererBuilder (node_definitions) : Map<string, NodeRenderer> {
 
 let Renderers : Map<string, NodeRenderer> = null;
 
-/*
-    Takes a mintree node and produces a string comprising the rendered productions of the ast.
-*/
+/**
+ *  Takes a mintree node and produces a string comprising the rendered productions of the ast.
+ */
 export function render(node : MinTreeNode) :string {
 
     /*
