@@ -1,6 +1,6 @@
 import chai from "chai";
 
-import {parser, render} from "../source/ecma.mjs"
+import {parser, render} from "../build/library/ecma.js"
 
 chai.should();
 
@@ -9,7 +9,7 @@ describe("rendering js expressions", function() {
 
     it("var assignment expressions", function() {
         
-                let ast = parser("let t = null, test = null;");
+        let ast = parser("let t = null, test = null;");
         
        console.log({render:render(ast)});
     });

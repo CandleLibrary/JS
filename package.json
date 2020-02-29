@@ -2,9 +2,9 @@
   "name": "@candlefw/js",
   "version": "0.0.10",
   "description": "ECMASCRIPT Parser",
-  "main": "build/library/ecma.js",
-  "type": "module",
+  "main": "./build/library/ecma.js",
   "types": "./build/types/ecma.d.ts",
+  "type": "module",
   "scripts": {
     "test": "cfw_test ./test/test.js",
     "test.watch": "mocha test/test.js -r esm --watch",

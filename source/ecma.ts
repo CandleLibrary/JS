@@ -1,5 +1,5 @@
 import { MinTreeNodeDefinitions  } from "./nodes/mintree_nodes.js";
-import { MinTreeNodeDefinition } from "./nodes/MinTreeNodeDefinition";
+import { MinTreeNodeDefinition } from "./nodes/MinTreeNodeDefinition.js";
 
 import parser from "./parser/parser.js";
 

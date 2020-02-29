@@ -1,5 +1,5 @@
-import { MinTreeNodeDefinition } from "./MinTreeNodeDefinition";
-import { MinTreeNodeType } from "./ntype";
+import { MinTreeNodeDefinition } from "./MinTreeNodeDefinition.js";
+import { MinTreeNodeType } from "./ntype.js";
 
 export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
@@ -225,7 +225,7 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
         "", 
         MinTreeNodeType.$expression),
     new MinTreeNodeDefinition(
-        "LexicalDecleration", 
+        "LexicalDeclaration", 
         [], 
         "$symbol $...;", 
         MinTreeNodeType.$expression),
