@@ -1,7 +1,7 @@
 import { lrParse } from "@candlefw/hydrocarbon";
 import { Lexer } from "@candlefw/whind";
 
-import { MinTreeNode } from "../nodes/MinTreeNode";
+import { MinTreeNode } from "../nodes/mintree_node";
 import ecmascript_parser_data from "./ecmascript.js";
 import env from "./env.js";
 

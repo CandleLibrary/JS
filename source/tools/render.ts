@@ -1,5 +1,5 @@
 import { MinTreeNodeDefinitions } from "../nodes/mintree_nodes.js";
-import { MinTreeNode } from "../nodes/MinTreeNode";
+import { MinTreeNode } from "../nodes/mintree_node";
 import { MinTreeNodeDefinition } from "../nodes/MinTreeNodeDefinition";
 
 type RenderStub = (arg0: MinTreeNode) => string;
@@ -51,7 +51,7 @@ class NodeRenderer
                 return cond.action.render(node);
         }
 
-        const flag = (node.vals) ? node.vals.map((v,i) => !!v ? 1<<i : 0).reduce((r,v)=>r|v,0) : 0xFFFFFFFF;
+        const flag = (node.nodes) ? node.nodes.map((v,i) => !!v ? 1<<i : 0).reduce((r,v)=>r|v,0) : 0xFFFFFFFF;
 
         for(const cond of this.val_presence_branches){
             if((cond.flag & flag) == flag)
@@ -102,13 +102,13 @@ function buildRendererFromTemplateString(template_pattern : string) : RenderActi
             if(match[0] == "$..."){
                 const index = last_index + 1;
                 const delimiter = ", ";
-                action_list.push( (node : MinTreeNode) : string => node.vals.slice(index).map( node => render(node) ).join(delimiter) )
+                action_list.push( (node : MinTreeNode) : string => node.nodes.slice(index).map( node => render(node) ).join(delimiter) )
             }
 
             //ValIndexInsertion
             else if(!isNaN(parseInt(match[0].slice(1)))){
                 const index = parseInt(match[0].slice(1))-1;
-                action_list.push( (node : MinTreeNode) : string => (render(node.vals[index])))
+                action_list.push( (node : MinTreeNode) : string => (render(node.nodes[index])))
                 last_index = index;
             }
             

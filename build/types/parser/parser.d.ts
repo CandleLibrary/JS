@@ -1,5 +1,5 @@
 import { Lexer } from "@candlefw/whind";
-import { MinTreeNode } from "../nodes/MinTreeNode";
+import { MinTreeNode } from "../nodes/mintree_node";
 /**
  * Parses an input string and returns a MinTree AST data structure.
  * @throws it will throw a SyntaxError if the input could be completly parsed.
