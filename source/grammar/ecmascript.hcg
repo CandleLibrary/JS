@@ -8,15 +8,15 @@
 
 @ERROR /* //
 
-@IMPORT ../../node_modules/@candlefw/hydrocarbon/source/grammar/misc/default-productions.hcg as def 
+@IMPORT ../../node_modules/@candlefw/hydrocarbon/source/grammars/misc/default-productions.hcg as def 
 
 ###############################################################################################################
 #### Repeated Functions
 ###############################################################################################################
 
-↦BindingExpression{ { type:"BindingExpression", operator:"=", vals: [$sym1, $sym2],  pos  } }
+↦BindingExpression{ { type:"BindingExpression", operator:"=", nodes: [$sym1, $sym2],  pos  } }
 
-↦Spread{ { type:"SpreadExpression", vals: $sym2,  pos  } }
+↦Spread{ { type:"SpreadExpression", nodes: $sym2,  pos  } }
 
 
 ###############################################################################################################
@@ -27,9 +27,9 @@
 ###############################################################################################################
 ###############################################################################################################
 
-<> javascript → start                                                                                           ↦r { env.IS_MODULE = false, env.fn.buildJSAST($sym1) }
+<> javascript → start                                                                                           ↦r { env.IS_MODULE = false, $sym1 }
 
-<> start → module                                                                                               ↦r { { type:(env.IS_MODULE) ? "Module" : "Script", vals:$sym1, pos  } }
+<> start → module                                                                                               ↦r { { type:(env.IS_MODULE) ? "Module" : "Script", nodes:$sym1, pos  } }
 
 ###############################################################################################################
 ###############################################################################################################
@@ -53,25 +53,25 @@
 # https://www.ecma-international.org/ecma-262/9.0/index.html#prod-ImportDeclaration
 ###############################################################################################################
 
-    <> import_declaration → τimport import_clause from_clause ;                                                 ↦r { { type:"ImportDeclaration", vals:[$sym2, $sym3], pos } }
-        │ τimport module_specifier ;                                                                            ↦r { { type:"ImportDeclaration", vals:[null, $sym3], pos } }
+    <> import_declaration → τimport import_clause from_clause ;                                                 ↦r { { type:"ImportDeclaration", nodes:[$sym2, $sym3], pos } }
+        │ τimport module_specifier ;                                                                            ↦r { { type:"ImportDeclaration", nodes:[null, $sym3], pos } }
 
-    <> import_clause → imported_default_binding                                                                 ↦r { { type:"ImportClause", vals:[$$sym1], pos } }
-        │ name_space_import                                                                                     ↦r { { type:"ImportClause", vals:[$$sym1], pos } }
-        │ named_imports                                                                                         ↦r { { type:"ImportClause", vals:[$$sym1], pos } }
-        │ imported_default_binding , name_space_import                                                          ↦r { { type:"ImportClause", vals:[$$sym1, $$sym3], pos } }
-        │ imported_default_binding , named_imports                                                              ↦r { { type:"ImportClause", vals:[$$sym1, $$sym3], pos } }
+    <> import_clause → imported_default_binding                                                                 ↦r { { type:"ImportClause", nodes:[$$sym1], pos } }
+        │ name_space_import                                                                                     ↦r { { type:"ImportClause", nodes:[$$sym1], pos } }
+        │ named_imports                                                                                         ↦r { { type:"ImportClause", nodes:[$$sym1], pos } }
+        │ imported_default_binding , name_space_import                                                          ↦r { { type:"ImportClause", nodes:[$$sym1, $$sym3], pos } }
+        │ imported_default_binding , named_imports                                                              ↦r { { type:"ImportClause", nodes:[$$sym1, $$sym3], pos } }
 
     <> imported_default_binding → imported_binding                                                                  
 
-    <> name_space_import → * τas imported_binding                                                               ↦r { { type:"NameSpaceImport", vals:$$sym3, pos } }
+    <> name_space_import → * τas imported_binding                                                               ↦r { { type:"NameSpaceImport", nodes:$$sym3, pos } }
 
-    <> named_imports → { import_specifier(*,) ,? }                                                              ↦r { { type:"NamedImports", vals:$$sym2 || [], pos } }
+    <> named_imports → { import_specifier(*,) ,? }                                                              ↦r { { type:"NamedImports", nodes:$$sym2 || [], pos } }
 
-    <> from_clause → τfrom module_specifier                                                                     ↦r { { type:"FromClause", vals:[$sym2], pos } }
+    <> from_clause → τfrom module_specifier                                                                     ↦r { { type:"FromClause", nodes:[$sym2], pos } }
 
-    <> import_specifier → imported_binding                                                                      ↦r { { type:"Specifier", vals:[$sym1], pos } }
-        │ identifier τas imported_binding                                                                       ↦r { { type:"Specifier", vals:[$sym1, $sym3], pos } }
+    <> import_specifier → imported_binding                                                                      ↦r { { type:"Specifier", nodes:[$sym1], pos } }
+        │ identifier τas imported_binding                                                                       ↦r { { type:"Specifier", nodes:[$sym1, $sym3], pos } }
 
     <> module_specifier → string_literal                                                                        ↦r { { type:"ModuleSpecifier", value:$sym1, pos } }
 
@@ -81,24 +81,24 @@
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-exports
 ###############################################################################################################
 
-    <> export_declaration → τexport * from_clause ;                                                             ↦r { { type:"ExportDeclaration", vals:[null, $sym2], DEFAULT:false, pos } }
-        │ τexport export_clause from_clause? ;                                                                  ↦r { { type:"ExportDeclaration", vals:[$sym1, $sym2], DEFAULT:false, pos } }
-        │ τexport variable_statement                                                                            ↦r { { type:"ExportDeclaration", vals:[$sym1, null], DEFAULT:false, pos } }
-        │ τexport declaration                                                                                   ↦r { { type:"ExportDeclaration", vals:[$sym1, null], DEFAULT:false, pos } }
-        │ τexport τdefault hoistable_declaration                                                                ↦r { { type:"ExportDeclaration", vals:[$sym1, null], DEFAULT:true, pos } }
-        │ τexport τdefault class_declaration                                                                    ↦r { { type:"ExportDeclaration", vals:[$sym1, null], DEFAULT:true, pos } }
+    <> export_declaration → τexport * from_clause ;                                                             ↦r { { type:"ExportDeclaration", nodes:[null, $sym2], DEFAULT:false, pos } }
+        │ τexport export_clause from_clause? ;                                                                  ↦r { { type:"ExportDeclaration", nodes:[$sym1, $sym2], DEFAULT:false, pos } }
+        │ τexport variable_statement                                                                            ↦r { { type:"ExportDeclaration", nodes:[$sym1, null], DEFAULT:false, pos } }
+        │ τexport declaration                                                                                   ↦r { { type:"ExportDeclaration", nodes:[$sym1, null], DEFAULT:false, pos } }
+        │ τexport τdefault hoistable_declaration                                                                ↦r { { type:"ExportDeclaration", nodes:[$sym1, null], DEFAULT:true, pos } }
+        │ τexport τdefault class_declaration                                                                    ↦r { { type:"ExportDeclaration", nodes:[$sym1, null], DEFAULT:true, pos } }
         │ τexport τdefault                                                                                      
 
             (EXC τfunction )
             (EXC τclass )
             (EXC τasync τfunction )
         
-            assignment_expression                                                                               ↦r { { type:"ExportDeclaration", vals:[$sym1, null], DEFAULT:true, pos } }
+            assignment_expression                                                                               ↦r { { type:"ExportDeclaration", nodes:[$sym1, null], DEFAULT:true, pos } }
 
-    <> export_clause → { export_specifier(*,) ,? }                                                              ↦r { { type:"ExportClause", vals:[$$sym2], pos } }
+    <> export_clause → { export_specifier(*,) ,? }                                                              ↦r { { type:"ExportClause", nodes:[$$sym2], pos } }
 
-    <> export_specifier →  identifier                                                                           ↦r { { type:"Specifier", vals:[$sym1], pos } }
-        │ identifier τas identifier                                                                             ↦r { { type:"Specifier", vals:[$sym1, $sym3], pos } }
+    <> export_specifier →  identifier                                                                           ↦r { { type:"Specifier", nodes:[$sym1], pos } }
+        │ identifier τas identifier                                                                             ↦r { { type:"Specifier", nodes:[$sym1, $sym3], pos } }
 
 ###############################################################################################################
 ###############################################################################################################
@@ -110,7 +110,7 @@
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-ecmascript-language-scripts-and-modules
 ###############################################################################################################
 
-    <> script → script_body                                                                                     ↦r { { type:"Script", vals:$sym1, pos } }
+    <> script → script_body                                                                                     ↦r { { type:"Script", nodes:$sym1, pos } }
 
     <> script_body → statement_list                                                                            
 
@@ -173,7 +173,7 @@
 
     <> block_statement → block                          
 
-    <> block → { statement_list }                                                                               ↦r { { type: "BlockStatement", vals: $sym2, pos } }
+    <> block → { statement_list }                                                                               ↦r { { type: "BlockStatement", nodes: $sym2, pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-empty-statement
@@ -185,43 +185,43 @@
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-expression-statement
 ###############################################################################################################
 
-    <> expression_statement → expression ;                                                                      ↦r { { type: "ExpressionStatement", vals: $sym1, pos } }
+    <> expression_statement → expression ;                                                                      ↦r { { type: "ExpressionStatement", nodes:[$sym1], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-expression-statement
 ###############################################################################################################
 
-    <> if_statement → τif \( expression \) statement (τelse statement)?                                         ↦r { { type: "IfStatement", vals:[$$sym3, $$sym4, $$sym5], pos } }                
+    <> if_statement → τif \( expression \) statement (τelse statement)?                                         ↦r { { type: "IfStatement", nodes:[$$sym3, $$sym4, $$sym5], pos } }                
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-iteration-statements
 ###############################################################################################################
 
-    <> iteration_statement → τdo statement τwhile \( expression \) ;                                            ↦r { { type: "DoStatement", vals:[$$sym2, $$sym5], pos } }
+    <> iteration_statement → τdo statement τwhile \( expression \) ;                                            ↦r { { type: "DoStatement", nodes:[$$sym2, $$sym5], pos } }
 
-        │ τwhile \( expression \) statement                                                                     ↦r { { type: "WhileStatement", vals:[$$sym3, $$sym5], pos } }
+        │ τwhile \( expression \) statement                                                                     ↦r { { type: "WhileStatement", nodes:[$$sym3, $$sym5], pos } }
         
         │ τfor \( ↦{ env.ASI = false; } (
             (EXC τlet \[ ) expression 
-            │ τvar variable_declaration_list ↦r { { type:"VarDeclaration", vals:$sym1,lex } }
+            │ τvar variable_declaration_list ↦r { { type:"VarDeclaration", nodes:$sym1,lex } }
             )? ; expression? ; expression? \) ↦{ env.ASI = true;} statement                                                 
-                                                                                                                ↦r { { type: "ForStatement", vals:[$$sym5, $$sym7, $$sym9], pos } }
+                                                                                                                ↦r { { type: "ForStatement", nodes:[$$sym5, $$sym7, $$sym9], pos } }
 
-        │ τfor \( lexical_declaration expression? ; expression? \)↦{ env.ASI = true;} statement                 ↦r { { type: "ForStatement", vals:[$$sym3, null, $$sym5, $$sym7], pos } }                                                                           
+        │ τfor \( lexical_declaration expression? ; expression? \)↦{ env.ASI = true;} statement                 ↦r { { type: "ForStatement", nodes:[$$sym3, null, $$sym5, $$sym7], pos } }                                                                           
                                                                                                                                                                                                                                                                             
         │ τfor \( (
                 (EXC τlet \[ ) left_hand_side_expression
-                │ τvar for_binding ↦r { { type:"VarDeclaration", vals:[$sym1], pos }  }
+                │ τvar for_binding ↦r { { type:"VarDeclaration", nodes:[$sym1], pos }  }
                 │ for_declaration
-            ) τin expression \)↦{ env.ASI = true;} statement                                                    ↦r { { type: "ForInStatement", vals:[$$sym3, $$sym5, $$sym7], pos } } 
+            ) τin expression \)↦{ env.ASI = true;} statement                                                    ↦r { { type: "ForInStatement", nodes:[$$sym3, $$sym5, $$sym7], pos } } 
 
         │ τfor τawait? \( (
                 (EXC τlet \[ ) left_hand_side_expression
-                │ τvar for_binding ↦r { { type:"VarDeclaration", vals:[$sym1],lex }  }
+                │ τvar for_binding ↦r { { type:"VarDeclaration", nodes:[$sym1],lex }  }
                 │ for_declaration
-            ) τof expression \)↦{ env.ASI = true;} statement                                                    ↦r { { type: "ForOfStatement", vals:[$$sym4, $$sym6, $$sym8], pos, AWAIT:!!$$sym2 } }
+            ) τof expression \)↦{ env.ASI = true;} statement                                                    ↦r { { type: "ForOfStatement", nodes:[$$sym4, $$sym6, $$sym8], pos, AWAIT:!!$$sym2 } }
 
-    <> for_declaration → let_or_const for_binding                                                                ↦r { { type: "LexicalBinding", vals:[$$sym2], pos } }
+    <> for_declaration → let_or_const for_binding                                                                ↦r { { type: "LexicalBinding", nodes:[$$sym2], pos } }
 
     <> for_binding → binding_identifier 
         │ binding_pattern 
@@ -230,52 +230,52 @@
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-continue-statement
 ###############################################################################################################
 
-    <> continue_statement → τcontinue label_identifier? ;                                                       ↦r { { type: "ContinueStatement", vals:$$sym2, pos } }  
+    <> continue_statement → τcontinue label_identifier? ;                                                       ↦r { { type: "ContinueStatement", nodes:[$$sym2], pos } }  
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-break-statement
 ###############################################################################################################
 
-    <> break_statement → τbreak label_identifier? ;                                                             ↦r { { type: "BreakStatement", vals:$$sym2, pos } }
+    <> break_statement → τbreak label_identifier? ;                                                             ↦r { { type: "BreakStatement", nodes:[$$sym2], pos } }
 
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-return-statement
 ###############################################################################################################
 
-    <> return_statement → τreturn expression? ;                                                                 ↦r { { type:"ReturnStatement", vals:$$sym2, pos } }
+    <> return_statement → τreturn expression? ;                                                                 ↦r { { type:"ReturnStatement", nodes:[$$sym2], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-throw-statement
 ###############################################################################################################
 
-    <> throw_statement → τthrow expression ;                                                                    ↦r { { type:"ThrowStatement", vals:$$sym2, pos } }
+    <> throw_statement → τthrow expression ;                                                                    ↦r { { type:"ThrowStatement", nodes:[$$sym2], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-with-statement
 ###############################################################################################################
 
-    <> with_statement → τwith \( expression \) statement                                                        ↦r { { type:"WithStatement", vals:[$$sym3, $$sym5], pos } }
+    <> with_statement → τwith \( expression \) statement                                                        ↦r { { type:"WithStatement", nodes:[$$sym3, $$sym5], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-switch-statement
 ###############################################################################################################
 
-    <> switch_statement → τswitch \( expression \) case_block                                                   ↦r { { type:"SwitchStatement", vals:[$$sym3, $$sym5], pos } }
+    <> switch_statement → τswitch \( expression \) case_block                                                   ↦r { { type:"SwitchStatement", nodes:[$$sym3, $$sym5], pos } }
 
-    <> case_block → { case_clauses? default_clause? case_clauses? }                                             ↦r { { type:"CaseBlock", vals:[...$sym2, $sym3, ...$sym4], pos } }
+    <> case_block → { case_clauses? default_clause? case_clauses? }                                             ↦r { { type:"CaseBlock", nodes:[...$sym2, $sym3, ...$sym4], pos } }
 
     <> case_clauses → case_clause(+)
 
-    <> case_clause → τcase expression : statement_list?                                                         ↦r { { type:"CaseClause", vals:[$$sym2, $sym4], pos } }
+    <> case_clause → τcase expression : statement_list?                                                         ↦r { { type:"CaseClause", nodes:[$$sym2, $sym4], pos } }
 
-    <> default_clause → τdefault : statement_list?                                                              ↦r { { type:"CaseClause", vals:[$$sym2, $sym4], pos } }
+    <> default_clause → τdefault : statement_list?                                                              ↦r { { type:"CaseClause", nodes:[$$sym2, $sym4], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-labelled-statements
 ###############################################################################################################
 
-    <> labelled_statement → label_identifier : labelled_item                                                    ↦r { { type:"LabeledStatement", vals:[$$sym1, $$sym3], pos } }
+    <> labelled_statement → label_identifier : labelled_item                                                    ↦r { { type:"LabeledStatement", nodes:[$$sym1, $$sym3], pos } }
 
     <> labelled_item → statement
         │ function_declaration
@@ -284,11 +284,11 @@
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-try-statement
 ###############################################################################################################
 
-    <> try_statement → τtry block [catch? finally?]                                                             ↦r { { type:"TryStatement", vals:[$$sym2,$$sym3,$$sym4], pos } }
+    <> try_statement → τtry block [catch? finally?]                                                             ↦r { { type:"TryStatement", nodes:[$$sym2,$$sym3,$$sym4], pos } }
 
-    <> catch → τcatch \( catch_parameter \) block                                                               ↦r { { type:"CatchClause", vals:[$$sym3, $$sym5], pos } }
+    <> catch → τcatch \( catch_parameter \) block                                                               ↦r { { type:"CatchClause", nodes:[$$sym3, $$sym5], pos } }
 
-    <> finally → τfinally block                                                                                 ↦r { { type:"FinallyClause", vals:[$$sym2], pos } }
+    <> finally → τfinally block                                                                                 ↦r { { type:"FinallyClause", nodes:[$$sym2], pos } }
 
     <> catch_parameter → binding_identifier 
         │ binding_pattern
@@ -309,7 +309,7 @@
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-variable-statement
 ###############################################################################################################
 
-    <> variable_statement → τvar variable_declaration_list ;                                                    ↦r { { type:"VariableStatement", vals:$sym2, pos } }
+    <> variable_statement → τvar variable_declaration_list ;                                                    ↦r { { type:"VariableStatement", nodes:$sym2, pos } }
 
     <> variable_declaration_list → variable_declaration(+,)                                                         
 
@@ -322,7 +322,7 @@
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-let-and-const-declarations
 ###############################################################################################################
 
-        <> lexical_declaration → let_or_const binding_list ;                                                    ↦r { { type:"LexicalDeclaration", symbol:$sym1, vals:$sym2, pos } }
+        <> lexical_declaration → let_or_const binding_list ;                                                    ↦r { { type:"LexicalDeclaration", symbol:$sym1, nodes:$sym2, pos } }
 
         <> let_or_const → τlet                                                                                  ↦r { "let" }
             │ τconst                                                                                            ↦r { "const" }
@@ -345,16 +345,16 @@
     ## Modified to include async and function generator elements
 
     <> function_declaration →  τasync? τfunction \*? binding_identifier? 
-                                \( formal_parameters? \) { function_body? }                                     ↦r { { type:"Function", ASYNC:!!$$sym1, GENERATOR:!!$$sym3, vals:[$$sym4,$$sym6,$$sym9], pos } }
+                                \( formal_parameters? \) { function_body? }                                     ↦r { { type:"Function", ASYNC:!!$$sym1, GENERATOR:!!$$sym3, nodes:[$$sym4,$$sym6,$$sym9], pos } }
 
     <> function_expression → τasync? τfunction \*? binding_identifier? 
-                                \( formal_parameters? \) { function_body? }                                     ↦r { { type:"Function", ASYNC:!!$$sym1, GENERATOR:!!$$sym3, vals:[$$sym4,$$sym6,$$sym9], pos } }
+                                \( formal_parameters? \) { function_body? }                                     ↦r { { type:"Function", ASYNC:!!$$sym1, GENERATOR:!!$$sym3, nodes:[$$sym4,$$sym6,$$sym9], pos } }
 
     <> unique_formal_parameters → formal_parameters
 
-    <> formal_parameters → function_rest_parameter                                                              ↦r { { type:"FormalPerameters", vals:$sym1, pos } }
-         │ formal_parameter_list ,?                                                                             ↦r { { type:"FormalPerameters", vals:$sym1, pos } }
-         │ formal_parameter_list , function_rest_parameter                                                      ↦r { { type:"FormalPerameters", vals:[$sym1, $$sym3], pos } }
+    <> formal_parameters → function_rest_parameter                                                              ↦r { { type:"FormalPerameters", nodes:$sym1, pos } }
+         │ formal_parameter_list ,?                                                                             ↦r { { type:"FormalPerameters", nodes:$sym1, pos } }
+         │ formal_parameter_list , function_rest_parameter                                                      ↦r { { type:"FormalPerameters", nodes:[$sym1, $$sym3], pos } }
 
     <> formal_parameter_list → formal_parameter(+,)                                                                     
 
@@ -402,21 +402,21 @@
 
     # <> generator_body → function_body
 
-    <> yield_expression → τyield (RED θnl)                                                                      ↦r { { type: "YieldExpression", vals:[], pos } }
-        │ τyield \*? assignment_expression                                                                      ↦r { { type: "YieldExpression", vals:$$sym3, pos, GENERATOR:!!$$sym2 } }
+    <> yield_expression → τyield (RED θnl)                                                                      ↦r { { type: "YieldExpression", nodes:[], pos } }
+        │ τyield \*? assignment_expression                                                                      ↦r { { type: "YieldExpression", nodes:$$sym3, pos, GENERATOR:!!$$sym2 } }
 
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-arrow-function-definitions
 ###############################################################################################################
 
-    <> arrow_function → τasync? arrow_parameters => concise_body                                                ↦r { { type:"ArrowFunction", ASYNC:!!$$sym1, vals:[$$sym2,$$sym4], pos } }
+    <> arrow_function → τasync? arrow_parameters => concise_body                                                ↦r { { type:"ArrowFunction", ASYNC:!!$$sym1, nodes:[$$sym2,$$sym4], pos } }
 
     <> arrow_parameters → binding_identifier                                                                        
         │ cover_parenthesized_expression_and_arrow_parameter_list               
 
     <> concise_body → (EXC { ) assignment_expression 
-        │ { function_statement_list }                                                                           ↦r { { type: "BlockStatement", vals: $sym2, pos } }
+        │ { function_statement_list }                                                                           ↦r { { type: "BlockStatement", nodes: $sym2, pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-async-arrow-function-definitions
@@ -430,7 +430,7 @@
     #    <> async_concise_body → (EXC { ) assignment_expression 
     #        │ { function_statement_list }                                                                      ↦r { $sym2 }
 
-    <> cover_call_expression_and_async_arrow_head → member_expression arguments                                 ↦r { { type: "CallMemberExpression", vals:[$sym1, $sym2], pos } }
+    <> cover_call_expression_and_async_arrow_head → member_expression arguments                                 ↦r { { type: "CallMemberExpression", nodes:[$sym1, $sym2], pos } }
 
 ###############################################################################################################
 ###############################################################################################################
@@ -442,9 +442,9 @@
 # https://www.ecma-international.org/ecma-262/index.html#sec-class-definitions
 ###############################################################################################################
 
-    <> class_declaration → τclass binding_identifier? class_heritage? { class_body? }                           ↦r { { type:"Class", vals:[$$sym2, $$sym3, $$sum4], pos } }
+    <> class_declaration → τclass binding_identifier? class_heritage? { class_body? }                           ↦r { { type:"Class", nodes:[$$sym2, $$sym3, $$sum4], pos } }
 
-    <> class_expression → τclass binding_identifier? class_heritage? { class_body? }                            ↦r { { type:"Class", vals:[$$sym2, $$sym3, $$sum4], pos } }
+    <> class_expression → τclass binding_identifier? class_heritage? { class_body? }                            ↦r { { type:"Class", nodes:[$$sym2, $$sym3, $$sum4], pos } }
 
     <> class_heritage → τextends left_hand_side_expression                          
 
@@ -457,9 +457,9 @@
 # https://www.ecma-international.org/ecma-262/9.0/index.html#prod-MethodDefinition
 ###############################################################################################################
 
-    <> method_definition → τasync? \*? property_name \( unique_formal_parameters? \) { function_body? }         ↦r { { type:"Method", ASYNC:!!$$sym1, GENERATOR:!!$$sym3, vals:[$$sym3, $$sym5, $$sum6], pos } } 
-        │ τget property_name \( \) { function_body? }                                                           ↦r { { type:"GetterMethod", vals:[$$sym3, $$sym5, $$sum6], pos } }
-        │ τset property_name \( property_set_parameter_list \) { function_body? }                               ↦r { { type:"SetterMethod", vals:[$$sym3, $$sym5, $$sum6], pos } }
+    <> method_definition → τasync? \*? property_name \( unique_formal_parameters? \) { function_body? }         ↦r { { type:"Method", ASYNC:!!$$sym1, GENERATOR:!!$$sym3, nodes:[$$sym3, $$sym5, $$sum6], pos } } 
+        │ τget property_name \( \) { function_body? }                                                           ↦r { { type:"GetterMethod", nodes:[$$sym3, $$sym5, $$sum6], pos } }
+        │ τset property_name \( property_set_parameter_list \) { function_body? }                               ↦r { { type:"SetterMethod", nodes:[$$sym3, $$sym5, $$sum6], pos } }
 
     <> property_set_parameter_list → formal_parameter 
 
@@ -467,8 +467,10 @@
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-comma-operator
 ###############################################################################################################
 
-    <> expression → expression , assignment_expression                                                          ↦r { ( $sym1.vals.push($sym3), $sym1 ) }
-        │ assignment_expression                                                                                 ↦r { { type: "ExpressionList", vals: [$sym1], pos } }
+    <> expression → expression , assignment_expression                                                          ↦r { ( $sym1.type == "ExpressionList" 
+                                                                                                                            ? ( $sym1.vals.push($sym3) , $sym1 )
+                                                                                                                            : { type: "ExpressionList", nodes: [$sym1, $sym3], pos } ) }
+        │ assignment_expression                                                                                 
                     
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-left-hand-side-expressions
@@ -478,34 +480,34 @@
         │ call_expression                               
 
     <> new_expression → member_expression 
-        │ τnew new_expression                                                                                   ↦r { { type: "NewExpression", vals:$$sym2, pos } }
+        │ τnew new_expression                                                                                   ↦r { { type: "NewExpression", nodes:$$sym2, pos } }
 
     <> member_expression → primary_expression                   
-        │ member_expression \[ expression \]                                                                    ↦r { { type: "MemberExpression", vals:[$$sym1, $$sym3], pos, COMPUTED:true } }
-        │ member_expression . identifier_name                                                                   ↦r { { type: "MemberExpression", vals:[$$sym1, $$sym3], pos, COMPUTED:false } }
-        │ member_expression template_literal                                                                    ↦r { { type: "CallExpression", vals:sym, pos, TEMPLATE:true } }
+        │ member_expression \[ expression \]                                                                    ↦r { { type: "MemberExpression", nodes:[$$sym1, $$sym3], pos, COMPUTED:true } }
+        │ member_expression . identifier_name                                                                   ↦r { { type: "MemberExpression", nodes:[$$sym1, $$sym3], pos, COMPUTED:false } }
+        │ member_expression template_literal                                                                    ↦r { { type: "CallExpression", nodes:sym, pos, TEMPLATE:true } }
         │ super_property
         │ meta_property
-        │ τnew member_expression arguments                                                                      ↦r { { type: "NewInstanceExpression", vals:[$$sym2, $$sym3], pos } }
+        │ τnew member_expression arguments                                                                      ↦r { { type: "NewInstanceExpression", nodes:[$$sym2, $$sym3], pos } }
 
-    <> super_property → τsuper . identifier_name                                                                ↦r { { type: "SuperExpression", vals:$$sym3, pos, COMPUTED:true } }
-        │ τsuper \[ expression \]                                                                               ↦r { { type: "SuperExpression", vals:$$sym3, pos, COMPUTED:false } }
+    <> super_property → τsuper . identifier_name                                                                ↦r { { type: "SuperExpression", nodes:$$sym3, pos, COMPUTED:true } }
+        │ τsuper \[ expression \]                                                                               ↦r { { type: "SuperExpression", nodes:$$sym3, pos, COMPUTED:false } }
 
     <> meta_property → new_target
 
     <> new_target → τnew . τtarget                                                                              ↦r { { type: "NewTarget", pos } }
 
-    <> call_expression → call_expression . identifier_name                                                      ↦r { { type: "MemberExpression", vals:[$$sym1, $$sym3], pos, COMPUTED:false } }
+    <> call_expression → call_expression . identifier_name                                                      ↦r { { type: "MemberExpression", nodes:[$$sym1, $$sym3], pos, COMPUTED:false } }
         │ super_call
-        │ call_expression arguments                                                                             ↦r { { type: "CallExpression", vals:sym, pos, TEMPLATE:true } }
-        │ call_expression \[ expression \]                                                                      ↦r { { type: "MemberExpression", vals:[$$sym1, $$sym3], pos, COMPUTED:true } }
-        │ cover_call_expression_and_async_arrow_head                                                            ↦r { { type: "CallExpression", vals:sym, pos, TEMPLATE:true } }
-        │ call_expression template_literal                                                                      ↦r { { type: "CallExpression", vals:sym, pos, TEMPLATE:true } }
+        │ call_expression arguments                                                                             ↦r { { type: "CallExpression", nodes:sym, pos, TEMPLATE:true } }
+        │ call_expression \[ expression \]                                                                      ↦r { { type: "MemberExpression", nodes:[$$sym1, $$sym3], pos, COMPUTED:true } }
+        │ cover_call_expression_and_async_arrow_head                                                            ↦r { { type: "CallExpression", nodes:sym, pos, TEMPLATE:true } }
+        │ call_expression template_literal                                                                      ↦r { { type: "CallExpression", nodes:sym, pos, TEMPLATE:true } }
 
-    <> super_call → τsuper arguments                                                                            ↦r { { type: "SuperCall", vals:$$sym2, pos } }
+    <> super_call → τsuper arguments                                                                            ↦r { { type: "SuperCall", nodes:$$sym2, pos } }
 
-    <> arguments → \( \)                                                                                        ↦r { { type: "Arguments", vals:[], pos } }
-        │ \( argument_list ,? \)                                                                                ↦r { { type: "Arguments", vals:$$sym2, pos } }
+    <> arguments → \( \)                                                                                        ↦r { { type: "Arguments", nodes:[], pos } }
+        │ \( argument_list ,? \)                                                                                ↦r { { type: "Arguments", nodes:$$sym2, pos } }
 
     <> argument_list → (assignment_expression │ ... assignment_expression ↦r=>Spread  )(+,)
                                
@@ -534,7 +536,7 @@
 # https://www.ecma-international.org/ecma-262/9.0/index.html#prod-AwaitExpression
 ###############################################################################################################
 
-    <> await_expression → τawait unary_expression                                                               ↦r { { type: "AwaitExpression", vals:$$sym2, pos } }
+    <> await_expression → τawait unary_expression                                                               ↦r { { type: "AwaitExpression", nodes:$$sym2, pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#prod-BindingExpression
@@ -543,8 +545,8 @@
     <> assignment_expression → conditional_expression 
         │ yield_expression
         │ arrow_function
-        │ left_hand_side_expression = assignment_expression                                                     ↦r { { type: "AssignmentExpression", operator:"=",  vals:[$sym1,$sym3], pos } }
-        │ left_hand_side_expression assignement_operator assignment_expression                                  ↦r { { type: "AssignmentExpression", operator:$sym2,  vals:[$sym1,$sym3], pos } }
+        │ left_hand_side_expression = assignment_expression                                                     ↦r { { type: "AssignmentExpression", operator:"=",  nodes:[$sym1,$sym3], pos } }
+        │ left_hand_side_expression assignement_operator assignment_expression                                  ↦r { { type: "AssignmentExpression", operator:$sym2,  nodes:[$sym1,$sym3], pos } }
         
         #│ async_arrow_function
 
@@ -566,98 +568,98 @@
 ###############################################################################################################
 
     <> conditional_expression → logical_or_expression
-        │ logical_or_expression \? assignment_expression : assignment_expression                                ↦r { { type: "ContitionalExpression", vals:[$$sym1, $$sym3, $$sym5], pos } }
+        │ logical_or_expression \? assignment_expression : assignment_expression                                ↦r { { type: "ContitionalExpression", nodes:[$$sym1, $$sym3, $$sym5], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-binary-logical-operators
 ###############################################################################################################
 
     <> logical_or_expression → logical_and_expression 
-        │ logical_or_expression || logical_and_expression                                                       ↦r { { type: "LogicalExpression", symbol:$$sym2, vals:[$$sym1, $$sym3], pos } }
+        │ logical_or_expression || logical_and_expression                                                       ↦r { { type: "LogicalExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
 
     <> logical_and_expression → bitwise_or_expression 
-        │ logical_and_expression && bitwise_or_expression                                                       ↦r { { type: "LogicalExpression", symbol:$$sym2, vals:[$$sym1, $$sym3], pos } }
+        │ logical_and_expression && bitwise_or_expression                                                       ↦r { { type: "LogicalExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-binary-bitwise-operators
 ###############################################################################################################
 
     <> bitwise_or_expression → bitwise_xor_expression 
-        │ bitwise_or_expression | bitwise_xor_expression                                                        ↦r { { type: "LogicalExpression", symbol:$$sym2, vals:[$$sym1, $$sym3], pos } }
+        │ bitwise_or_expression | bitwise_xor_expression                                                        ↦r { { type: "LogicalExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
 
     <> bitwise_xor_expression → bitwise_and_expression 
-        │ bitwise_xor_expression ^ bitwise_and_expression                                                       ↦r { { type: "LogicalExpression", symbol:$$sym2, vals:[$$sym1, $$sym3], pos } }
+        │ bitwise_xor_expression ^ bitwise_and_expression                                                       ↦r { { type: "LogicalExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
 
     <> bitwise_and_expression → equality_expression 
-        │ bitwise_and_expression & equality_expression                                                          ↦r { { type: "LogicalExpression", symbol:$$sym2, vals:[$$sym1, $$sym3], pos } }
+        │ bitwise_and_expression & equality_expression                                                          ↦r { { type: "LogicalExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-equality-operators
 ###############################################################################################################
 
     <> equality_expression → relational_expression 
-        │ equality_expression == relational_expression                                                          ↦r { { type: "EqualityExpression", symbol:$$sym2, vals:[$$sym1, $$sym3], pos } }
-        │ equality_expression != relational_expression                                                          ↦r { { type: "EqualityExpression", symbol:$$sym2, vals:[$$sym1, $$sym3], pos } }
-        │ equality_expression === relational_expression                                                         ↦r { { type: "EqualityExpression", symbol:$$sym2, vals:[$$sym1, $$sym3], pos } }
-        │ equality_expression !== relational_expression                                                         ↦r { { type: "EqualityExpression", symbol:$$sym2, vals:[$$sym1, $$sym3], pos } }
+        │ equality_expression == relational_expression                                                          ↦r { { type: "EqualityExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
+        │ equality_expression != relational_expression                                                          ↦r { { type: "EqualityExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
+        │ equality_expression === relational_expression                                                         ↦r { { type: "EqualityExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
+        │ equality_expression !== relational_expression                                                         ↦r { { type: "EqualityExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-relational-operators
 ###############################################################################################################
 
     <> relational_expression → shift_expression 
-        │ relational_expression < shift_expression                                                              ↦r { { type: "RelationalExpression", symbol:$$sym2, vals:[$$sym1, $$sym3], pos } }
-        │ relational_expression >  shift_expression                                                             ↦r { { type: "RelationalExpression", symbol:$$sym2, vals:[$$sym1, $$sym3], pos } }
-        │ relational_expression <= shift_expression                                                             ↦r { { type: "RelationalExpression", symbol:$$sym2, vals:[$$sym1, $$sym3], pos } }
-        │ relational_expression >= shift_expression                                                             ↦r { { type: "RelationalExpression", symbol:$$sym2, vals:[$$sym1, $$sym3], pos } }
-        │ relational_expression τinstanceof shift_expression                                                    ↦r { { type: "InstanceOfExpression",  vals:[$$sym1, $$sym3], pos } }
-        │ relational_expression τin shift_expression                                                            ↦r { { type: "InExpression",  vals:[$$sym1, $$sym3], pos } }   
+        │ relational_expression < shift_expression                                                              ↦r { { type: "RelationalExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
+        │ relational_expression >  shift_expression                                                             ↦r { { type: "RelationalExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
+        │ relational_expression <= shift_expression                                                             ↦r { { type: "RelationalExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
+        │ relational_expression >= shift_expression                                                             ↦r { { type: "RelationalExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
+        │ relational_expression τinstanceof shift_expression                                                    ↦r { { type: "InstanceOfExpression",  nodes:[$$sym1, $$sym3], pos } }
+        │ relational_expression τin shift_expression                                                            ↦r { { type: "InExpression",  nodes:[$$sym1, $$sym3], pos } }   
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-bitwise-shift-operators
 ###############################################################################################################
 
     <> shift_expression → additive_expression 
-        │ shift_expression << additive_expression                                                               ↦r { { type: "ShiftExpression", symbol:$$sym2, vals:[$$sym1, $$sym3], pos } }
-        │ shift_expression >> additive_expression                                                               ↦r { { type: "ShiftExpression", symbol:$$sym2, vals:[$$sym1, $$sym3], pos } }
-        │ shift_expression >>> additive_expression                                                              ↦r { { type: "ShiftExpression", symbol:$$sym2, vals:[$$sym1, $$sym3], pos } }
+        │ shift_expression << additive_expression                                                               ↦r { { type: "ShiftExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
+        │ shift_expression >> additive_expression                                                               ↦r { { type: "ShiftExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
+        │ shift_expression >>> additive_expression                                                              ↦r { { type: "ShiftExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-additive-operators
 ###############################################################################################################
 
     <> additive_expression → multiplicative_expression 
-        │ additive_expression + multiplicative_expression                                                       ↦r { { type: "AdditiveExpression", symbol:$$sym2, vals:[$$sym1, $$sym3], pos } }
-        │ additive_expression - multiplicative_expression                                                       ↦r { { type: "AdditiveExpression", symbol:$$sym2, vals:[$$sym1, $$sym3], pos } }
+        │ additive_expression + multiplicative_expression                                                       ↦r { { type: "AdditiveExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
+        │ additive_expression - multiplicative_expression                                                       ↦r { { type: "AdditiveExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-multiplicative-operators
 ###############################################################################################################
 
     <> multiplicative_expression → exponentiation_expression 
-        │ multiplicative_expression * exponentiation_expression                                                 ↦r { { type: "MultiplicativeExpression", symbol:$$sym2, vals:[$$sym1, $$sym3], pos } }
-        │ multiplicative_expression / exponentiation_expression                                                 ↦r { { type: "MultiplicativeExpression", symbol:$$sym2, vals:[$$sym1, $$sym3], pos } }
-        │ multiplicative_expression % exponentiation_expression                                                 ↦r { { type: "MultiplicativeExpression", symbol:$$sym2, vals:[$$sym1, $$sym3], pos } }
+        │ multiplicative_expression * exponentiation_expression                                                 ↦r { { type: "MultiplicativeExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
+        │ multiplicative_expression / exponentiation_expression                                                 ↦r { { type: "MultiplicativeExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
+        │ multiplicative_expression % exponentiation_expression                                                 ↦r { { type: "MultiplicativeExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-exp-operator
 ###############################################################################################################
 
     <> exponentiation_expression → unary_expression 
-        │ update_expression ** exponentiation_expression                                                        ↦r { { type: "ExponentationExpression", vals:[$$sym1, $$sym3], pos } }
+        │ update_expression ** exponentiation_expression                                                        ↦r { { type: "ExponentationExpression", nodes:[$$sym1, $$sym3], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-unary-operators
 ###############################################################################################################
 
     <> unary_expression → update_expression 
-        │ τdelete unary_expression                                                                              ↦r { { type: "DeleteExpression", vals:$$sym2, pos } }
-        │ τvoid unary_expression                                                                                ↦r { { type: "VoidExpression", vals:$$sym2, pos } }
-        │ τtypeof unary_expression                                                                              ↦r { { type: "TypeofExpression", vals:$$sym2, pos } }
-        │ + unary_expression                                                                                    ↦r { { type: "UnaryExpression", symbol:$sym1, vals:[$$sym1,$$sym2], pos } }
-        │ - unary_expression                                                                                    ↦r { { type: "UnaryExpression", symbol:$sym1, vals:[$$sym1,$$sym2], pos } }
-        │ ~ unary_expression                                                                                    ↦r { { type: "UnaryExpression", symbol:$sym1, vals:[$$sym1,$$sym2], pos } }
-        │ ! unary_expression                                                                                    ↦r { { type: "UnaryExpression", symbol:$sym1, vals:[$$sym1,$$sym2], pos } }
+        │ τdelete unary_expression                                                                              ↦r { { type: "DeleteExpression", nodes:$$sym2, pos } }
+        │ τvoid unary_expression                                                                                ↦r { { type: "VoidExpression", nodes:$$sym2, pos } }
+        │ τtypeof unary_expression                                                                              ↦r { { type: "TypeofExpression", nodes:$$sym2, pos } }
+        │ + unary_expression                                                                                    ↦r { { type: "UnaryExpression", symbol:$sym1, nodes:[$$sym1,$$sym2], pos } }
+        │ - unary_expression                                                                                    ↦r { { type: "UnaryExpression", symbol:$sym1, nodes:[$$sym1,$$sym2], pos } }
+        │ ~ unary_expression                                                                                    ↦r { { type: "UnaryExpression", symbol:$sym1, nodes:[$$sym1,$$sym2], pos } }
+        │ ! unary_expression                                                                                    ↦r { { type: "UnaryExpression", symbol:$sym1, nodes:[$$sym1,$$sym2], pos } }
         │ await_expression
 
 ###############################################################################################################
@@ -665,24 +667,24 @@
 ###############################################################################################################
 
     <> update_expression →  left_hand_side_expression 
-        │ left_hand_side_expression  ++                                                                         ↦r { { type: "PostExpression", symbol:$$sym2, vals:$$sym1, pos } }
-        │ left_hand_side_expression  --                                                                         ↦r { { type: "PostExpression", symbol:$$sym2, vals:$$sym1, pos } }
-        │ ++ unary_expression                                                                                   ↦r { { type: "PreExpression", symbol:$$sym1, vals:$$sym2, pos } }
-        │ -- unary_expression                                                                                   ↦r { { type: "PreExpression", symbol:$$sym1, vals:$$sym2, pos } }
+        │ left_hand_side_expression  ++                                                                         ↦r { { type: "PostExpression", symbol:$$sym2, nodes:$$sym1, pos } }
+        │ left_hand_side_expression  --                                                                         ↦r { { type: "PostExpression", symbol:$$sym2, nodes:$$sym1, pos } }
+        │ ++ unary_expression                                                                                   ↦r { { type: "PreExpression", symbol:$$sym1, nodes:$$sym2, pos } }
+        │ -- unary_expression                                                                                   ↦r { { type: "PreExpression", symbol:$$sym1, nodes:$$sym2, pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#prod-CoverParenthesizedExpressionAndArrowParameterList
 ###############################################################################################################
 
-    <> cover_parenthesized_expression_and_arrow_parameter_list → \( \)                                          ↦r { { type: "Parameters", vals:[], pos } }
-        │ \( expression , \)                                                                                    ↦r { { type: "Parameters", vals:[$$sym2], pos } }
-        │ \( ... binding_identifier  \)                                                                         ↦r { { type: "Parameters", vals:[{type:"Spread", vals:[$$sym3]}], pos } }
-        │ \( ... binding_pattern \)                                                                             ↦r { { type: "Parameters", vals:[{type:"Spread", vals:[$$sym3]}], pos } }
-        │ \( expression , ... binding_identifier  \)                                                            ↦r { { type: "Parameters", vals:[$$sym2, {type:"Spread", vals:[$$sym4]}], pos } }
-        │ \( expression , ... binding_pattern  \)                                                               ↦r { { type: "Parameters", vals:[$$sym2, {type:"Spread", vals:[$$sym4]}], pos } }
+    <> cover_parenthesized_expression_and_arrow_parameter_list → \( \)                                          ↦r { { type: "Parameters", nodes:[], pos } }
+        │ \( expression , \)                                                                                    ↦r { { type: "Parameters", nodes:[$$sym2], pos } }
+        │ \( ... binding_identifier  \)                                                                         ↦r { { type: "Parameters", nodes:[{type:"Spread", nodes:[$$sym3]}], pos } }
+        │ \( ... binding_pattern \)                                                                             ↦r { { type: "Parameters", nodes:[{type:"Spread", nodes:[$$sym3]}], pos } }
+        │ \( expression , ... binding_identifier  \)                                                            ↦r { { type: "Parameters", nodes:[$$sym2, {type:"Spread", nodes:[$$sym4]}], pos } }
+        │ \( expression , ... binding_pattern  \)                                                               ↦r { { type: "Parameters", nodes:[$$sym2, {type:"Spread", nodes:[$$sym4]}], pos } }
         │ parenthasized                                                                                         
     
-    <> parenthasized → \( expression \)                                                                         ↦r { { type: "Parenthasized", vals:[$$sym2], pos } }
+    <> parenthasized → \( expression \)                                                                         ↦r { { type: "Parenthasized", nodes:[$$sym2], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/9.0/index.html#prod-BindingPattern
@@ -691,21 +693,21 @@
     <> binding_pattern → object_binding_pattern
         │   array_binding_pattern
 
-    <> object_binding_pattern → { }                                                                             ↦r { { type: "ObjectLiteral", vals:[], pos } }
-        │ { binding_rest_property }                                                                             ↦r { { type: "ObjectLiteral", vals:[$sym1], pos } }
-        │ { binding_property_list }                                                                             ↦r { { type: "ObjectLiteral", vals:[$sym1], pos } }    
-        │ { binding_property_list , binding_rest_property}                                                      ↦r { { type: "ObjectLiteral", vals:[$sym1, $sym2], pos } }    
-        │ { binding_property_list , }                                                                           ↦r { { type: "ObjectLiteral", vals:[$sym1], pos } }    
+    <> object_binding_pattern → { }                                                                             ↦r { { type: "ObjectLiteral", nodes:[], pos } }
+        │ { binding_rest_property }                                                                             ↦r { { type: "ObjectLiteral", nodes:[$sym1], pos } }
+        │ { binding_property_list }                                                                             ↦r { { type: "ObjectLiteral", nodes:[$sym1], pos } }    
+        │ { binding_property_list , binding_rest_property}                                                      ↦r { { type: "ObjectLiteral", nodes:[$sym1, $sym2], pos } }    
+        │ { binding_property_list , }                                                                           ↦r { { type: "ObjectLiteral", nodes:[$sym1], pos } }    
 
-    <> array_binding_pattern → \[ \]                                                                            ↦r { { type: "ArrayLiteral", vals:[], pos } }
-        │ \[ elision binding_rest_element \]                                                                    ↦r { { type: "ArrayLiteral", vals:[$sym2], pos } }
-        │ \[ elision \]                                                                                         ↦r { { type: "ArrayLiteral", vals:[], pos } }    
-        │ \[ binding_rest_element \]                                                                            ↦r { { type: "ArrayLiteral", vals:[$sym1], pos } }    
-        │ \[ binding_element_list \]                                                                            ↦r { { type: "ArrayLiteral", vals:[$sym1], pos } }    
-        │ \[ binding_element_list , \]                                                                          ↦r { { type: "ArrayLiteral", vals:[$sym1], pos } }    
-        │ \[ binding_element_list , elision? \]                                                                 ↦r { { type: "ArrayLiteral", vals:[$sym1], pos } }    
-        │ \[ binding_element_list , elision? binding_rest_element \]                                            ↦r { { type: "ArrayLiteral", vals:[$sym1, $sym3], pos } }    
-        │ \[ binding_element_list , binding_rest_element \]                                                     ↦r { { type: "ArrayLiteral", vals:[$sym1, $sym3], pos } }    
+    <> array_binding_pattern → \[ \]                                                                            ↦r { { type: "ArrayLiteral", nodes:[], pos } }
+        │ \[ elision binding_rest_element \]                                                                    ↦r { { type: "ArrayLiteral", nodes:[$sym2], pos } }
+        │ \[ elision \]                                                                                         ↦r { { type: "ArrayLiteral", nodes:[], pos } }    
+        │ \[ binding_rest_element \]                                                                            ↦r { { type: "ArrayLiteral", nodes:[$sym1], pos } }    
+        │ \[ binding_element_list \]                                                                            ↦r { { type: "ArrayLiteral", nodes:[$sym1], pos } }    
+        │ \[ binding_element_list , \]                                                                          ↦r { { type: "ArrayLiteral", nodes:[$sym1], pos } }    
+        │ \[ binding_element_list , elision? \]                                                                 ↦r { { type: "ArrayLiteral", nodes:[$sym1], pos } }    
+        │ \[ binding_element_list , elision? binding_rest_element \]                                            ↦r { { type: "ArrayLiteral", nodes:[$sym1, $sym3], pos } }    
+        │ \[ binding_element_list , binding_rest_element \]                                                     ↦r { { type: "ArrayLiteral", nodes:[$sym1, $sym3], pos } }    
 
     <> binding_rest_property → ... binding_identifier                                                           ↦r=>Spread
 
@@ -719,10 +721,10 @@
         │ property_name : binding_element
 
     <> binding_element → single_name_binding
-        │ binding_pattern initializer                                                                           ↦r { { type:"BindingExpression", vals: [$sym1, $sym2],  pos  } }
+        │ binding_pattern initializer                                                                           ↦r { { type:"BindingExpression", nodes: [$sym1, $sym2],  pos  } }
         │ binding_pattern
 
-    <> single_name_binding → binding_identifier initializer                                                     ↦r { { type:"BindingExpression", vals: [$sym1, $sym2],  pos  } }
+    <> single_name_binding → binding_identifier initializer                                                     ↦r { { type:"BindingExpression", nodes: [$sym1, $sym2],  pos  } }
         │ binding_identifier
 
     <> binding_rest_element → ... binding_identifier                                                            ↦r=>Spread
@@ -745,9 +747,9 @@
     <> template_literal → no_substitute_template
         │ substitute_template 
 
-    <> no_substitute_template → ` template_characters? `                                                        ↦r { { type: "Template", vals:[ $$sym2 ], pos } }
+    <> no_substitute_template → ` template_characters? `                                                        ↦r { { type: "Template", nodes:[ $$sym2 ], pos } }
 
-    <> substitute_template → template_head expression template_spans                                            ↦r { $sym1.vals[1] = $sym2, $sym3.unshift($sym1), { type: "Template", vals:$$sym3, pos } }
+    <> substitute_template → template_head expression template_spans                                            ↦r { $sym1.vals[1] = $sym2, $sym3.unshift($sym1), { type: "Template", nodes:$$sym3, pos } }
 
     <> template_spans → template_tail                                                                           ↦r { [ $sym1 ] }
         │ template_middle_list template_tail                                                                    ↦r { $sym1.push($sym2), $sym1 }           
@@ -755,11 +757,11 @@
     <> template_middle_list → template_middle expression                                                        ↦r { $sym1.vals[1] = $sym2, [ $sym1 ] }
         │ template_middle_list template_middle expression                                                       ↦r { $sym2.vals[1] = $sym3, $sym1.push($sym2), $sym1 }
 
-    <> template_head → ` template_characters? \${                                                               ↦r { { type:"TemplateHead", vals:[ $sym2 ], pos  } }
+    <> template_head → ` template_characters? \${                                                               ↦r { { type:"TemplateHead", nodes:[ $sym2 ], pos  } }
 
-    <> template_middle → \} template_characters? \${                                                            ↦r { { type:"TemplateMiddle", vals:[ $sym2 ],  pos  } }
+    <> template_middle → \} template_characters? \${                                                            ↦r { { type:"TemplateMiddle", nodes:[ $sym2 ],  pos  } }
 
-    <> template_tail → \} template_characters? `                                                                ↦r { { type:"TemplateTail", vals:[ $sym2 ],  pos  } }
+    <> template_tail → \} template_characters? `                                                                ↦r { { type:"TemplateTail", nodes:[ $sym2 ],  pos  } }
 
     <> template_characters → string_data 
         │ string_data θnl                                                                                       ↦r { $sym1.val += $sym2 , $sym1 }
@@ -771,8 +773,8 @@
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-object-initializer
 ###############################################################################################################
 
-    <> object_literal →  { }                                                                                    ↦r { { type:"ObjectLiteral", vals:[],  pos  } }
-        │ { property_definition_list ,? }                                                                       ↦r { { type:"ObjectLiteral", vals:$sym2,  pos  } }
+    <> object_literal →  { }                                                                                    ↦r { { type:"ObjectLiteral", nodes:[],  pos  } }
+        │ { property_definition_list ,? }                                                                       ↦r { { type:"ObjectLiteral", nodes:$sym2,  pos  } }
 
     <> property_definition_list → property_definition                                                           ↦r { [$sym1] }
         │ property_definition_list property_definition                                                          ↦r { $sym1.push($sym2), $sym1 }       
@@ -781,7 +783,7 @@
         │ identifier_reference                                      
         │ method_definition                                         
         │ ... assignment_expression                                                                             ↦r=>Spread
-        │ property_name : assignment_expression                                                                 ↦r { { type:"PropertyBinding", vals:[$sym1, $sym2],  pos  } }       
+        │ property_name : assignment_expression                                                                 ↦r { { type:"PropertyBinding", nodes:[$sym1, $sym2],  pos  } }       
 
     <> property_name → literal_property_name
         │ computed_property_name
@@ -790,7 +792,7 @@
         │ string_literal
         │ numeric_literal
 
-    <> computed_property_name → \[ assignment_expression \]                                                     ↦r { { type: "ComputedProperty", vals:$sym2, pos } }
+    <> computed_property_name → \[ assignment_expression \]                                                     ↦r { { type: "ComputedProperty", nodes:$sym2, pos } }
 
     <> cover_initialized_name → identifier_reference initializer                                                ↦r=>BindingExpression
 
@@ -801,9 +803,9 @@
 # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-array-initializer
 ###############################################################################################################
 
-    <> array_literal → \[ elision? \]                                                                           ↦r { { type: "ArrayLiteral", vals:[], pos } }
-        │ \[ element_list \]                                                                                    ↦r { { type: "ArrayLiteral", vals:$$sym2, pos } }
-        │ \[ element_list , elision? \]                                                                         ↦r { { type: "ArrayLiteral", vals:$$sym2, pos } }
+    <> array_literal → \[ elision? \]                                                                           ↦r { { type: "ArrayLiteral", nodes:[], pos } }
+        │ \[ element_list \]                                                                                    ↦r { { type: "ArrayLiteral", nodes:$$sym2, pos } }
+        │ \[ element_list , elision? \]                                                                         ↦r { { type: "ArrayLiteral", nodes:$$sym2, pos } }
 
     <> element_list → elision? assignment_expression                                                            ↦r { [ $sym2 ] }
         │ elision? spread_element                                                                               ↦r { [ $sym2 ] }
