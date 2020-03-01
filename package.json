@@ -1,6 +1,6 @@
 {
   "name": "@candlefw/js",
-  "version": "0.0.10",
+  "version": "0.1.0-ts",
   "description": "ECMASCRIPT Parser",
   "main": "./build/library/ecma.js",
   "types": "./build/types/ecma.d.ts",
