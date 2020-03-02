@@ -1,4 +1,4 @@
-export enum MinTreeNodeType {
+export enum MinTreeNodeMaskedType {
     $expression = 1 << 0,
     $statement = 1 << 1,
     $literal = 1 << 2,
