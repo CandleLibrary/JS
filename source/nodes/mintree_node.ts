@@ -1,8 +1,11 @@
 import { Lexer } from "@candlefw/whind";
-
+import { MinTreeNodeType } from "./mintree_node_type";
+/**
+ * A Node within a JS MinTree AST
+ */
 export interface MinTreeNode {
     pos: Lexer;
-    type: string;
+    type: MinTreeNodeType;
     /**
      * An array of MinTreeNodes
      */
