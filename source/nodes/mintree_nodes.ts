@@ -1,4 +1,4 @@
-import { MinTreeNodeDefinition } from "./MinTreeNodeDefinition.js";
+import { MinTreeNodeDefinition } from "./min_tree_node_definition.js";
 import { MinTreeNodeType } from "./ntype.js";
 
 export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [

@@ -1,6 +1,6 @@
 import { MinTreeNodeDefinitions } from "../nodes/mintree_nodes.js";
 import { MinTreeNode } from "../nodes/mintree_node";
-import { MinTreeNodeDefinition } from "../nodes/MinTreeNodeDefinition";
+import { MinTreeNodeDefinition } from "../nodes/min_tree_node_definition";
 
 type RenderStub = (arg0: MinTreeNode) => string;
 
