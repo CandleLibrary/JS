@@ -13,7 +13,7 @@
     "build.ui.watch": "rollup --config  ./build/config/ui.config.js --watch",
     "compile": "hydrocarbon compile --unattended --parser glalr -u -o ./source/parser -e ./build/library/parser/env.js --type module ./source/grammar/ecmascript.hcg",
     "compile.attended": "hydrocarbon compile -o ./source/parser -e ./source/parser/env.mjs -t mjs ./source/grammar/ecmascript.hcg",
-    "compile.test": "hydrocarbon compile --unattended -d -u -e ./source/parser/env.mjs -t mjs ./source/grammar/ecmascript.hcg",
+    "compile.test": "hydrocarbon compile --unattended --parser glalr -u -d -e ./build/library/parser/env.js --type module ./source/grammar/ecmascript.hcg",
     "compile.mount": "hydrocarbon compile -d -e ./source/parser/env.mjs -m ./source/grammar/ecmascript.hcg  ",
     "test.mount": "hydrocarbon mount -e ./source/parser/env.mjs ./source/parser/ecmascript.mjs --string 'let a = `test ${a} ${b} ${2.323} this!`'"
   },
