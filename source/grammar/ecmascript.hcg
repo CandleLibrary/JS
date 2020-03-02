@@ -468,7 +468,7 @@
 ###############################################################################################################
 
     <> expression → expression , assignment_expression                                                          ↦r { ( $sym1.type == "ExpressionList" 
-                                                                                                                            ? ( $sym1.vals.push($sym3) , $sym1 )
+                                                                                                                            ? ( $sym1.nodes.push($sym3) , $sym1 )
                                                                                                                             : { type: "ExpressionList", nodes: [$sym1, $sym3], pos } ) }
         │ assignment_expression                                                                                 
                     
@@ -749,13 +749,13 @@
 
     <> no_substitute_template → ` template_characters? `                                                        ↦r { { type: "Template", nodes:[ $$sym2 ], pos } }
 
-    <> substitute_template → template_head expression template_spans                                            ↦r { $sym1.vals[1] = $sym2, $sym3.unshift($sym1), { type: "Template", nodes:$$sym3, pos } }
+    <> substitute_template → template_head expression template_spans                                            ↦r { $sym1.nodes[1] = $sym2, $sym3.unshift($sym1), { type: "Template", nodes:$$sym3, pos } }
 
     <> template_spans → template_tail                                                                           ↦r { [ $sym1 ] }
         │ template_middle_list template_tail                                                                    ↦r { $sym1.push($sym2), $sym1 }           
 
-    <> template_middle_list → template_middle expression                                                        ↦r { $sym1.vals[1] = $sym2, [ $sym1 ] }
-        │ template_middle_list template_middle expression                                                       ↦r { $sym2.vals[1] = $sym3, $sym1.push($sym2), $sym1 }
+    <> template_middle_list → template_middle expression                                                        ↦r { $sym1.nodes[1] = $sym2, [ $sym1 ] }
+        │ template_middle_list template_middle expression                                                       ↦r { $sym2.nodes[1] = $sym3, $sym1.push($sym2), $sym1 }
 
     <> template_head → ` template_characters? \${                                                               ↦r { { type:"TemplateHead", nodes:[ $sym2 ], pos  } }
 
