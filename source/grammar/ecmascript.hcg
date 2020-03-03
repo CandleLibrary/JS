@@ -84,9 +84,9 @@
     <> export_declaration → τexport * from_clause ;                                                             ↦r { { type:"ExportDeclaration", nodes:[null, $sym2], DEFAULT:false, pos } }
         │ τexport export_clause from_clause? ;                                                                  ↦r { { type:"ExportDeclaration", nodes:[$sym1, $sym2], DEFAULT:false, pos } }
         │ τexport variable_statement                                                                            ↦r { { type:"ExportDeclaration", nodes:[$sym1, null], DEFAULT:false, pos } }
-        │ τexport declaration                                                                                   ↦r { { type:"ExportDeclaration", nodes:[$sym1, null], DEFAULT:false, pos } }
-        │ τexport τdefault hoistable_declaration                                                                ↦r { { type:"ExportDeclaration", nodes:[$sym1, null], DEFAULT:true, pos } }
-        │ τexport τdefault class_declaration                                                                    ↦r { { type:"ExportDeclaration", nodes:[$sym1, null], DEFAULT:true, pos } }
+        │ τexport declaration                                                                                   ↦r { { type:"ExportDeclaration", nodes:[$sym1, $sym3], DEFAULT:false, pos } }
+        │ τexport τdefault hoistable_declaration                                                                ↦r { { type:"ExportDeclaration", nodes:[$sym1, $sym3], DEFAULT:true, pos } }
+        │ τexport τdefault class_declaration                                                                    ↦r { { type:"ExportDeclaration", nodes:[$sym1, $sym3], DEFAULT:true, pos } }
         │ τexport τdefault                                                                                      
 
             (EXC τfunction )
