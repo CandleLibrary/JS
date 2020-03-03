@@ -1,5 +1,5 @@
-import { MinTreeNodeMaskedType } from "./ntype";
-import { MinTreeNodeType } from "./mintree_node_type";
+import { MinTreeNodeMaskedType } from "./ntype.js";
+import { MinTreeNodeType } from "./mintree_node_type.js";
 export class MinTreeNodeDefinition {
     name: MinTreeNodeType;
     getters: Array<any>;

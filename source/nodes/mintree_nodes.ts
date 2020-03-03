@@ -1,6 +1,6 @@
 import { MinTreeNodeDefinition } from "./min_tree_node_definition.js";
 import { MinTreeNodeMaskedType } from "./ntype.js";
-import { MinTreeNodeType } from "./mintree_node_type";
+import { MinTreeNodeType } from "./mintree_node_type.js";
 export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.AdditiveExpression,
