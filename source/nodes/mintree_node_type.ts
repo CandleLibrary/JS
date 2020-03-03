@@ -1,4 +1,5 @@
 export enum MinTreeNodeType {
+    Module = "Module",
     AdditiveExpression = "AdditiveExpression",
     Arguments = "Arguments",
     ArrayLiteral = "ArrayLiteral",
