@@ -1,11 +1,23 @@
 export enum MinTreeNodeType {
+    /**
+     * A Script node that has at least one export or import statement;
+     */
     Module = "Module",
+    /**
+     * An Expression node of the form
+     * ```
+     * Expression + Expression
+     * ```
+     */
     AdditiveExpression = "AdditiveExpression",
     Arguments = "Arguments",
     ArrayLiteral = "ArrayLiteral",
     ArrowFunction = "ArrowFunction",
     AssignmentExpression = "AssignmentExpression",
     AwaitExpression = "AwaitExpression",
+    /**
+     * An identifier 
+     */
     BindingExpression = "BindingExpression",
     BlockStatement = "BlockStatement",
     BooleanLiteral = "BooleanLiteral",
@@ -44,7 +56,19 @@ export enum MinTreeNodeType {
     InExpression = "InExpression",
     InstanceOfExpression = "InstanceOfExpression",
     LabeledStatement = "LabeledStatement",
+    /**
+     * Lexical declaration used in the initialazition field of for statements.
+     * ```
+     * ... for( { ( let | const ) ( BindingExpression ) (, BindingExpression )* } ;... 
+     * ```
+     */
     LexicalBinding = "LexicalBinding",
+    /**
+     * Lexical Scoped variable declaration statement beginning with let or const.
+     * ```
+     *  ( let | const ) ( BindingExpression ) (, BindingExpression )* ;
+     * ```
+     */
     LexicalDeclaration = "LexicalDeclaration",
     LogicalExpression = "LogicalExpression",
     MemberExpression = "MemberExpression",
@@ -67,7 +91,16 @@ export enum MinTreeNodeType {
     RegexLiteral = "RegexLiteral",
     RelationalExpression = "RelationalExpression",
     ReturnStatement = "ReturnStatement",
+    /**
+     * The top most node of a JS file. 
+     */
     Script = "Script",
+    /**
+     * Defines a setter function on an object or class.
+     * ```
+     * set ( binding )  { function_body }
+     * ```
+     */
     SetterMethod = "SetterMethod",
     ShiftExpression = "ShiftExpression",
     Specifier = "Specifier",
