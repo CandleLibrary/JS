@@ -16,7 +16,21 @@ export enum MinTreeNodeType {
     AssignmentExpression = "AssignmentExpression",
     AwaitExpression = "AwaitExpression",
     /**
-     * An identifier 
+     * An expression of the form
+     * ```
+     * identifier = expression
+     * ```
+     * The getters `declaration` and `expression` are available as short hand for nodes[0] and nodes[1] when using the `ex`
+     * function.
+     * 
+     * This expression is found in the following nodes:
+     * - `ArrayLiteral`
+     * - `ObjectLiteral`
+     * - `ArgumentList`
+     * - `CatchClause `
+     * - `VariableStatement`
+     * - `LexicalDeclaration`
+     * - `FormalParameters`
      */
     BindingExpression = "BindingExpression",
     BlockStatement = "BlockStatement",
@@ -57,20 +71,42 @@ export enum MinTreeNodeType {
     InstanceOfExpression = "InstanceOfExpression",
     LabeledStatement = "LabeledStatement",
     /**
-     * Lexical declaration used in the initialazition field of for statements.
+     * Lexical declaration used in the initialization field of `for` statements.
      * ```
      * ... for( { ( let | const ) ( BindingExpression ) (, BindingExpression )* } ;... 
      * ```
      */
     LexicalBinding = "LexicalBinding",
     /**
-     * Lexical Scoped variable declaration statement beginning with let or const.
+     * Lexical Scoped variable declaration statement beginning with `let` or `const`.
      * ```
      *  ( let | const ) ( BindingExpression ) (, BindingExpression )* ;
      * ```
      */
     LexicalDeclaration = "LexicalDeclaration",
+    /**
+     * * An Expression node of the form
+     * 
+     * > `expression` ( `||` or `&&` ) `expression`
+     * 
+     */
     LogicalExpression = "LogicalExpression",
+    /**
+     * An object member access expression using the forms
+     * ```
+     * primary_expression .  primary_expression
+     * ```
+     * or
+     * ```
+     * primary_expression [ primary_expression ]
+     * ```
+     * 
+     * If original parsed expression was in the latter form then the property `COMPUTED` will be set to true
+     * 
+     * The getters `object` and `property` are available as short hand for nodes[0] and nodes[1] when using the `ex`
+     * function.
+     * 
+     */
     MemberExpression = "MemberExpression",
     Method = "Method",
     ModuleSpecifier = "ModuleSpecifier",
