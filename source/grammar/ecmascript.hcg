@@ -93,7 +93,7 @@
             (EXC τclass )
             (EXC τasync τfunction )
         
-            assignment_expression                                                                               ↦r { { type:"ExportDeclaration", nodes:[$sym1, null], DEFAULT:true, pos } }
+            assignment_expression                                                                               ↦r { { type:"ExportDeclaration", nodes:[$sym1, $sym3], DEFAULT:true, pos } }
 
     <> export_clause → { export_specifier(*,) ,? }                                                              ↦r { { type:"ExportClause", nodes:[$$sym2], pos } }
 
