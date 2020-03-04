@@ -35,7 +35,8 @@
   "homepage": "https://github.com/candlefw/js#readme",
   "dependencies": {
     "@candlefw/url": "latest",
-    "@candlefw/whind": "latest"
+    "@candlefw/whind": "latest",
+    "@candlefw/conflagrate": ">=0.0.1"
   },
   "devDependencies": {
     "@candlefw/hydrocarbon": "latest",

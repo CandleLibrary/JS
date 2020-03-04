@@ -2,7 +2,7 @@ import { MinTreeNodeMaskedType } from "./ntype.js";
 import { MinTreeNodeType } from "./mintree_node_type.js";
 export class MinTreeNodeDefinition {
     name: MinTreeNodeType;
-    getters: Array<any>;
+    getters: Array<string | object>;
     template_pattern: string | object;
     node_type: MinTreeNodeMaskedType;
     constructor(name: MinTreeNodeType, getters: Array<any>, template_pattern: string | object, node_type: MinTreeNodeMaskedType) {

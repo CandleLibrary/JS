@@ -1,6 +1,6 @@
 import { MinTreeNodeDefinitions } from "../nodes/mintree_nodes.js";
-import { MinTreeNode } from "../nodes/mintree_node";
-import { MinTreeNodeDefinition } from "../nodes/min_tree_node_definition";
+import { MinTreeNode } from "../nodes/mintree_node.js";
+import { MinTreeNodeDefinition } from "../nodes/min_tree_node_definition.js";
 
 type RenderStub = (arg0: MinTreeNode) => string;
 
@@ -68,7 +68,7 @@ function buildRendererFromTemplateString(template_pattern : string) : RenderActi
     
     /* 
         A template pattern may contain template insertion points marked by a [$]
-        character. For each insertion point there is an action to perfom depending
+        character. For each insertion point there is an action to perform depending
         on the surrounding syntax:
         
         1. ValIndexInsertion
@@ -77,13 +77,13 @@ function buildRendererFromTemplateString(template_pattern : string) : RenderActi
 
         2. SpreadValsInsertion
         ...$ => This indicates that all node.vals should be rendered and results inserted into 
-                the output string with a comma seperating the entries. If there are proceeding 
+                the output string with a comma separating the entries. If there are proceeding 
                 ValIndexInsertion, the spread will start at the index location following the 
                 one specified in ValIndexInsertion
 
         3. NonValsInsertion 
         $\w* => This indicates that a property of node should be inserted into the output
-                string, after being coercerd to a string value using the string constructor
+                string, after being coerced to a string value using the string constructor
                 String()
     */
 

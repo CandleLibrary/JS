@@ -38,7 +38,7 @@
 ###############################################################################################################
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-ecmascript-language-scripts-and-modules
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-ecmascript-language-scripts-and-modules
 ###############################################################################################################
 
     <> module → module_body      
@@ -50,7 +50,7 @@
         │ statement_list_item
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#prod-ImportDeclaration
+# https://www.ecma-international.org/ecma-262/10.0/index.html#prod-ImportDeclaration
 ###############################################################################################################
 
     <> import_declaration → τimport import_clause from_clause ;                                                 ↦r { { type:"ImportDeclaration", nodes:[$sym2, $sym3], pos } }
@@ -70,34 +70,34 @@
 
     <> from_clause → τfrom module_specifier                                                                     ↦r { { type:"FromClause", nodes:[$sym2], pos } }
 
-    <> import_specifier → imported_binding                                                                      ↦r { { type:"Specifier", nodes:[$sym1], pos } }
+    <> import_specifier → imported_binding                                                                      
         │ identifier τas imported_binding                                                                       ↦r { { type:"Specifier", nodes:[$sym1, $sym3], pos } }
 
-    <> module_specifier → string_literal                                                                        ↦r { { type:"ModuleSpecifier", value:$sym1, pos } }
+    <> module_specifier → string_literal                                                                        
 
     <> imported_binding → identifier
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-exports
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-exports
 ###############################################################################################################
 
     <> export_declaration → τexport * from_clause ;                                                             ↦r { { type:"ExportDeclaration", nodes:[null, $sym2], DEFAULT:false, pos } }
         │ τexport export_clause from_clause? ;                                                                  ↦r { { type:"ExportDeclaration", nodes:[$sym1, $sym2], DEFAULT:false, pos } }
-        │ τexport variable_statement                                                                            ↦r { { type:"ExportDeclaration", nodes:[$sym1, null], DEFAULT:false, pos } }
-        │ τexport declaration                                                                                   ↦r { { type:"ExportDeclaration", nodes:[$sym1, $sym3], DEFAULT:false, pos } }
-        │ τexport τdefault hoistable_declaration                                                                ↦r { { type:"ExportDeclaration", nodes:[$sym1, $sym3], DEFAULT:true, pos } }
-        │ τexport τdefault class_declaration                                                                    ↦r { { type:"ExportDeclaration", nodes:[$sym1, $sym3], DEFAULT:true, pos } }
+        │ τexport variable_statement                                                                            ↦r { { type:"ExportDeclaration", nodes:[$sym3], DEFAULT:false, pos } }
+        │ τexport declaration                                                                                   ↦r { { type:"ExportDeclaration", nodes:[$sym3], DEFAULT:false, pos } }
+        │ τexport τdefault hoistable_declaration                                                                ↦r { { type:"ExportDeclaration", nodes:[$sym3], DEFAULT:true, pos } }
+        │ τexport τdefault class_declaration                                                                    ↦r { { type:"ExportDeclaration", nodes:[$sym3], DEFAULT:true, pos } }
         │ τexport τdefault                                                                                      
 
             (EXC τfunction )
             (EXC τclass )
             (EXC τasync τfunction )
         
-            assignment_expression                                                                               ↦r { { type:"ExportDeclaration", nodes:[$sym1, $sym3], DEFAULT:true, pos } }
+            assignment_expression                                                                               ↦r { { type:"ExportDeclaration", nodes:[$sym3], DEFAULT:true, pos } }
 
     <> export_clause → { export_specifier(*,) ,? }                                                              ↦r { { type:"ExportClause", nodes:[$$sym2], pos } }
 
-    <> export_specifier →  identifier                                                                           ↦r { { type:"Specifier", nodes:[$sym1], pos } }
+    <> export_specifier →  identifier                                                                           
         │ identifier τas identifier                                                                             ↦r { { type:"Specifier", nodes:[$sym1, $sym3], pos } }
 
 ###############################################################################################################
@@ -107,7 +107,7 @@
 ###############################################################################################################
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-ecmascript-language-scripts-and-modules
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-ecmascript-language-scripts-and-modules
 ###############################################################################################################
 
     <> script → script_body                                                                                     ↦r { { type:"Script", nodes:$sym1, pos } }
@@ -121,7 +121,7 @@
 ###############################################################################################################
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#prod-Statement
+# https://www.ecma-international.org/ecma-262/10.0/index.html#prod-Statement
 ###############################################################################################################
 
     <> statement_list → statement_list_item                                                                     ↦r { [ $sym1 ] }
@@ -168,7 +168,7 @@
 
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-block
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-block
 ###############################################################################################################
 
     <> block_statement → block                          
@@ -176,25 +176,25 @@
     <> block → { statement_list }                                                                               ↦r { { type: "BlockStatement", nodes: $sym2, pos } }
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-empty-statement
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-empty-statement
 ###############################################################################################################
 
     <> empty_statement → ;                                                                                      ↦r { { type: "EmptyStatement", pos } }
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-expression-statement
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-expression-statement
 ###############################################################################################################
 
     <> expression_statement → expression ;                                                                      ↦r { { type: "ExpressionStatement", nodes:[$sym1], pos } }
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-expression-statement
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-expression-statement
 ###############################################################################################################
 
     <> if_statement → τif \( expression \) statement (τelse statement)?                                         ↦r { { type: "IfStatement", nodes:[$$sym3, $$sym4, $$sym5], pos } }                
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-iteration-statements
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-iteration-statements
 ###############################################################################################################
 
     <> iteration_statement → τdo statement τwhile \( expression \) ;                                            ↦r { { type: "DoStatement", nodes:[$$sym2, $$sym5], pos } }
@@ -227,38 +227,38 @@
         │ binding_pattern 
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-continue-statement
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-continue-statement
 ###############################################################################################################
 
     <> continue_statement → τcontinue label_identifier? ;                                                       ↦r { { type: "ContinueStatement", nodes:[$$sym2], pos } }  
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-break-statement
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-break-statement
 ###############################################################################################################
 
     <> break_statement → τbreak label_identifier? ;                                                             ↦r { { type: "BreakStatement", nodes:[$$sym2], pos } }
 
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-return-statement
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-return-statement
 ###############################################################################################################
 
     <> return_statement → τreturn expression? ;                                                                 ↦r { { type:"ReturnStatement", nodes:[$$sym2], pos } }
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-throw-statement
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-throw-statement
 ###############################################################################################################
 
     <> throw_statement → τthrow expression ;                                                                    ↦r { { type:"ThrowStatement", nodes:[$$sym2], pos } }
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-with-statement
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-with-statement
 ###############################################################################################################
 
     <> with_statement → τwith \( expression \) statement                                                        ↦r { { type:"WithStatement", nodes:[$$sym3, $$sym5], pos } }
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-switch-statement
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-switch-statement
 ###############################################################################################################
 
     <> switch_statement → τswitch \( expression \) case_block                                                   ↦r { { type:"SwitchStatement", nodes:[$$sym3, $$sym5], pos } }
@@ -272,7 +272,7 @@
     <> default_clause → τdefault : statement_list?                                                              ↦r { { type:"CaseClause", nodes:[$$sym2, $sym4], pos } }
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-labelled-statements
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-labelled-statements
 ###############################################################################################################
 
     <> labelled_statement → label_identifier : labelled_item                                                    ↦r { { type:"LabeledStatement", nodes:[$$sym1, $$sym3], pos } }
@@ -281,7 +281,7 @@
         │ function_declaration
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-try-statement
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-try-statement
 ###############################################################################################################
 
     <> try_statement → τtry block [catch? finally?]                                                             ↦r { { type:"TryStatement", nodes:[$$sym2,$$sym3,$$sym4], pos } }
@@ -294,7 +294,7 @@
         │ binding_pattern
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-debugger-statement
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-debugger-statement
 ###############################################################################################################
 
     <> debugger_statement → τdebugger ;                                                                         ↦r { { type:"DebuggerStatement", pos } }
@@ -306,7 +306,7 @@
 ###############################################################################################################
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-variable-statement
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-variable-statement
 ###############################################################################################################
 
     <> variable_statement → τvar variable_declaration_list ;                                                    ↦r { { type:"VariableStatement", nodes:$sym2, pos } }
@@ -319,7 +319,7 @@
 
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-let-and-const-declarations
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-let-and-const-declarations
 ###############################################################################################################
 
         <> lexical_declaration → let_or_const binding_list ;                                                    ↦r { { type:"LexicalDeclaration", symbol:$sym1, nodes:$sym2, pos } }
@@ -339,7 +339,7 @@
 ###############################################################################################################
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-function-definitions
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-function-definitions
 ###############################################################################################################
 
     ## Modified to include async and function generator elements
@@ -352,9 +352,9 @@
 
     <> unique_formal_parameters → formal_parameters
 
-    <> formal_parameters → function_rest_parameter                                                              ↦r { { type:"FormalPerameters", nodes:$sym1, pos } }
-         │ formal_parameter_list ,?                                                                             ↦r { { type:"FormalPerameters", nodes:$sym1, pos } }
-         │ formal_parameter_list , function_rest_parameter                                                      ↦r { { type:"FormalPerameters", nodes:[$sym1, $$sym3], pos } }
+    <> formal_parameters → function_rest_parameter                                                              ↦r { { type:"FormalParameters", nodes:[$sym1], pos } }
+         │ formal_parameter_list ,?                                                                             ↦r { { type:"FormalParameters", nodes:$sym1, pos } }
+         │ formal_parameter_list , function_rest_parameter                                                      ↦r { { type:"FormalParameters", nodes:[$sym1, $$sym3], pos } }
 
     <> formal_parameter_list → formal_parameter(+,)                                                                     
 
@@ -367,7 +367,7 @@
     <> function_statement_list → statement_list?
 
 ###############################################################################################################
-#https://www.ecma-international.org/ecma-262/9.0/index.html#prod-GeneratorExpression
+#https://www.ecma-international.org/ecma-262/10.0/index.html#prod-GeneratorExpression
 ###############################################################################################################
 
     # <> async_function_declaration → τasync τfunction binding_identifier? \( formal_parameters? \) { async_function_body? }     
@@ -379,7 +379,7 @@
     # <> async_function_body → function_body
 
 ###############################################################################################################
-#https://www.ecma-international.org/ecma-262/9.0/index.html#prod-AsyncGeneratorExpression
+#https://www.ecma-international.org/ecma-262/10.0/index.html#prod-AsyncGeneratorExpression
 ###############################################################################################################
 
     # <> async_generator_method → τasync \* property_name \( unique_formal_parameters? \) { async_generator_body? }               
@@ -407,7 +407,7 @@
 
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-arrow-function-definitions
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-arrow-function-definitions
 ###############################################################################################################
 
     <> arrow_function → τasync? arrow_parameters => concise_body                                                ↦r { { type:"ArrowFunction", ASYNC:!!$$sym1, nodes:[$$sym2,$$sym4], pos } }
@@ -419,7 +419,7 @@
         │ { function_statement_list }                                                                           ↦r { { type: "BlockStatement", nodes: $sym2, pos } }
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-async-arrow-function-definitions
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-async-arrow-function-definitions
 ###############################################################################################################
 
     #    <> async_arrow_function → τasync async_arrow_parameters => async_concise_body                          ↦c ^async_arrow
@@ -454,7 +454,7 @@
         │ ;
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#prod-MethodDefinition
+# https://www.ecma-international.org/ecma-262/10.0/index.html#prod-MethodDefinition
 ###############################################################################################################
 
     <> method_definition → τasync? \*? property_name \( unique_formal_parameters? \) { function_body? }         ↦r { { type:"Method", ASYNC:!!$$sym1, GENERATOR:!!$$sym3, nodes:[$$sym3, $$sym5, $$sum6], pos } } 
@@ -464,7 +464,7 @@
     <> property_set_parameter_list → formal_parameter 
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-comma-operator
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-comma-operator
 ###############################################################################################################
 
     <> expression → expression , assignment_expression                                                          ↦r { ( $sym1.type == "ExpressionList" 
@@ -473,7 +473,7 @@
         │ assignment_expression                                                                                 
                     
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-left-hand-side-expressions
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-left-hand-side-expressions
 ###############################################################################################################
 
     <> left_hand_side_expression → new_expression       
@@ -514,7 +514,7 @@
 
 
 ###############################################################################################################
-#https://www.ecma-international.org/ecma-262/9.0/index.html#sec-primary-expression
+#https://www.ecma-international.org/ecma-262/10.0/index.html#sec-primary-expression
 ###############################################################################################################
 
     <> primary_expression → τthis                                                                               ↦r { { type: "ThisLiteral", pos } }
@@ -533,13 +533,13 @@
         #│ async_generator_expression
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#prod-AwaitExpression
+# https://www.ecma-international.org/ecma-262/10.0/index.html#prod-AwaitExpression
 ###############################################################################################################
 
     <> await_expression → τawait unary_expression                                                               ↦r { { type: "AwaitExpression", nodes:$$sym2, pos } }
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#prod-BindingExpression
+# https://www.ecma-international.org/ecma-262/10.0/index.html#prod-BindingExpression
 ###############################################################################################################
 
     <> assignment_expression → conditional_expression 
@@ -564,14 +564,14 @@
         │ **=                                                                       
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#prod-ConditionalExpression
+# https://www.ecma-international.org/ecma-262/10.0/index.html#prod-ConditionalExpression
 ###############################################################################################################
 
     <> conditional_expression → logical_or_expression
         │ logical_or_expression \? assignment_expression : assignment_expression                                ↦r { { type: "ContitionalExpression", nodes:[$$sym1, $$sym3, $$sym5], pos } }
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-binary-logical-operators
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-binary-logical-operators
 ###############################################################################################################
 
     <> logical_or_expression → logical_and_expression 
@@ -581,7 +581,7 @@
         │ logical_and_expression && bitwise_or_expression                                                       ↦r { { type: "LogicalExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-binary-bitwise-operators
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-binary-bitwise-operators
 ###############################################################################################################
 
     <> bitwise_or_expression → bitwise_xor_expression 
@@ -594,7 +594,7 @@
         │ bitwise_and_expression & equality_expression                                                          ↦r { { type: "LogicalExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-equality-operators
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-equality-operators
 ###############################################################################################################
 
     <> equality_expression → relational_expression 
@@ -604,7 +604,7 @@
         │ equality_expression !== relational_expression                                                         ↦r { { type: "EqualityExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-relational-operators
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-relational-operators
 ###############################################################################################################
 
     <> relational_expression → shift_expression 
@@ -616,7 +616,7 @@
         │ relational_expression τin shift_expression                                                            ↦r { { type: "InExpression",  nodes:[$$sym1, $$sym3], pos } }   
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-bitwise-shift-operators
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-bitwise-shift-operators
 ###############################################################################################################
 
     <> shift_expression → additive_expression 
@@ -625,7 +625,7 @@
         │ shift_expression >>> additive_expression                                                              ↦r { { type: "ShiftExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-additive-operators
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-additive-operators
 ###############################################################################################################
 
     <> additive_expression → multiplicative_expression 
@@ -633,7 +633,7 @@
         │ additive_expression - multiplicative_expression                                                       ↦r { { type: "AdditiveExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-multiplicative-operators
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-multiplicative-operators
 ###############################################################################################################
 
     <> multiplicative_expression → exponentiation_expression 
@@ -642,14 +642,14 @@
         │ multiplicative_expression % exponentiation_expression                                                 ↦r { { type: "MultiplicativeExpression", symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-exp-operator
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-exp-operator
 ###############################################################################################################
 
     <> exponentiation_expression → unary_expression 
         │ update_expression ** exponentiation_expression                                                        ↦r { { type: "ExponentationExpression", nodes:[$$sym1, $$sym3], pos } }
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-unary-operators
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-unary-operators
 ###############################################################################################################
 
     <> unary_expression → update_expression 
@@ -663,7 +663,7 @@
         │ await_expression
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-update-expressions
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-update-expressions
 ###############################################################################################################
 
     <> update_expression →  left_hand_side_expression 
@@ -673,7 +673,7 @@
         │ -- unary_expression                                                                                   ↦r { { type: "PreExpression", symbol:$$sym1, nodes:$$sym2, pos } }
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#prod-CoverParenthesizedExpressionAndArrowParameterList
+# https://www.ecma-international.org/ecma-262/10.0/index.html#prod-CoverParenthesizedExpressionAndArrowParameterList
 ###############################################################################################################
 
     <> cover_parenthesized_expression_and_arrow_parameter_list → \( \)                                          ↦r { { type: "Parameters", nodes:[], pos } }
@@ -687,7 +687,7 @@
     <> parenthasized → \( expression \)                                                                         ↦r { { type: "Parenthasized", nodes:[$$sym2], pos } }
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#prod-BindingPattern
+# https://www.ecma-international.org/ecma-262/10.0/index.html#prod-BindingPattern
 ###############################################################################################################
 
     <> binding_pattern → object_binding_pattern
@@ -765,12 +765,12 @@
 
     <> template_characters → string_data 
         │ string_data θnl                                                                                       ↦r { $sym1.val += $sym2 , $sym1 }
-        │ θnl                                                                                                   ↦r { { type: "StringLiteral", val:$sym1,  pos  } }                                 
+        │ θnl                                                                                                   ↦r { { type: "StringLiteral", value:$sym1,  pos  } }                                 
 
                                                                                                                 
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-object-initializer
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-object-initializer
 ###############################################################################################################
 
     <> object_literal →  { }                                                                                    ↦r { { type:"ObjectLiteral", nodes:[],  pos  } }
@@ -800,7 +800,7 @@
 
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-array-initializer
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-array-initializer
 ###############################################################################################################
 
     <> array_literal → \[ elision? \]                                                                           ↦r { { type: "ArrayLiteral", nodes:[], pos } }
@@ -817,7 +817,7 @@
     <> spread_element → ... assignment_expression                                                               ↦r=>Spread
 
 ###############################################################################################################
-# https://www.ecma-international.org/ecma-262/9.0/index.html#sec-ecmascript-language-lexical-grammar
+# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-ecmascript-language-lexical-grammar
 ###############################################################################################################
 
     <> literal → boolean_literal                
@@ -828,8 +828,8 @@
     <> string_literal → \" (ERR θnl ) string_data (ERR θnl ) \"                                                 ↦r { $sym2.quote_type = $sym1,  $sym2 }
         │ \' (ERR θnl ) string_data (ERR θnl ) \'                                                               ↦r { $sym2.quote_type = $sym1,  $sym2 }
 
-    <> string_data → ( θws │ θany │ escaped_sequence )(*")                                                      ↦r { { type: "StringLiteral", val:$sym1,  pos  } }
-        │ ( θws │ θany │ escaped_sequence )(*")                                                                 ↦r { { type: "StringLiteral", val:$sym1,  pos  } }
+    <> string_data → ( θws │ θany │ escaped_sequence )(*")                                                      ↦r { { type: "StringLiteral", value:$sym1,  pos  } }
+        │ ( θws │ θany │ escaped_sequence )(*")                                                                 ↦r { { type: "StringLiteral", value:$sym1,  pos  } }
 
     <> escaped_sequence → \\ ( ' │ " │ τb │ τf │ τn │ τr │ τy │ τv │ 0 │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ hex_escape_sequence │ unicode_escape_sequence )   
                                                                                                                 ↦r { $sym1 + $sym2}
@@ -839,7 +839,7 @@
     <> unicode_escape_sequence → τu def::hex_digit def::hex_digit def::hex_digit def::hex_digit                 ↦r { $sym1 + $sym2 + $sym3 + $sym4 + $sym5 }
         │ τu \{ def::hex \}                                                                                     ↦r { $sym1 + $sym2 + $sym3 + $sym4 }
 
-    <> numeric_literal → number                                                                                 ↦r { { type: "NumericLiteral", original_val:$sym1.original_val, val:$sym1, pos } }
+    <> numeric_literal → number                                                                                 ↦r { { type: "NumericLiteral", original_value:$sym1.original_val, value:$sym1, pos } }
 
     <> number →  def::float 
         │ def::octal 
@@ -848,8 +848,8 @@
 
     <> null_literal →  τnull                                                                                    ↦r { { type: "NullLiteral", pos  } }
 
-    <> boolean_literal → τtrue                                                                                  ↦r { { type: "BooleanLiteral", val: !!$$sym1,  pos  } }
-        │ τfalse                                                                                                ↦r { { type: "BooleanLiteral", val: !!$$sym1,  pos  } }
+    <> boolean_literal → τtrue                                                                                  ↦r { { type: "BooleanLiteral", value: !!$$sym1,  pos  } }
+        │ τfalse                                                                                                ↦r { { type: "BooleanLiteral", value: !!$$sym1,  pos  } }
 
     <> label_identifier → identifier                                                   
             #│ τyield                          
@@ -865,6 +865,6 @@
 
     <> identifier → identifier_name             
 
-    # https://www.ecma-international.org/ecma-262/9.0/index.html#sec-names-and-keywords
+    # https://www.ecma-international.org/ecma-262/10.0/index.html#sec-names-and-keywords
 
-    <> identifier_name →  def::js_identifier                                                                   ↦r { { type: "Identifier", val:$sym1,  pos  } }              
+    <> identifier_name →  def::js_identifier                                                                   ↦r { { type: "Identifier", value:$sym1,  pos  } }              
