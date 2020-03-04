@@ -7,6 +7,7 @@ import parser from "./parser/parser.js";
 import { render } from "./tools/render.js";
 import { MinTreeNodeMaskedType } from "./nodes/ntype.js";
 import { MinTreeNodeType } from "./nodes/mintree_node_type.js";
+import { ext } from "./tools/extend.js";
 export {
     MinTreeNodeType,
     MinTreeNodeDefinition,
@@ -14,5 +15,6 @@ export {
     MinTreeNodeMaskedType,
     MinTreeNode,
     parser,
-    render
+    render,
+    ext
 };
