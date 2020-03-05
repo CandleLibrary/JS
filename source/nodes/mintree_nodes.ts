@@ -30,8 +30,8 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.AssignmentExpression,
-        ["condition", "expression1", "expression2"],
-        "$1 $symbol $2",
+        ["identifier", "expression"],
+        "$1 $operator $2",
         MinTreeNodeMaskedType.$expression),
 
     new MinTreeNodeDefinition(
@@ -285,8 +285,7 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.MemberExpression,
-        [],
-        "",
+        ["object", "member"], { COMPUTED: "$1[$2]", default: "$1.$2" },
         MinTreeNodeMaskedType.$expression | MinTreeNodeMaskedType.$call),
 
     new MinTreeNodeDefinition(
