@@ -1,9 +1,11 @@
-import { MinTreeNodeType } from "../nodes/mintree_node_type.js";
+import { extract, replace, traverse } from "@candlefw/conflagrate";
+
 import { MinTreeNodeDefinitions } from "../nodes/mintree_nodes.js";
-import { MinTreeNode } from "../nodes/mintree_node.js";
 import { MinTreeNodeDefinition } from "../nodes/min_tree_node_definition.js";
-import { traverse, extract, replace } from "@candlefw/conflagrate";
-import { e } from "@candlefw/whind/build/types/ascii_code_points";
+import { MinTreeExtendedNode } from "../types/mintree_extended_node.js";
+import { MinTreeNode } from "../types/mintree_node.js";
+import { MinTreeNodeType } from "../types/mintree_node_type.js";
+
 class NodeExtender {
 
     getters: Array<string | object>;
@@ -75,11 +77,8 @@ export function ext(node: MinTreeNode, EXTEND_ENTIRE_TREE: boolean = false): Min
     if (EXTEND_ENTIRE_TREE) {
 
         const object = { ast: null };
-        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAA");
-
 
         traverse(node, "nodes").then(replace((node, parent, index) => {
-            console.log({ index, node });
 
             if (!Extenders)
                 Extenders = ExtenderBuilder(MinTreeNodeDefinitions);
@@ -102,8 +101,6 @@ export function ext(node: MinTreeNode, EXTEND_ENTIRE_TREE: boolean = false): Min
 
         })).then(extract(object));
 
-        console.log({ object });
-
         return object.ast;
     } else {
 
@@ -119,10 +116,3 @@ export function ext(node: MinTreeNode, EXTEND_ENTIRE_TREE: boolean = false): Min
     }
 }
 
-type MinTreeExtendedNode = MinTreeNode & {
-    expression?: MinTreeNode;
-    identifier?: MinTreeNode;
-    object?: MinTreeNode;
-    member?: MinTreeNode;
-    property?: MinTreeNode;
-};
