@@ -693,21 +693,21 @@
     <> binding_pattern → object_binding_pattern
         │   array_binding_pattern
 
-    <> object_binding_pattern → { }                                                                             ↦r { { type: "ObjectLiteral", nodes:[], pos } }
-        │ { binding_rest_property }                                                                             ↦r { { type: "ObjectLiteral", nodes:[$sym1], pos } }
-        │ { binding_property_list }                                                                             ↦r { { type: "ObjectLiteral", nodes:[$sym1], pos } }    
-        │ { binding_property_list , binding_rest_property}                                                      ↦r { { type: "ObjectLiteral", nodes:[$sym1, $sym2], pos } }    
-        │ { binding_property_list , }                                                                           ↦r { { type: "ObjectLiteral", nodes:[$sym1], pos } }    
+    <> object_binding_pattern → { }                                                                             ↦r { { type: "ObjectBinding", nodes:[], pos } }
+        │ { binding_rest_property }                                                                             ↦r { { type: "ObjectBinding", nodes:[$sym2], pos } }
+        │ { binding_property_list }                                                                             ↦r { { type: "ObjectBinding", nodes:[$sym2], pos } }    
+        │ { binding_property_list , binding_rest_property}                                                      ↦r { { type: "ObjectBinding", nodes:[$sym2, $sym4], pos } }    
+        │ { binding_property_list , }                                                                           ↦r { { type: "ObjectBinding", nodes:[$sym2], pos } }    
 
-    <> array_binding_pattern → \[ \]                                                                            ↦r { { type: "ArrayLiteral", nodes:[], pos } }
-        │ \[ elision binding_rest_element \]                                                                    ↦r { { type: "ArrayLiteral", nodes:[$sym2], pos } }
-        │ \[ elision \]                                                                                         ↦r { { type: "ArrayLiteral", nodes:[], pos } }    
-        │ \[ binding_rest_element \]                                                                            ↦r { { type: "ArrayLiteral", nodes:[$sym1], pos } }    
-        │ \[ binding_element_list \]                                                                            ↦r { { type: "ArrayLiteral", nodes:[$sym1], pos } }    
-        │ \[ binding_element_list , \]                                                                          ↦r { { type: "ArrayLiteral", nodes:[$sym1], pos } }    
-        │ \[ binding_element_list , elision? \]                                                                 ↦r { { type: "ArrayLiteral", nodes:[$sym1], pos } }    
-        │ \[ binding_element_list , elision? binding_rest_element \]                                            ↦r { { type: "ArrayLiteral", nodes:[$sym1, $sym3], pos } }    
-        │ \[ binding_element_list , binding_rest_element \]                                                     ↦r { { type: "ArrayLiteral", nodes:[$sym1, $sym3], pos } }    
+    <> array_binding_pattern → \[ \]                                                                            ↦r { { type: "ArrayBinding", nodes:[], pos } }
+        │ \[ elision binding_rest_element \]                                                                    ↦r { { type: "ArrayBinding", nodes:[$sym2], pos } }
+        │ \[ elision \]                                                                                         ↦r { { type: "ArrayBinding", nodes:[], pos } }    
+        │ \[ binding_rest_element \]                                                                            ↦r { { type: "ArrayBinding", nodes:[$sym2], pos } }    
+        │ \[ binding_element_list \]                                                                            ↦r { { type: "ArrayBinding", nodes:[$sym2], pos } }    
+        │ \[ binding_element_list , \]                                                                          ↦r { { type: "ArrayBinding", nodes:[$sym2], pos } }    
+        │ \[ binding_element_list , elision? \]                                                                 ↦r { { type: "ArrayBinding", nodes:[$sym2], pos } }    
+        │ \[ binding_element_list , elision? binding_rest_element \]                                            ↦r { { type: "ArrayBinding", nodes:[$sym2, $sym5], pos } }    
+        │ \[ binding_element_list , binding_rest_element \]                                                     ↦r { { type: "ArrayBinding", nodes:[$sym2, $sym4], pos } }    
 
     <> binding_rest_property → ... binding_identifier                                                           ↦r=>Spread
 
@@ -783,7 +783,7 @@
         │ identifier_reference                                      
         │ method_definition                                         
         │ ... assignment_expression                                                                             ↦r=>Spread
-        │ property_name : assignment_expression                                                                 ↦r { { type:"PropertyBinding", nodes:[$sym1, $sym2],  pos  } }       
+        │ property_name : assignment_expression                                                                 ↦r { { type:"PropertyBinding", nodes:[$sym1, $sym3],  pos  } }       
 
     <> property_name → literal_property_name
         │ computed_property_name
@@ -792,7 +792,7 @@
         │ string_literal
         │ numeric_literal
 
-    <> computed_property_name → \[ assignment_expression \]                                                     ↦r { { type: "ComputedProperty", nodes:$sym2, pos } }
+    <> computed_property_name → \[ assignment_expression \]                                                     ↦r { { type: "ComputedProperty", nodes:[$sym2], pos } }
 
     <> cover_initialized_name → identifier_reference initializer                                                ↦r=>BindingExpression
 
