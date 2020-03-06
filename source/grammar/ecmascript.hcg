@@ -54,7 +54,7 @@
 ###############################################################################################################
 
     <> import_declaration → τimport import_clause from_clause ;                                                 ↦r { { type:"ImportDeclaration", nodes:[$sym2, $sym3], pos } }
-        │ τimport module_specifier ;                                                                            ↦r { { type:"ImportDeclaration", nodes:[null, $sym3], pos } }
+        │ τimport module_specifier ;                                                                            ↦r { { type:"ImportDeclaration", nodes:[null, $sym2], pos } }
 
     <> import_clause → imported_default_binding                                                                 ↦r { { type:"ImportClause", nodes:[$$sym1], pos } }
         │ name_space_import                                                                                     ↦r { { type:"ImportClause", nodes:[$$sym1], pos } }
