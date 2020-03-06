@@ -72,11 +72,9 @@ let Extenders: Map<string, NodeExtender> = null;
  */
 export function ext(node: MinTreeNode, EXTEND_ENTIRE_TREE: boolean = false): MinTreeExtendedNode {
 
-    console.log({ node, EXTEND_ENTIRE_TREE });
-
     if (EXTEND_ENTIRE_TREE) {
 
-        const object = { ast: null };
+        const object = { ast: <MinTreeExtendedNode>null };
 
         traverse(node, "nodes").then(replace((node, parent, index) => {
 
@@ -96,10 +94,9 @@ export function ext(node: MinTreeNode, EXTEND_ENTIRE_TREE: boolean = false): Min
             if (replaced.nodes)
                 replaced.nodes = replaced.nodes.slice();
 
-
             return replaced;
 
-        })).then(extract(object));
+        })).then(extract(object)).run();
 
         return object.ast;
     } else {
