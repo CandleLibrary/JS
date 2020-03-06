@@ -11,4 +11,15 @@ export type MinTreeExtendedNode = MinTreeNode & {
     object?: MinTreeNode;
     member?: MinTreeNode;
     property?: MinTreeNode;
+    module_id?: MinTreeNode;
+
+    /**
+     * Available on Specifier
+     */
+    local_id?: MinTreeNode;
+
+    /**
+     * Available on ImportDeclaration and ExportDeclaration
+     */
+    from?: MinTreeNode;
 };

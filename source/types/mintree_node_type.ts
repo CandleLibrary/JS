@@ -139,6 +139,13 @@ export enum MinTreeNodeType {
      */
     SetterMethod = "SetterMethod",
     ShiftExpression = "ShiftExpression",
+    /**
+    * Specify a new name for the imported or exported variable
+    * ```
+    * identifier as identifier
+    *```
+    * Used in ImportDeclarations and ExportDeclarations
+    */
     Specifier = "Specifier",
     Spread = "Spread",
     SpreadExpression = "SpreadExpression",

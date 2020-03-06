@@ -4,7 +4,7 @@ import { MinTreeNodeType } from "./mintree_node_type.js";
  * A Node within a JS MinTree AST
  */
 export interface MinTreeNode {
-    
+
     /**
      *  A {Lexer} that has been fenced to the 
      *  to the starting point of node's production
@@ -30,5 +30,13 @@ export interface MinTreeNode {
      * 
      * Present on Literal nodes such as NumericLiteral and StringLiteral
      */
-    value?: string | number
+    value?: string | number;
+
+    /**
+     * Set to true if the node is a MemberExpression with a computed
+     * member accessor e.g. `object[computed_property]` 
+     * 
+     * Present on MemberExpression nodes.
+     */
+    COMPUTED?: boolean;
 }
