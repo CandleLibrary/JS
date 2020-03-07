@@ -4,6 +4,8 @@ export enum MinTreeNodeType {
      */
 
     Module = "Module",
+
+
     /**
      * An Expression node of the form
      * ```
@@ -12,10 +14,54 @@ export enum MinTreeNodeType {
      */
 
     AdditiveExpression = "AdditiveExpression",
-    Arguments = "Arguments",
-    ArrayLiteral = "ArrayLiteral",
-    ArrowFunction = "ArrowFunction",
 
+
+    /**
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
+
+    Arguments = "Arguments",
+
+
+    /**
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
+
+    ArrayLiteral = "ArrayLiteral",
+
+
+    /**
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
+
+    ArrowFunction = "ArrowFunction",
 
 
     /**
@@ -49,7 +95,6 @@ export enum MinTreeNodeType {
     AwaitExpression = "AwaitExpression",
 
 
-
     /**
      * An expression of the form
      * 
@@ -75,336 +120,336 @@ export enum MinTreeNodeType {
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    *
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     BlockStatement = "BlockStatement",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    *
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     BooleanLiteral = "BooleanLiteral",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    *
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     BreakStatement = "BreakStatement",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     CallExpression = "CallExpression",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     CallMemberExpression = "CallMemberExpression",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     CaseBlock = "CaseBlock",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     CaseClause = "CaseClause",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
     CatchClause = "CatchClause",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     Class = "Class",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     ComputedProperty = "ComputedProperty",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     ContinueStatement = "ContinueStatement",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     ConditionalExpression = "ConditionalExpression",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     DebuggerStatement = "DebuggerStatement",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     DeleteExpression = "DeleteExpression",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     DoStatement = "DoStatement",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     EmptyStatement = "EmptyStatement",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     EqualityExpression = "EqualityExpression",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     ExponentiationExpression = "ExponentiationExpression",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     ExportClause = "ExportClause",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     ExportDeclaration = "ExportDeclaration",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     ExpressionList = "ExpressionList",
 
@@ -426,241 +471,241 @@ export enum MinTreeNodeType {
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     FinallyClause = "FinallyClause",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     ForInStatement = "ForInStatement",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     ForOfStatement = "ForOfStatement",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     ForStatement = "ForStatement",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     FormalParameters = "FormalParameters",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     FromClause = "FromClause",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     Function = "Function",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     GetterMethod = "GetterMethod",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     Identifier = "Identifier",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     IfStatement = "IfStatement",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     ImportClause = "ImportClause",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     ImportDeclaration = "ImportDeclaration",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     InExpression = "InExpression",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     InstanceOfExpression = "InstanceOfExpression",
 
 
     /**
-        * TODO Description
-        *
-        * >```
-        * > undefined
-        * >```
-        *
-        * Extended members are:
-        * 1. **`undefined`**
-        *
-        * TODO Optional Notes
-        */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     LabeledStatement = "LabeledStatement",
 
@@ -724,177 +769,177 @@ export enum MinTreeNodeType {
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    *
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     Method = "Method",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     ModuleSpecifier = "ModuleSpecifier",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     MultiplicativeExpression = "MultiplicativeExpression",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     NameSpaceImport = "NameSpaceImport",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     NamedImports = "NamedImports",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     NewExpression = "NewExpression",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     NewInstanceExpression = "NewInstanceExpression",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     NewTarget = "NewTarget",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     NullLiteral = "NullLiteral",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     NumericLiteral = "NumericLiteral",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     ObjectLiteral = "ObjectLiteral",
     /**
@@ -911,113 +956,113 @@ export enum MinTreeNodeType {
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     Parenthesized = "Parenthesized",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     PostExpression = "PostExpression",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     PreExpression = "PreExpression",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     PropertyBinding = "PropertyBinding",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     RegexLiteral = "RegexLiteral",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     RelationalExpression = "RelationalExpression",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     ReturnStatement = "ReturnStatement",
 
@@ -1043,17 +1088,17 @@ export enum MinTreeNodeType {
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    *
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     ShiftExpression = "ShiftExpression",
 
@@ -1075,337 +1120,337 @@ export enum MinTreeNodeType {
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    *
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     Spread = "Spread",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    *
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
 
     SpreadExpression = "SpreadExpression",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     StringLiteral = "StringLiteral",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     SuperCall = "SuperCall",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     SuperExpression = "SuperExpression",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     SwitchStatement = "SwitchStatement",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     Template = "Template",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     TemplateHead = "TemplateHead",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     TemplateMiddle = "TemplateMiddle",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     TemplateTail = "TemplateTail",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     ThisLiteral = "ThisLiteral",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     ThrowStatement = "ThrowStatement",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     TryStatement = "TryStatement",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     TypeofExpression = "TypeofExpression",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     UnaryExpression = "UnaryExpression",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     VarDeclaration = "VarDeclaration",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     VariableStatement = "VariableStatement",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     VoidExpression = "VoidExpression",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     WhileStatement = "WhileStatement",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     WithStatement = "WithStatement",
 
 
     /**
-    * TODO Description
-    *
-    * >```
-    * > undefined
-    * >```
-    *
-    * Extended members are:
-    * 1. **`undefined`**
-    * 
-    * TODO Optional Notes
-    */
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     * 
+     * TODO Optional Notes
+     */
 
     YieldExpression = "YieldExpression"
 }
