@@ -13,7 +13,7 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.Arguments,
         ["expressions"],
-        "($...)",
+        "($...,)",
         MinTreeNodeMaskedType.$expression),
 
     new MinTreeNodeDefinition(
@@ -67,12 +67,12 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.CallExpression,
         ["object", "arguments"],
-        "$1($...)",
+        "$1$2",
         MinTreeNodeMaskedType.$expression),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.CallMemberExpression,
-        ["object", "member"], { COMPUTED: "$1[$2]", default: "$1.$2" },
+        ["member", "arguments"], "$1$2",
         MinTreeNodeMaskedType.$expression),
 
     new MinTreeNodeDefinition(
@@ -142,13 +142,13 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.EqualityExpression,
-        [],
+        ["left", "right"],
         "$1 $symbol $2",
         MinTreeNodeMaskedType.$expression),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ExponentiationExpression,
-        [],
+        ["left", "right"],
         "$1 ** $2",
         MinTreeNodeMaskedType.$expression),
 
@@ -166,13 +166,13 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.ExpressionList,
         [],
-        "",
+        "$...,",
         MinTreeNodeMaskedType.$expression),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ExpressionStatement,
-        [],
-        "",
+        ["expression"],
+        "$1;",
         MinTreeNodeMaskedType.$statement),
 
     new MinTreeNodeDefinition(
@@ -226,13 +226,13 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.Identifier,
         [],
-        "$val",
+        "$value",
         MinTreeNodeMaskedType.$literal | MinTreeNodeMaskedType.$identifier),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.IfStatement,
         [],
-        "",
+        "if($1){$2}",
         MinTreeNodeMaskedType.$statement),
 
     new MinTreeNodeDefinition(
@@ -274,7 +274,7 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.LexicalDeclaration,
         [],
-        "$symbol $...;",
+        "$symbol $...,;",
         MinTreeNodeMaskedType.$expression),
 
     new MinTreeNodeDefinition(
@@ -321,13 +321,13 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.NewExpression,
         [],
-        "",
+        "new $1",
         MinTreeNodeMaskedType.$expression),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.NewInstanceExpression,
         [],
-        "",
+        "new $1$2",
         MinTreeNodeMaskedType.$expression),
 
     new MinTreeNodeDefinition(
@@ -345,7 +345,7 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.NumericLiteral,
         [],
-        "$val",
+        "$value",
         MinTreeNodeMaskedType.$literal | MinTreeNodeMaskedType.$number),
 
     new MinTreeNodeDefinition(
@@ -357,13 +357,13 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.Parameters,
         [],
-        "$...",
+        "$...,",
         MinTreeNodeMaskedType.$expression),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.Parenthesized,
         [],
-        "",
+        "($1)",
         MinTreeNodeMaskedType.$expression),
 
     new MinTreeNodeDefinition(
@@ -405,7 +405,7 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.Script,
         [],
-        "$...",
+        "$... ",
         MinTreeNodeMaskedType.$script),
 
     new MinTreeNodeDefinition(
@@ -441,7 +441,7 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.StringLiteral,
         [],
-        "",
+        "$quote_type$value$quote_type",
         MinTreeNodeMaskedType.$literal | MinTreeNodeMaskedType.$string),
 
     new MinTreeNodeDefinition(
@@ -495,7 +495,7 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.ThrowStatement,
         [],
-        "",
+        "throw $1;",
         MinTreeNodeMaskedType.$statement),
 
     new MinTreeNodeDefinition(
@@ -513,7 +513,7 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.UnaryExpression,
         [],
-        "$symbol $1",
+        "$symbol$1",
         MinTreeNodeMaskedType.$expression),
 
     new MinTreeNodeDefinition(
@@ -525,7 +525,7 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.VariableStatement,
         [],
-        "var $...;",
+        "var $...,;",
         MinTreeNodeMaskedType.$statement),
 
     new MinTreeNodeDefinition(
