@@ -8,7 +8,9 @@ import { render } from "./tools/render.js";
 import { MinTreeNodeMaskedType } from "./types/ntype.js";
 import { MinTreeNodeType } from "./types/mintree_node_type.js";
 import { ext } from "./tools/extend.js";
+import { getIdentifierName } from "./tools/get_identifier_name.js";
 export {
+    getIdentifierName,
     MinTreeNodeType,
     MinTreeNodeDefinition,
     MinTreeNodeDefinitions,
