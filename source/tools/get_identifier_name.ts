@@ -1,5 +1,5 @@
-import { MinTreeNode } from "../types/mintree_node";
-import { MinTreeNodeType } from "../ecma";
+import { MinTreeNode } from "../types/mintree_node.js";
+import { MinTreeNodeType } from "../types/mintree_node_type.js";
 
 /**
  * Returns the root Identifier value when passed a
