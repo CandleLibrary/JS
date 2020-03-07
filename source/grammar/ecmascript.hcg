@@ -191,7 +191,7 @@
 # https://www.ecma-international.org/ecma-262/10.0/index.html#sec-expression-statement
 ###############################################################################################################
 
-    <> if_statement → τif \( expression \) statement (τelse statement)?                                         ↦r { { type: "IfStatement", nodes:[$$sym3, $$sym4, $$sym5], pos } }                
+    <> if_statement → τif \( expression \) statement (τelse statement)?                                         ↦r { { type: "IfStatement", nodes:[$$sym3, $$sym5, $$sym6], pos } }                
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/10.0/index.html#sec-iteration-statements
@@ -501,7 +501,7 @@
         │ super_call
         │ call_expression arguments                                                                             ↦r { { type: "CallExpression", nodes:sym, pos, TEMPLATE:true } }
         │ call_expression \[ expression \]                                                                      ↦r { { type: "MemberExpression", nodes:[$$sym1, $$sym3], pos, COMPUTED:true } }
-        │ cover_call_expression_and_async_arrow_head                                                            ↦r { { type: "CallExpression", nodes:sym, pos, TEMPLATE:true } }
+        │ cover_call_expression_and_async_arrow_head                                                            
         │ call_expression template_literal                                                                      ↦r { { type: "CallExpression", nodes:sym, pos, TEMPLATE:true } }
 
     <> super_call → τsuper arguments                                                                            ↦r { { type: "SuperCall", nodes:$$sym2, pos } }
@@ -526,7 +526,7 @@
         │ class_expression
         │ regular_expression_literal
         │ template_literal
-        │ parenthasized
+        │ parenthesized
 
         #│ generator_expression
         #│ async_function_expression
@@ -568,7 +568,7 @@
 ###############################################################################################################
 
     <> conditional_expression → logical_or_expression
-        │ logical_or_expression \? assignment_expression : assignment_expression                                ↦r { { type: "ContitionalExpression", nodes:[$$sym1, $$sym3, $$sym5], pos } }
+        │ logical_or_expression \? assignment_expression : assignment_expression                                ↦r { { type: "ConditionalExpression", nodes:[$$sym1, $$sym3, $$sym5], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/10.0/index.html#sec-binary-logical-operators
@@ -656,10 +656,10 @@
         │ τdelete unary_expression                                                                              ↦r { { type: "DeleteExpression", nodes:$$sym2, pos } }
         │ τvoid unary_expression                                                                                ↦r { { type: "VoidExpression", nodes:$$sym2, pos } }
         │ τtypeof unary_expression                                                                              ↦r { { type: "TypeofExpression", nodes:$$sym2, pos } }
-        │ + unary_expression                                                                                    ↦r { { type: "UnaryExpression", symbol:$sym1, nodes:[$$sym1,$$sym2], pos } }
-        │ - unary_expression                                                                                    ↦r { { type: "UnaryExpression", symbol:$sym1, nodes:[$$sym1,$$sym2], pos } }
-        │ ~ unary_expression                                                                                    ↦r { { type: "UnaryExpression", symbol:$sym1, nodes:[$$sym1,$$sym2], pos } }
-        │ ! unary_expression                                                                                    ↦r { { type: "UnaryExpression", symbol:$sym1, nodes:[$$sym1,$$sym2], pos } }
+        │ + unary_expression                                                                                    ↦r { { type: "UnaryExpression", symbol:$sym1, nodes:[$$sym2], pos } }
+        │ - unary_expression                                                                                    ↦r { { type: "UnaryExpression", symbol:$sym1, nodes:[$$sym2], pos } }
+        │ ~ unary_expression                                                                                    ↦r { { type: "UnaryExpression", symbol:$sym1, nodes:[$$sym2], pos } }
+        │ ! unary_expression                                                                                    ↦r { { type: "UnaryExpression", symbol:$sym1, nodes:[$$sym2], pos } }
         │ await_expression
 
 ###############################################################################################################
@@ -682,9 +682,9 @@
         │ \( ... binding_pattern \)                                                                             ↦r { { type: "Parameters", nodes:[{type:"Spread", nodes:[$$sym3]}], pos } }
         │ \( expression , ... binding_identifier  \)                                                            ↦r { { type: "Parameters", nodes:[$$sym2, {type:"Spread", nodes:[$$sym4]}], pos } }
         │ \( expression , ... binding_pattern  \)                                                               ↦r { { type: "Parameters", nodes:[$$sym2, {type:"Spread", nodes:[$$sym4]}], pos } }
-        │ parenthasized                                                                                         
+        │ parenthesized                                                                                         
     
-    <> parenthasized → \( expression \)                                                                         ↦r { { type: "Parenthasized", nodes:[$$sym2], pos } }
+    <> parenthesized → \( expression \)                                                                         ↦r { { type: "Parenthesized", nodes:[$$sym2], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/10.0/index.html#prod-BindingPattern
@@ -839,7 +839,7 @@
     <> unicode_escape_sequence → τu def::hex_digit def::hex_digit def::hex_digit def::hex_digit                 ↦r { $sym1 + $sym2 + $sym3 + $sym4 + $sym5 }
         │ τu \{ def::hex \}                                                                                     ↦r { $sym1 + $sym2 + $sym3 + $sym4 }
 
-    <> numeric_literal → number                                                                                 ↦r { { type: "NumericLiteral", original_value:$sym1.original_val, value:$sym1, pos } }
+    <> numeric_literal → number                                                                                 ↦r { { type: "NumericLiteral", value:$sym1.original_val, computed_value:$sym1.val, value_data:$sym1, pos } }
 
     <> number →  def::float 
         │ def::octal 
