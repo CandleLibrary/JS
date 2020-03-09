@@ -1,7 +1,7 @@
 import { extract, replace, traverse } from "@candlefw/conflagrate";
 
-import { MinTreeNodeDefinitions } from "../nodes/mintree_nodes.js";
-import { MinTreeNodeDefinition } from "../nodes/min_tree_node_definition.js";
+import { MinTreeNodeDefinitions } from "../nodes/mintree_node_extensions.js";
+import { MinTreeNodeDefinition } from "../nodes/mintree_node_definition.js";
 import { MinTreeExtendedNode } from "../types/mintree_extended_node.js";
 import { MinTreeNode } from "../types/mintree_node.js";
 import { MinTreeNodeType } from "../types/mintree_node_type.js";
@@ -47,22 +47,22 @@ function buildExtender(def: MinTreeNodeDefinition): NodeExtender {
  * 
  *  @param node_definitions
  */
-function ExtenderBuilder(node_definitions: Array<MinTreeNodeDefinition>): Map<MinTreeNodeType, NodeExtender> {
+function ExtenderBuilder(node_definitions: Array<MinTreeNodeDefinition>): Array<NodeExtender> {
 
-    const extenders: Map<MinTreeNodeType, NodeExtender> = new Map();
+    const extenders: Array<NodeExtender> = new Array(256);
 
     for (const node_definition of node_definitions) {
 
         const extender = buildExtender(node_definition);
 
-        extenders.set(node_definition.name, extender);
+        extenders[node_definition.name >>> 24] = extender;
     }
 
     return extenders;
 
 }
 
-let Extenders: Map<string, NodeExtender> = null;
+let Extenders: Array<NodeExtender> = null;
 
 /**
  * Takes a MinTreeNode node and returns an extended version with OO properties
@@ -81,7 +81,7 @@ export function ext(node: MinTreeNode, EXTEND_ENTIRE_TREE: boolean = false): Min
             if (!Extenders)
                 Extenders = ExtenderBuilder(MinTreeNodeDefinitions);
 
-            const extender = Extenders.get(node.type);
+            const extender = Extenders[node.type >>> 24];
 
             if (!extender)
                 throw new Error(`Cannot find string renderer for MinTree node type ${node.type}`);
@@ -104,7 +104,7 @@ export function ext(node: MinTreeNode, EXTEND_ENTIRE_TREE: boolean = false): Min
         if (!Extenders)
             Extenders = ExtenderBuilder(MinTreeNodeDefinitions);
 
-        const extender = Extenders.get(node.type);
+        const extender = Extenders[node.type >>> 24];
 
         if (!extender)
             throw new Error(`Cannot find string renderer for MinTree node type ${node.type}`);

@@ -1,8 +1,9 @@
-import { MinTreeNodeDefinitions } from "../nodes/mintree_nodes.js";
+import { MinTreeNodeDefinitions } from "../nodes/mintree_node_extensions.js";
 import { MinTreeNode } from "../types/mintree_node.js";
-import { MinTreeNodeDefinition } from "../nodes/min_tree_node_definition.js";
+import { MinTreeNodeDefinition } from "../nodes/mintree_node_definition.js";
+import { MinTreeNodeType } from "../ecma.js";
 
-type RenderStub = (arg0: MinTreeNode) => string;
+type RenderStub = (arg0: MinTreeNode, map?: Array<number>) => string;
 
 class RenderAction {
     action_list: Array<RenderStub>;
@@ -101,7 +102,7 @@ function buildRendererFromTemplateString(template_pattern: string): RenderAction
                 const index = last_index + 1;
                 const delimiter = match[0][4];
 
-                action_list.push((node: MinTreeNode, map?: Array<number>): string => (node.nodes.slice(index).map((n, i, { length: l }) => render(n, (i > 0 && map.push(1, 199), map))).join(delimiter)));
+                action_list.push((node: MinTreeNode, map?: Array<number>): string => (node.nodes.slice(index).map((n, i, { length: l }) => render(n, (i > 0 && map && map.push(1, 199), map))).join(delimiter)));
             }
 
             //ValIndexInsertion
@@ -114,7 +115,7 @@ function buildRendererFromTemplateString(template_pattern: string): RenderAction
             //NonValsInsertion
             else {
                 const prop = match[0].slice(1);
-                action_list.push((node: MinTreeNode, map?: Array<number>): string => (map.push(String(node[prop]).length, node.pos.off), String(node[prop])));
+                action_list.push((node: MinTreeNode, map?: Array<number>): string => (map && map.push(String(node[prop]).length, node.pos.off), String(node[prop])));
             }
         }
 
@@ -122,7 +123,7 @@ function buildRendererFromTemplateString(template_pattern: string): RenderAction
         else {
             const str = match[0];
             if (str)
-                action_list.push((n: MinTreeNode, map?: Array<number>): string => (map.push(String(str).length, n.pos.off), str));
+                action_list.push((n: MinTreeNode, map?: Array<number>): string => (map && map.push(String(str).length, n.pos.off), str));
         }
     }
 
@@ -138,7 +139,7 @@ function buildRenderer(node_definition: MinTreeNodeDefinition): NodeRenderer {
     /* 
         Template pattern may be an object or a string. If it is an object,
         than each key in the object represents a certain condition that is
-        checked on MinTreeNode that determins what type of NodeRenderer is used
+        checked on MinTreeNode that determines what type of NodeRenderer is used
         to render that version of the node.
 
         For each key in the object:
@@ -190,38 +191,38 @@ function buildRenderer(node_definition: MinTreeNodeDefinition): NodeRenderer {
  * 
  *  @param node_definitions
  */
-function RendererBuilder(node_definitions: Array<MinTreeNodeDefinition>): Map<string, NodeRenderer> {
+function RendererBuilder(node_definitions: Array<MinTreeNodeDefinition>): Array<NodeRenderer> {
 
-    const renderers: Map<string, NodeRenderer> = new Map();
+    const renderers = new Array(256);
 
     for (const node_definition of node_definitions) {
 
         const renderer = buildRenderer(node_definition);
 
-        renderers.set(node_definition.name, renderer);
+        renderers[node_definition.name >>> 24] = renderer;
     }
 
     return renderers;
 
 }
 
-let Renderers: Map<string, NodeRenderer> = null;
+let Renderers: Array<NodeRenderer> = null;
 
 /**
- *  Takes a mintree node and produces a string comprising the rendered productions of the ast.
+ *  Takes a MinTreeNode and produces a string comprising the rendered productions of the ast.
  */
 export function render(node: MinTreeNode, map?: Array<number>): string {
-    console.log(node, node.type);
+
     /*
-        Load Renderes on demand to allow for MinTreeNodeDefinition modifications, additions.
+        Load Renderers on demand to allow for MinTreeNodeDefinition modifications, additions.
     */
     if (!Renderers)
         Renderers = RendererBuilder(MinTreeNodeDefinitions);
 
-    const renderer = Renderers.get(node.type);
+    const renderer = Renderers[node.type >>> 24];
 
     if (!renderer)
-        throw new Error(`Cannot find string renderer for MinTree node type ${node.type}`);
+        throw new Error(`Cannot find string renderer for MinTree node type ${MinTreeNodeType[node.type]}`);
 
     return renderer.render(node, map);
 }

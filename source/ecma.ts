@@ -1,20 +1,19 @@
-import { MinTreeNodeDefinitions } from "./nodes/mintree_nodes.js";
+import { MinTreeNodeDefinitions } from "./nodes/mintree_node_extensions.js";
 import { MinTreeNode } from "./types/mintree_node.js";
-import { MinTreeNodeDefinition } from "./nodes/min_tree_node_definition.js";
-
-import parser from "./parser/parser.js";
-
+import { MinTreeNodeDefinition } from "./nodes/mintree_node_definition.js";
 import { render } from "./tools/render.js";
-import { MinTreeNodeMaskedType } from "./types/ntype.js";
-import { MinTreeNodeType } from "./types/mintree_node_type.js";
+import { MinTreeNodeType, MinTreeNodeClass } from "./types/mintree_node_type.js";
 import { ext } from "./tools/extend.js";
 import { getIdentifierName } from "./tools/get_identifier_name.js";
+
+import parser from "./parser/parser.js";
 export {
+
+    MinTreeNodeClass,
     getIdentifierName,
     MinTreeNodeType,
     MinTreeNodeDefinition,
     MinTreeNodeDefinitions,
-    MinTreeNodeMaskedType,
     MinTreeNode,
     parser,
     render,

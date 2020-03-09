@@ -1,556 +1,481 @@
-import { MinTreeNodeDefinition } from "./min_tree_node_definition.js";
-import { MinTreeNodeMaskedType } from "../types/ntype.js";
+import { MinTreeNodeDefinition } from "./mintree_node_definition.js";
 import { MinTreeNodeType } from "../types/mintree_node_type.js";
 
 export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.AdditiveExpression,
-        ["left", "right", { symbol: "symbol", type: String }],
-        "$1 $symbol $2",
-        MinTreeNodeMaskedType.$expression),
+        ["left", "right"],
+        "$1 $symbol $2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.Arguments,
         ["expressions"],
-        "($...,)",
-        MinTreeNodeMaskedType.$expression),
+        "($...,)"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ArrayLiteral,
         ["members"],
-        "[$...]",
-        MinTreeNodeMaskedType.$literal | MinTreeNodeMaskedType.$array),
+        "[$...]"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ArrowFunction,
         ["arguments", "body", { isASYNC: "async", type: Boolean }],
-        "$async? $1 => $2",
-        MinTreeNodeMaskedType.$expression),
+        "$async? $1 => $2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.AssignmentExpression,
         ["identifier", "expression"],
-        "$1 $operator $2",
-        MinTreeNodeMaskedType.$expression),
+        "$1 $operator $2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.AwaitExpression,
         ["expression"],
-        "await $1",
-        MinTreeNodeMaskedType.$expression),
+        "await $1"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.BindingExpression,
         ["property", "expression"],
-        "$1 = $2",
-        MinTreeNodeMaskedType.$expression),
+        "$1 = $2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.BlockStatement,
         ["statements"],
-        "{$...}",
-        MinTreeNodeMaskedType.$statement),
+        "{$...}"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.BooleanLiteral,
         [],
-        "$val",
-        MinTreeNodeMaskedType.$literal | MinTreeNodeMaskedType.$boolean),
+        "$val"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.BreakStatement,
         [],
-        "break;",
-        MinTreeNodeMaskedType.$statement),
+        "break;"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.CallExpression,
         ["object", "arguments"],
-        "$1$2",
-        MinTreeNodeMaskedType.$expression),
+        "$1$2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.CallMemberExpression,
-        ["member", "arguments"], "$1$2",
-        MinTreeNodeMaskedType.$expression),
+        ["member", "arguments"], "$1$2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.CaseBlock,
         ["expression"],
-        "case $1:",
-        MinTreeNodeMaskedType.$expression),
+        "case $1:"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.CaseClause,
         ["statements"],
-        "$...",
-        MinTreeNodeMaskedType.$expression),
+        "$..."),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.CatchClause,
         ["expression", "body"],
-        "catch($1){$2}",
-        MinTreeNodeMaskedType.$expression),
+        "catch($1){$2}"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.Class,
-        ["name", "heritage", "body"], { $2: "class $1 extends $2 {$3}", default: "class $1 {$3}" },
-        MinTreeNodeMaskedType.$class),
+        ["name", "heritage", "body"],
+        { $2: "class $1 extends $2 {$3}", default: "class $1 {$3}" }),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ComputedProperty,
         [],
-        "[$1]",
-        MinTreeNodeMaskedType.$property),
+        "[$1]"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ContinueStatement,
-        [],
-        "continue;",
-        MinTreeNodeMaskedType.$statement),
+        ["identifier"],
+        "continue;"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ConditionalExpression,
-        [],
-        "$1 ? $2 : $3",
-        MinTreeNodeMaskedType.$expression),
+        ["condition", "pass_expression", "fail_expression"],
+        "$1 ? $2 : $3"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.DebuggerStatement,
         [],
-        "debugger;",
-        MinTreeNodeMaskedType.$statement),
+        "debugger;"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.DeleteExpression,
-        [],
-        "delete $1",
-        MinTreeNodeMaskedType.$expression),
+        ["expression"],
+        "delete $1"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.DoStatement,
-        [],
-        "do{ $1 }while ($2)",
-        MinTreeNodeMaskedType.$statement),
+        ["statement", "expression"],
+        "do{$1} while($2)"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.EmptyStatement,
         [],
-        ";",
-        MinTreeNodeMaskedType.$statement),
+        ";"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.EqualityExpression,
         ["left", "right"],
-        "$1 $symbol $2",
-        MinTreeNodeMaskedType.$expression),
+        "$1 $symbol $2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ExponentiationExpression,
         ["left", "right"],
-        "$1 ** $2",
-        MinTreeNodeMaskedType.$expression),
+        "$1 ** $2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ExportClause,
         [],
-        "{$...}",
-        MinTreeNodeMaskedType.$expression | MinTreeNodeMaskedType.$export),
+        "{$...}"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ExportDeclaration,
-        [], { DEFAULT: "export default $1", $1: "export $1 $2", default: "export * $2" },
-        MinTreeNodeMaskedType.$expression | MinTreeNodeMaskedType.$export),
+        [],
+        { DEFAULT: "export default $1", $1: "export $1 $2", default: "export * $2" }),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ExpressionList,
         [],
-        "$...,",
-        MinTreeNodeMaskedType.$expression),
+        "$...,"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ExpressionStatement,
         ["expression"],
-        "$1;",
-        MinTreeNodeMaskedType.$statement),
+        "$1;"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.FinallyClause,
         [],
-        "",
-        MinTreeNodeMaskedType.$expression),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ForInStatement,
         [],
-        "",
-        MinTreeNodeMaskedType.$statement),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ForOfStatement,
         [],
-        "",
-        MinTreeNodeMaskedType.$statement),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ForStatement,
         [],
-        "",
-        MinTreeNodeMaskedType.$statement),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.FormalParameters,
         [],
-        "",
-        MinTreeNodeMaskedType.$expression),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.FromClause,
-        ["uri"],
-        "from $1",
-        MinTreeNodeMaskedType.$expression),
+        ["url"],
+        "from $1"),
 
     new MinTreeNodeDefinition(
-        MinTreeNodeType.Function,
+        MinTreeNodeType.FunctionDeclaration,
         [],
-        "",
-        MinTreeNodeMaskedType.$expression),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.GetterMethod,
         [],
-        "",
-        MinTreeNodeMaskedType.$function),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.Identifier,
         [],
-        "$value",
-        MinTreeNodeMaskedType.$literal | MinTreeNodeMaskedType.$identifier),
+        "$value"),
+
+    new MinTreeNodeDefinition(
+        MinTreeNodeType.IdentifierLabel,
+        [],
+        "$value"),
+
+    new MinTreeNodeDefinition(
+        MinTreeNodeType.IdentifierBinding,
+        [],
+        "$value"),
+
+    new MinTreeNodeDefinition(
+        MinTreeNodeType.IdentifierReference,
+        [],
+        "$value"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.IfStatement,
         [],
-        "if($1){$2}",
-        MinTreeNodeMaskedType.$statement),
+        "if($1){$2}"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ImportClause,
         [],
-        "",
-        MinTreeNodeMaskedType.$expression | MinTreeNodeMaskedType.$import),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ImportDeclaration,
         ["clause", "from"],
-        "import $1 $2",
-        MinTreeNodeMaskedType.$expression | MinTreeNodeMaskedType.$import),
+        "import $1 $2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.InExpression,
         [],
-        "",
-        MinTreeNodeMaskedType.$expression),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.InstanceOfExpression,
         [],
-        "",
-        MinTreeNodeMaskedType.$expression),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.LabeledStatement,
         [],
-        "",
-        MinTreeNodeMaskedType.$statement),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.LexicalBinding,
         [],
-        "",
-        MinTreeNodeMaskedType.$expression),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.LexicalDeclaration,
-        [],
-        "$symbol $...,;",
-        MinTreeNodeMaskedType.$expression),
+        ["bindings, expression"],
+        "$symbol $...,;"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.LogicalExpression,
-        [],
-        "",
-        MinTreeNodeMaskedType.$expression),
+        ["left", "right"],
+        "$1 $symbol $2"),
+
+    new MinTreeNodeDefinition(
+        MinTreeNodeType.BitwiseExpression,
+        ["left", "right"],
+        "$1 $symbol $2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.MemberExpression,
-        ["object", "member"], { COMPUTED: "$1[$2]", default: "$1.$2" },
-        MinTreeNodeMaskedType.$expression | MinTreeNodeMaskedType.$call),
+        ["object", "member"],
+        { COMPUTED: "$1[$2]", default: "$1.$2" }),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.Method,
         [],
-        "",
-        MinTreeNodeMaskedType.$function),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ModuleSpecifier,
         [],
-        "",
-        MinTreeNodeMaskedType.$expression),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.MultiplicativeExpression,
         [],
-        "",
-        MinTreeNodeMaskedType.$expression),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.NameSpaceImport,
         [],
-        "",
-        MinTreeNodeMaskedType.$expression),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.NamedImports,
         [],
-        "",
-        MinTreeNodeMaskedType.$expression),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.NewExpression,
         [],
-        "new $1",
-        MinTreeNodeMaskedType.$expression),
+        "new $1"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.NewInstanceExpression,
         [],
-        "new $1$2",
-        MinTreeNodeMaskedType.$expression),
+        "new $1$2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.NewTarget,
         [],
-        "new.target",
-        MinTreeNodeMaskedType.$expression),
+        "new.target"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.NullLiteral,
         [],
-        "null",
-        MinTreeNodeMaskedType.$literal | MinTreeNodeMaskedType.$null),
+        "null"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.NumericLiteral,
         [],
-        "$value",
-        MinTreeNodeMaskedType.$literal | MinTreeNodeMaskedType.$number),
+        "$value"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ObjectLiteral,
         [],
-        "{$...}",
-        MinTreeNodeMaskedType.$literal | MinTreeNodeMaskedType.$object),
+        "{$...}"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.Parameters,
         [],
-        "$...,",
-        MinTreeNodeMaskedType.$expression),
+        "$...,"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.Parenthesized,
         [],
-        "($1)",
-        MinTreeNodeMaskedType.$expression),
+        "($1)"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.PostExpression,
         [],
-        "",
-        MinTreeNodeMaskedType.$expression),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.PreExpression,
         [],
-        "",
-        MinTreeNodeMaskedType.$expression),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.PropertyBinding,
         [],
-        "",
-        MinTreeNodeMaskedType.$property),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.RegexLiteral,
         [],
-        "",
-        MinTreeNodeMaskedType.$literal | MinTreeNodeMaskedType.$regex),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.RelationalExpression,
         [],
-        "",
-        MinTreeNodeMaskedType.$expression),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ReturnStatement,
         [],
-        "",
-        MinTreeNodeMaskedType.$statement),
+        "return $1"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.Script,
         [],
-        "$... ",
-        MinTreeNodeMaskedType.$script),
+        "$... "),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.SetterMethod,
-        [],
-        "",
-        MinTreeNodeMaskedType.$function),
+        ["binding", "body"],
+        "set($1){$2}"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ShiftExpression,
-        [],
-        "",
-        MinTreeNodeMaskedType.$expression),
+        ["left", "right"],
+        "$1 $symbol $2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.Specifier,
-        ["module_id", "local_id"],
-        "$1 as $2",
-        MinTreeNodeMaskedType.$expression),
-
-    new MinTreeNodeDefinition(
-        MinTreeNodeType.Spread,
-        [],
-        "...$1",
-        MinTreeNodeMaskedType.$spread),
+        ["original", "transformed"],
+        "$1 as $2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.SpreadExpression,
-        [],
-        "",
-        MinTreeNodeMaskedType.$expression | MinTreeNodeMaskedType.$spread),
+        ["expression"],
+        "...$1"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.StringLiteral,
         [],
-        "$quote_type$value$quote_type",
-        MinTreeNodeMaskedType.$literal | MinTreeNodeMaskedType.$string),
+        "$quote_type$value$quote_type"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.SuperCall,
-        [],
-        "",
-        MinTreeNodeMaskedType.$expression),
+        ["arguments"],
+        "super$1"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.SuperExpression,
-        [],
-        "",
-        MinTreeNodeMaskedType.$expression),
+        ["member"],
+        { COMPUTED: "super[$1]", default: "super.$2" }),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.SwitchStatement,
-        [],
-        "",
-        MinTreeNodeMaskedType.$statement),
+        ["expression", "case_block"],
+        "switch($1)$2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.Template,
         [],
-        "",
-        MinTreeNodeMaskedType.$string | MinTreeNodeMaskedType.$template),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.TemplateHead,
         [],
-        "",
-        MinTreeNodeMaskedType.$string | MinTreeNodeMaskedType.$template),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.TemplateMiddle,
         [],
-        "",
-        MinTreeNodeMaskedType.$string | MinTreeNodeMaskedType.$template),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.TemplateTail,
         [],
-        "",
-        MinTreeNodeMaskedType.$string | MinTreeNodeMaskedType.$template),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ThisLiteral,
         [],
-        "this",
-        MinTreeNodeMaskedType.$literal | MinTreeNodeMaskedType.$this),
+        "this"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ThrowStatement,
         [],
-        "throw $1;",
-        MinTreeNodeMaskedType.$statement),
+        "throw $1;"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.TryStatement,
         [],
-        "",
-        MinTreeNodeMaskedType.$statement),
+        ""),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.TypeofExpression,
-        [],
-        "typeof $1",
-        MinTreeNodeMaskedType.$expression),
+        ["expression"],
+        "typeof $1"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.UnaryExpression,
-        [],
-        "$symbol$1",
-        MinTreeNodeMaskedType.$expression),
+        ["expression"],
+        "$symbol$1"),
 
     new MinTreeNodeDefinition(
-        MinTreeNodeType.VarDeclaration,
+        MinTreeNodeType.VariableDeclaration,
         [],
-        "var $1",
-        MinTreeNodeMaskedType.$expression),
+        "var $...,"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.VariableStatement,
         [],
-        "var $...,;",
-        MinTreeNodeMaskedType.$statement),
+        "var $...,;"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.VoidExpression,
-        [],
-        "void $1",
-        MinTreeNodeMaskedType.$expression),
+        ["expression"],
+        "void $1"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.WhileStatement,
-        [],
-        "while($1){$2}",
-        MinTreeNodeMaskedType.$statement),
+        ["expression", "statement"],
+        "while($1) $2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.WithStatement,
-        [],
-        "with($1){$2}",
-        MinTreeNodeMaskedType.$statement),
+        ["expression", "statement"],
+        "with($1) $2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.YieldExpression,
-        [],
-        "yield $1",
-        MinTreeNodeMaskedType.$expression)
+        ["expression"],
+        "yield $1")
 ];
 
 export enum MinTreeNodeTyped {
