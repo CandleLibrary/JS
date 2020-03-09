@@ -18,11 +18,13 @@ export default function ecmascript_parser(lex: string | Lexer): MinTreeNode {
 
     if (typeof lex === "string")
         lex = new Lexer(lex);
+    else if (!(lex instanceof Lexer))
+        throw new ReferenceError("Invalid argument. lex is not a string or a Lexer.");
 
     const result: ParserResult = lrParse(lex, ecmascript_parser_data, env);
 
     if (result.error)
         throw new SyntaxError(result.error);
 
-    return <MinTreeNode> result.value;
+    return <MinTreeNode>result.value;
 }
