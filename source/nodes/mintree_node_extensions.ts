@@ -210,7 +210,7 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.IfStatement,
         [],
-        "if($1){$2}"),
+        { default: "if ($1) $2 else $3", $not_3: "if ($1) $2 " }),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ImportClause,
@@ -324,38 +324,38 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.Parenthesized,
-        [],
+        ["expression"],
         "($1)"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.PostExpression,
-        [],
-        ""),
+        ["expression"],
+        "$1$symbol"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.PreExpression,
-        [],
-        ""),
+        ["expression"],
+        "$symbol$1"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.PropertyBinding,
-        [],
-        ""),
+        ["identifier", "expression"],
+        "$1.$2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.RegexLiteral,
-        [],
-        ""),
+        ["expression_string", "meta"],
+        "/$1/$2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.RelationalExpression,
-        [],
-        ""),
+        ["left", "right"],
+        "$1 $symbol $2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ReturnStatement,
-        [],
-        "return $1"),
+        ["expression"],
+        "return $1;"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.Script,
@@ -429,7 +429,7 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ThrowStatement,
-        [],
+        ["expression"],
         "throw $1;"),
 
     new MinTreeNodeDefinition(
