@@ -6,16 +6,18 @@ import { MinTreeNodeType, MinTreeNodeClass } from "./types/mintree_node_type.js"
 import { ext } from "./tools/extend.js";
 import { getIdentifierName } from "./tools/get_identifier_name.js";
 
-import parser from "./parser/parser.js";
-export {
+import { expression_parser, ecmascript_parser, statement_parser } from "./parser/parser.js";
 
+export {
     MinTreeNodeClass,
     getIdentifierName,
     MinTreeNodeType,
     MinTreeNodeDefinition,
     MinTreeNodeDefinitions,
     MinTreeNode,
-    parser,
+    ecmascript_parser as parser,
+    expression_parser as exp,
+    statement_parser as stmt,
     render,
     ext
 };

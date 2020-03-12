@@ -1,11 +1,12 @@
 import { lrParse } from "@candlefw/hydrocarbon";
 import { Lexer } from "@candlefw/whind";
-import { traverse, bit_filter, replace } from "@candlefw/conflagrate";
+import { traverse, bit_filter } from "@candlefw/conflagrate";
 
 import { MinTreeNode } from "../types/mintree_node";
 import ecmascript_parser_data from "./ecmascript.js";
-import { MinTreeNodeClass, MinTreeNodeType } from "../types/mintree_node_type.js";
+import { MinTreeNodeClass } from "../types/mintree_node_type.js";
 import env from "./env.js";
+import { ext } from "../tools/extend.js";
 
 interface ParserResult {
     error: string;
@@ -37,11 +38,13 @@ export function ecmascript_parser(lex: string | Lexer | TemplateStringsArray): M
 }
 
 
-export function expression_parser(expression) {
+export function expression_parser(expression: string | TemplateStringsArray | Lexer) {
+
     const ast = ecmascript_parser(expression);
 
-    for (const node of traverse(ast, "type").then(bit_filter("type", MinTreeNodeClass.EXPRESSION)))
+    for (const node of traverse(ast, "nodes").then(bit_filter("type", MinTreeNodeClass.EXPRESSION))) {
         return node;
+    }
 
     return null;
 }
