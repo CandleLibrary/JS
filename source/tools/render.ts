@@ -2,8 +2,9 @@ import { MinTreeNodeDefinitions } from "../nodes/mintree_node_extensions.js";
 import { MinTreeNode } from "../types/mintree_node.js";
 import { MinTreeNodeDefinition } from "../nodes/mintree_node_definition.js";
 import { MinTreeNodeType } from "../ecma.js";
-
-type RenderStub = (arg0: MinTreeNode, map?: Array<number>) => string;
+import { createSourceMapEntry, SourceMap } from "@candlefw/conflagrate";
+import { ext } from "./extend.js";
+type RenderStub = (arg0: MinTreeNode, map?: SourceMap) => string;
 
 class RenderAction {
     action_list: Array<RenderStub>;
@@ -12,7 +13,7 @@ class RenderAction {
         this.action_list = action_list;
     }
 
-    render(node: MinTreeNode, map): string {
+    render(node: MinTreeNode, map: SourceMap): string {
         return this.action_list.map(a => a(node, map)).join("");
     }
 }
@@ -42,7 +43,7 @@ class NodeRenderer {
         this.default_branch = default_branch;
     }
 
-    render(node: MinTreeNode, map): string {
+    render(node: MinTreeNode, map?: SourceMap): string {
 
         let out = "";
 
@@ -53,7 +54,9 @@ class NodeRenderer {
 
         const flag = (node.nodes) ? node.nodes.map((v, i) => !!v ? 1 << i : 0).reduce((r, v) => r | v, 0) : 0xFFFFFFFF;
 
+
         for (const cond of this.val_presence_branches) {
+
             if ((cond.flag & flag) == flag)
                 return cond.action.render(node, map);
         }
@@ -69,24 +72,24 @@ function buildRendererFromTemplateString(template_pattern: string): RenderAction
         character. For each insertion point there is an action to perform depending
         on the surrounding syntax:
         
-        1. ValIndexInsertion
-        $\n* => This indicates the rendering of the node contained in node.vals[*] should be
+        1. Value-Index-Insertion
+        @\n* => This indicates the rendering of the node contained in node.vals[*] should be
                 rendered and the result inserted at this point. 
 
-        2. SpreadValsInsertion
-        $...[.\s] => This indicates that all node.vals should be rendered and results inserted into 
+        2. Spread-Value-Insertion
+        @...[.\s] => This indicates that all node.vals should be rendered and results inserted into 
                 the output string with a comma separating the entries. If there are proceeding 
-                ValIndexInsertion, the spread will start at the index location following the 
-                one specified in ValIndexInsertion. The spread will be delimited by the character 
-                following [$...]
+                Value-Index-Insertion, the spread will start at the index location following the 
+                one specified in Value-Index-Insertion. The spread will be delimited by the character 
+                following [@...]
 
-        3. NonValsInsertion 
-        $\w* => This indicates that a property of node should be inserted into the output
+        3. Non-Value-Insertion 
+        @\w* => This indicates that a property of node should be inserted into the output
                 string, after being coerced to a string value using the string constructor
                 String()
     */
 
-    const regex = /(\$\.\.\.[^])|(\$[\w\_][\w\_\n]*)|(\$[\w]*)|([^$]+)*/g,
+    const regex = /(\@\.\.\.[^])|(\@[\w\_][\w\_\n]*)|(\@[\w]*)|([^@]+)*/g,
         actions_iterator: IterableIterator<RegExpMatchArray> = template_pattern.matchAll(regex),
         action_list: Array<RenderStub> = [];
 
@@ -95,35 +98,85 @@ function buildRendererFromTemplateString(template_pattern: string): RenderAction
     for (const match of actions_iterator) {
 
         //Need to determine what type of match we have
-        if (match[0][0] == "$") {
+        if (match[0][0] == "@") {
 
-            //SpreadValsInsertion
-            if (match[0].slice(0, 4) == "$...") {
-                const index = last_index + 1;
-                const delimiter = match[0][4];
+            //Spread-Value-Insertion
+            if (match[0].slice(0, 4) == "@...") {
+                const
+                    index = last_index + 1,
+                    delimiter = match[0][4];
 
-                action_list.push((node: MinTreeNode, map?: Array<number>): string => (node.nodes.slice(index).map((n, i, { length: l }) => render(n, (i > 0 && map && map.push(1, 199), map))).join(delimiter)));
+                action_list.push((node: MinTreeNode, map?: SourceMap): string => {
+                    return node.nodes.slice(index).map((n, i, { length: l }) => {
+                        if (i > 0 && map) {
+                            const col = map.meta.col;
+                            map.meta.col += 1;
+                            createSourceMapEntry(
+                                0,
+                                col,
+                                node.pos.line,
+                                node.pos.char,
+                                "source",
+                                "",
+                                map
+                            );
+                        }
+                        return render(n, map);
+                    }).join(delimiter);
+                });
             }
 
-            //ValIndexInsertion
+            //Value-Index-Insertion
             else if (!isNaN(parseInt(match[0].slice(1)))) {
                 const index = parseInt(match[0].slice(1)) - 1;
-                action_list.push((node: MinTreeNode, map?: Array<number>): string => (render(node.nodes[index], map)));
+                action_list.push((node: MinTreeNode, map?: SourceMap): string => {
+                    return render(node.nodes[index], map);
+                });
                 last_index = index;
             }
 
-            //NonValsInsertion
+            //Non-Value-Insertion
             else {
                 const prop = match[0].slice(1);
-                action_list.push((node: MinTreeNode, map?: Array<number>): string => (map && map.push(String(node[prop]).length, node.pos.off), String(node[prop])));
+                action_list.push((node: MinTreeNode, map?: SourceMap): string => {
+                    if (map) {
+                        const col = map.meta.col;
+                        map.meta.col += String(node[prop]).length;
+                        createSourceMapEntry(
+                            0,
+                            col,
+                            node.pos.line,
+                            node.pos.char,
+                            "source",
+                            "",
+                            map
+                        );
+                    }
+                    return String(node[prop]);
+                });
             }
         }
-
         //Plain old string insertion
         else {
             const str = match[0];
             if (str)
-                action_list.push((n: MinTreeNode, map?: Array<number>): string => (map && map.push(String(str).length, n.pos.off), str));
+                action_list.push((node: MinTreeNode, map?: SourceMap): string => {
+                    if (map) {
+                        const col = map.meta.col;
+                        map.meta.col += String(str).length;
+                        createSourceMapEntry(
+                            0,
+                            col,
+                            node.pos.line,
+                            node.pos.char,
+                            "source",
+                            "",
+                            map
+                        );
+                    }
+
+                    return str;
+                });
         }
     }
 
@@ -141,13 +194,13 @@ function buildRenderer(node_definition: MinTreeNodeDefinition): NodeRenderer {
         than each key in the object represents a certain condition that is
         checked on MinTreeNode that determines what type of NodeRenderer is used
         to render that version of the node.
-
+ 
         For each key in the object:
-
+ 
             1. If the key is "default", then use the value as the fallback render template for the node.
-
-            2. if the key is $(not_{number})+, use the value as the render template when certain vals are set to null. 
-
+ 
+            2. if the key is [ $(not_{number})+ ], use the value as the render template when certain [nodes] are set to null.
+ 
             3. Otherwise, use the value if the property node.[key] is set to a truthy value. 
     */
 
@@ -170,9 +223,8 @@ function buildRenderer(node_definition: MinTreeNodeDefinition): NodeRenderer {
             } else if (key[0] == "$") {
 
                 const flag: number = Array
-                    .from(key.slice(1)
-                        .matchAll(/not_(\n+)/))
-                    .reduce((r: number, m): number => r ^ (1 << (parseInt(m[1]) - 1)), 0xFFFFFFFF);
+                    .from(key.slice(1).matchAll(/not_(\d+)/))
+                    .reduce((r: number, m): number => r ^ (1 << (parseInt(m[1]) - 1)), 0x1FFFFFFF);
 
                 present_vals.push({ flag, action: buildRendererFromTemplateString(template_pattern_object[key]) });
             } else
@@ -211,7 +263,13 @@ let Renderers: Array<NodeRenderer> = null;
 /**
  *  Takes a MinTreeNode and produces a string comprising the rendered productions of the ast.
  */
-export function render(node: MinTreeNode, map?: Array<number>): string {
+export function render(node: MinTreeNode, map: SourceMap = null): string {
+
+    if (map && !map.meta.col)
+        map.meta.col = 0;
+
+    //  console.log({ node });
+    //  console.log(MinTreeNodeType[node.type]);
 
     /*
         Load Renderers on demand to allow for MinTreeNodeDefinition modifications, additions.
@@ -221,8 +279,9 @@ export function render(node: MinTreeNode, map?: Array<number>): string {
 
     const renderer = Renderers[node.type >>> 24];
 
-    if (!renderer)
+    if (!renderer) {
         throw new Error(`Cannot find string renderer for MinTree node type ${MinTreeNodeType[node.type]}`);
+    }
 
     return renderer.render(node, map);
 }
