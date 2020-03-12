@@ -6,47 +6,47 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.AdditiveExpression,
         ["left", "right"],
-        "$1 $symbol $2"),
+        "@1 @symbol @2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.Arguments,
         ["expressions"],
-        "($...,)"),
+        "(@...,)"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ArrayLiteral,
         ["members"],
-        "[$...]"),
+        "[@...,]"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ArrowFunction,
         ["arguments", "body", { isASYNC: "async", type: Boolean }],
-        "$async? $1 => $2"),
+        "@async? @1 => @2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.AssignmentExpression,
         ["identifier", "expression"],
-        "$1 $operator $2"),
+        "@1 @operator @2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.AwaitExpression,
         ["expression"],
-        "await $1"),
+        "await @1"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.BindingExpression,
         ["property", "expression"],
-        "$1 = $2"),
+        "@1 = @2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.BlockStatement,
         ["statements"],
-        "{$...}"),
+        "{@... }"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.BooleanLiteral,
         [],
-        "$val"),
+        "@value"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.BreakStatement,
@@ -56,36 +56,36 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.CallExpression,
         ["object", "arguments"],
-        "$1$2"),
+        "@1@2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.CallMemberExpression,
-        ["member", "arguments"], "$1$2"),
+        ["member", "arguments"], "@1@2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.CaseBlock,
         ["expression"],
-        "case $1:"),
+        "case @1:"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.CaseClause,
         ["statements"],
-        "$..."),
+        "@... "),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.CatchClause,
         ["expression", "body"],
-        "catch($1){$2}"),
+        "catch(@1){@2}"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.Class,
         ["name", "heritage", "body"],
-        { $2: "class $1 extends $2 {$3}", default: "class $1 {$3}" }),
+        { $2: "class @1 extends @2 {@3}", default: "class @1 {@3}" }),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ComputedProperty,
         [],
-        "[$1]"),
+        "[@1]"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ContinueStatement,
@@ -95,7 +95,7 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.ConditionalExpression,
         ["condition", "pass_expression", "fail_expression"],
-        "$1 ? $2 : $3"),
+        "@1 ? @2 : @3"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.DebuggerStatement,
@@ -105,12 +105,12 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.DeleteExpression,
         ["expression"],
-        "delete $1"),
+        "delete @1"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.DoStatement,
         ["statement", "expression"],
-        "do{$1} while($2)"),
+        "do{@1} while(@2)"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.EmptyStatement,
@@ -120,32 +120,32 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.EqualityExpression,
         ["left", "right"],
-        "$1 $symbol $2"),
+        "@1 @symbol @2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ExponentiationExpression,
         ["left", "right"],
-        "$1 ** $2"),
+        "@1 ** @2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ExportClause,
         [],
-        "{$...}"),
+        "{@...,}"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ExportDeclaration,
         [],
-        { DEFAULT: "export default $1", $1: "export $1 $2", default: "export * $2" }),
+        { DEFAULT: "export default @1", $1: "export @1 @2", default: "export * @2" }),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ExpressionList,
         [],
-        "$...,"),
+        "@...,"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ExpressionStatement,
         ["expression"],
-        "$1;"),
+        "@1;"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.FinallyClause,
@@ -175,11 +175,11 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.FromClause,
         ["url"],
-        "from $1"),
+        "from @1"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.FunctionDeclaration,
-        [],
+        ["name", "parameters", "body"],
         ""),
 
     new MinTreeNodeDefinition(
@@ -190,37 +190,47 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.Identifier,
         [],
-        "$value"),
+        "@value"),
+
+    new MinTreeNodeDefinition(
+        MinTreeNodeType.IdentifierDefault,
+        [],
+        "@value"),
+
+    new MinTreeNodeDefinition(
+        MinTreeNodeType.IdentifierModule,
+        [],
+        "@value"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.IdentifierLabel,
         [],
-        "$value"),
+        "@value"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.IdentifierBinding,
         [],
-        "$value"),
+        "@value"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.IdentifierReference,
         [],
-        "$value"),
+        "@value"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.IfStatement,
         [],
-        { default: "if ($1) $2 else $3", $not_3: "if ($1) $2 " }),
+        { default: "if (@1) @2 else @3", $not_3: "if (@1) @2 " }),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ImportClause,
         [],
-        ""),
+        "@...,"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ImportDeclaration,
         ["clause", "from"],
-        "import $1 $2"),
+        "import @1 @2;"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.InExpression,
@@ -245,22 +255,22 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.LexicalDeclaration,
         ["bindings, expression"],
-        "$symbol $...,;"),
+        "@symbol @...,;"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.LogicalExpression,
         ["left", "right"],
-        "$1 $symbol $2"),
+        "@1 @symbol @2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.BitwiseExpression,
         ["left", "right"],
-        "$1 $symbol $2"),
+        "@1 @symbol @2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.MemberExpression,
         ["object", "member"],
-        { COMPUTED: "$1[$2]", default: "$1.$2" }),
+        { COMPUTED: "@1[@2]", default: "@1.@2" }),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.Method,
@@ -268,14 +278,9 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
         ""),
 
     new MinTreeNodeDefinition(
-        MinTreeNodeType.ModuleSpecifier,
-        [],
-        ""),
-
-    new MinTreeNodeDefinition(
         MinTreeNodeType.MultiplicativeExpression,
-        [],
-        ""),
+        ["left", "right"],
+        "@1 @symbol @2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.NameSpaceImport,
@@ -285,17 +290,17 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.NamedImports,
         [],
-        ""),
+        "{@...,}"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.NewExpression,
         [],
-        "new $1"),
+        "new @1"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.NewInstanceExpression,
         [],
-        "new $1$2"),
+        "new @1@2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.NewTarget,
@@ -310,117 +315,117 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.NumericLiteral,
         [],
-        "$value"),
+        "@value"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ObjectLiteral,
         [],
-        "{$...}"),
+        "{@...,}"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.Parameters,
         [],
-        "$...,"),
+        "@...,"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.Parenthesized,
         ["expression"],
-        "($1)"),
+        "(@1)"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.PostExpression,
         ["expression"],
-        "$1$symbol"),
+        "@1@symbol"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.PreExpression,
         ["expression"],
-        "$symbol$1"),
+        "@symbol@1"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.PropertyBinding,
         ["identifier", "expression"],
-        "$1.$2"),
+        "@1.@2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.RegexLiteral,
         ["expression_string", "meta"],
-        "/$1/$2"),
+        "/@1/@2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.RelationalExpression,
         ["left", "right"],
-        "$1 $symbol $2"),
+        "@1 @symbol @2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ReturnStatement,
         ["expression"],
-        "return $1;"),
+        "return @1;"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.Script,
         [],
-        "$... "),
+        "@... "),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.SetterMethod,
         ["binding", "body"],
-        "set($1){$2}"),
+        "set(@1){@2}"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ShiftExpression,
         ["left", "right"],
-        "$1 $symbol $2"),
+        "@1 @symbol @2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.Specifier,
         ["original", "transformed"],
-        "$1 as $2"),
+        "@1 as @2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.SpreadExpression,
         ["expression"],
-        "...$1"),
+        "...@1"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.StringLiteral,
         [],
-        "$quote_type$value$quote_type"),
+        "@quote_type@value@quote_type"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.SuperCall,
         ["arguments"],
-        "super$1"),
+        "super@1"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.SuperExpression,
         ["member"],
-        { COMPUTED: "super[$1]", default: "super.$2" }),
+        { COMPUTED: "super[@1]", default: "super.@2" }),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.SwitchStatement,
         ["expression", "case_block"],
-        "switch($1)$2"),
+        "switch(@1)@2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.Template,
         [],
-        ""),
+        { NO_SUBSTITUTE: "@1", default: "@... " }),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.TemplateHead,
         [],
-        ""),
+        "`@value${"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.TemplateMiddle,
         [],
-        ""),
+        "}@value${"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.TemplateTail,
         [],
-        ""),
+        "}@value`"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.ThisLiteral,
@@ -430,7 +435,7 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.ThrowStatement,
         ["expression"],
-        "throw $1;"),
+        "throw @1;"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.TryStatement,
@@ -440,44 +445,40 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.TypeofExpression,
         ["expression"],
-        "typeof $1"),
+        "typeof @1"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.UnaryExpression,
         ["expression"],
-        "$symbol$1"),
+        "@symbol@1"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.VariableDeclaration,
         [],
-        "var $...,"),
+        "var @...,"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.VariableStatement,
         [],
-        "var $...,;"),
+        "var @...,;"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.VoidExpression,
         ["expression"],
-        "void $1"),
+        "void @1"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.WhileStatement,
         ["expression", "statement"],
-        "while($1) $2"),
+        "while(@1) @2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.WithStatement,
         ["expression", "statement"],
-        "with($1) $2"),
+        "with(@1) @2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.YieldExpression,
         ["expression"],
-        "yield $1")
+        "yield @1")
 ];
-
-export enum MinTreeNodeTyped {
-
-}
