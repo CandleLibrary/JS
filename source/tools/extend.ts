@@ -5,6 +5,7 @@ import { MinTreeNodeDefinition } from "../nodes/mintree_node_definition.js";
 import { MinTreeExtendedNode } from "../types/mintree_extended_node.js";
 import { MinTreeNode } from "../types/mintree_node.js";
 import { MinTreeNodeType } from "../types/mintree_node_type.js";
+import { parser } from "../ecma.js";
 
 class NodeExtender {
 
@@ -13,9 +14,11 @@ class NodeExtender {
         this.getters = getters;
     };
 
-    extend(node: MinTreeNode): MinTreeExtendedNode {
-        const object = {};
+    extend(node: MinTreeNode, parent: MinTreeNode): MinTreeExtendedNode {
+        const object = { typename: MinTreeNodeType[node.type], parent };
         let index = 0;
+
+
 
         for (const prop of this.getters) {
             if (typeof prop == "string") {
@@ -23,14 +26,18 @@ class NodeExtender {
                     get: (i => function () { return this.nodes[i]; })(index)
                 });
             } else {
-                const name = Object.getOwnPropertyNames(prop)[0];
-                const val = prop[name];
+
+                const
+                    name = Object.getOwnPropertyNames(prop)[0],
+                    val = prop[name];
+
                 Object.defineProperty(object, name, {
                     get: (i => function () { return this.nodes[val]; })(index)
                 });
             }
             index++;
         }
+
         return Object.assign(object, node);
     }
 }
@@ -84,9 +91,9 @@ export function ext(node: MinTreeNode, EXTEND_ENTIRE_TREE: boolean = false): Min
             const extender = Extenders[node.type >>> 24];
 
             if (!extender)
-                throw new Error(`Cannot find string renderer for MinTree node type ${node.type}`);
+                throw new Error(`Cannot find string renderer for MinTree node type ${MinTreeNodeType[node.type]}`);
 
-            const replaced = extender.extend(node);
+            const replaced = extender.extend(node, parent);
 
             if (parent)
                 parent.nodes[index] = replaced;
@@ -109,7 +116,7 @@ export function ext(node: MinTreeNode, EXTEND_ENTIRE_TREE: boolean = false): Min
         if (!extender)
             throw new Error(`Cannot find string renderer for MinTree node type ${node.type}`);
 
-        return extender.extend(node);
+        return extender.extend(node, null);
     }
 }
 

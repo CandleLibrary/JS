@@ -22,4 +22,28 @@ export type MinTreeExtendedNode = MinTreeNode & {
      * Available on ImportDeclaration and ExportDeclaration
      */
     from?: MinTreeNode;
+
+    /**
+     * Available on binary expression nodes
+     */
+    left?: MinTreeNode;
+
+    /**
+     * Available on binary expression nodes
+     */
+    right?: MinTreeNode;
+
+    /**
+     * Available on Specifier nodes
+     */
+    original?: MinTreeNode;
+
+    /**
+     * An IdentifierModule node
+     * 
+     * Available on Specifier nodes
+     */
+    transformed?: MinTreeNode;
+
+
 };
