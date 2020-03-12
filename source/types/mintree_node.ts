@@ -39,4 +39,11 @@ export interface MinTreeNode {
      * Present on MemberExpression nodes.
      */
     COMPUTED?: boolean;
+
+    /**
+     * The operating symbol in a binary expression.
+     * 
+     * Available on binary expression nodes
+     */
+    symbol?;
 }
