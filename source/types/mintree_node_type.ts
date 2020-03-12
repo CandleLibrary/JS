@@ -10,7 +10,6 @@ export const enum MinTreeNodeClass {
     /**
      * Any node that is an expression.
      */
-
     EXPRESSION = 1 << 1,
 
     /**
@@ -555,7 +554,7 @@ export enum MinTreeNodeType {
      * TODO Optional Notes
      */
 
-    ExportDeclaration = (30 << 24) | MinTreeNodeClass.STATEMENT,
+    ExportDeclaration = (30 << 24) | MinTreeNodeClass.STATEMENT | MinTreeNodeClass.MODULE,
 
 
     /**
@@ -761,6 +760,46 @@ export enum MinTreeNodeType {
     Identifier = (42 << 24) | MinTreeNodeClass.IDENTIFIER,
 
     /**
+     * See `Identifier`
+     */
+    IdentifierName = Identifier,
+
+    /**
+     * Identifier literal used as a module reference. This is either as the name of an exported 
+     * object, or the name of an imported object.
+     *
+     * >```
+     * > identifier
+     * >```
+     *
+     * This node does not have extended members.
+     * 
+     * This node has the regular property:
+     *
+     * - @property {string} value - The name of the identifier
+     */
+
+    IdentifierDefault = (43 << 24) | MinTreeNodeClass.IDENTIFIER | MinTreeNodeClass.MODULE,
+
+
+    /**
+     * Identifier literal used as a module reference. This is either as the name of an exported 
+     * object, or the name of an imported object.
+     *
+     * >```
+     * > identifier
+     * >```
+     *
+     * This node does not have extended members.
+     * 
+     * This node has the regular property:
+     *
+     * - @property {string} value - The name of the identifier
+     */
+
+    IdentifierModule = (44 << 24) | MinTreeNodeClass.IDENTIFIER | MinTreeNodeClass.MODULE,
+
+    /**
      * Identifier literal used as a reference, of the form:
      *
      * >```
@@ -774,7 +813,7 @@ export enum MinTreeNodeType {
      * - @property {string} value - The name of the identifier
      */
 
-    IdentifierReference = (43 << 24) | MinTreeNodeClass.VARIABLE | MinTreeNodeClass.IDENTIFIER,
+    IdentifierReference = (45 << 24) | MinTreeNodeClass.VARIABLE | MinTreeNodeClass.IDENTIFIER,
 
 
     /**
@@ -791,7 +830,7 @@ export enum MinTreeNodeType {
      * - @property {string} value - The name of the identifier
      */
 
-    IdentifierBinding = (44 << 24) | MinTreeNodeClass.VARIABLE | MinTreeNodeClass.IDENTIFIER,
+    IdentifierBinding = (46 << 24) | MinTreeNodeClass.VARIABLE | MinTreeNodeClass.IDENTIFIER,
 
     /**
      * Identifier literal used as a label in Break, Continue, and LabelStatements; of the form:
@@ -807,7 +846,7 @@ export enum MinTreeNodeType {
      * - @property {string} value - The name of the identifier
      */
 
-    IdentifierLabel = (45 << 24) | MinTreeNodeClass.IDENTIFIER,
+    IdentifierLabel = (47 << 24) | MinTreeNodeClass.IDENTIFIER,
 
     /**
      * TODO Description
@@ -822,23 +861,7 @@ export enum MinTreeNodeType {
      * TODO Optional Notes
      */
 
-    IfStatement = (46 << 24) | MinTreeNodeClass.STATEMENT,
-
-
-    /**
-     * TODO Description
-     *
-     * >```
-     * > undefined
-     * >```
-     *
-     * Extended members are:
-     * 1. **`undefined`**
-     *
-     * TODO Optional Notes
-     */
-
-    ImportClause = (47 << 24),
+    IfStatement = (48 << 24) | MinTreeNodeClass.STATEMENT,
 
 
     /**
@@ -854,7 +877,7 @@ export enum MinTreeNodeType {
      * TODO Optional Notes
      */
 
-    ImportDeclaration = (48 << 24) | MinTreeNodeClass.STATEMENT,
+    ImportClause = (49 << 24),
 
 
     /**
@@ -870,7 +893,7 @@ export enum MinTreeNodeType {
      * TODO Optional Notes
      */
 
-    InExpression = (49 << 24),
+    ImportDeclaration = (50 << 24) | MinTreeNodeClass.STATEMENT | MinTreeNodeClass.MODULE,
 
 
     /**
@@ -886,7 +909,7 @@ export enum MinTreeNodeType {
      * TODO Optional Notes
      */
 
-    InstanceOfExpression = (50 << 24),
+    InExpression = (51 << 24),
 
 
     /**
@@ -902,7 +925,23 @@ export enum MinTreeNodeType {
      * TODO Optional Notes
      */
 
-    LabeledStatement = (51 << 24) | MinTreeNodeClass.STATEMENT,
+    InstanceOfExpression = (52 << 24),
+
+
+    /**
+     * TODO Description
+     *
+     * >```
+     * > undefined
+     * >```
+     *
+     * Extended members are:
+     * 1. **`undefined`**
+     *
+     * TODO Optional Notes
+     */
+
+    LabeledStatement = (53 << 24) | MinTreeNodeClass.STATEMENT,
 
 
 
@@ -917,7 +956,7 @@ export enum MinTreeNodeType {
      * Found only as a subnode of `ForStatements`
      */
 
-    LexicalBinding = (52 << 24),
+    LexicalBinding = (54 << 24),
 
 
 
@@ -933,7 +972,7 @@ export enum MinTreeNodeType {
      *
      */
 
-    LexicalDeclaration = (53 << 24) | MinTreeNodeClass.STATEMENT,
+    LexicalDeclaration = (55 << 24) | MinTreeNodeClass.STATEMENT,
 
 
 
@@ -951,7 +990,7 @@ export enum MinTreeNodeType {
      *
      */
 
-    LogicalExpression = (54 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.BINARY_EXPRESSION,
+    LogicalExpression = (56 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.BINARY_EXPRESSION,
 
 
 
@@ -974,7 +1013,7 @@ export enum MinTreeNodeType {
      *
      */
 
-    MemberExpression = (55 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.VARIABLE,
+    MemberExpression = (57 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.VARIABLE,
 
 
     /**
@@ -990,24 +1029,7 @@ export enum MinTreeNodeType {
      * TODO Optional Notes
      */
 
-    Method = (56 << 24),
-
-
-    /**
-     * TODO Description
-     *
-     * >```
-     * > undefined
-     * >```
-     *
-     * Extended members are:
-     * 1. **`undefined`**
-     * 
-     * TODO Optional Notes
-     */
-
-    ModuleSpecifier = (57 << 24),
-
+    Method = (58 << 24),
 
     /**
      * Binary expression of one of the forms:
@@ -1023,7 +1045,7 @@ export enum MinTreeNodeType {
      * 
      */
 
-    MultiplicativeExpression = (58 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.BINARY_EXPRESSION,
+    MultiplicativeExpression = (59 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.BINARY_EXPRESSION,
 
 
     /**
@@ -1039,7 +1061,7 @@ export enum MinTreeNodeType {
      * TODO Optional Notes
      */
 
-    NameSpaceImport = (59 << 24),
+    NameSpaceImport = (60 << 24),
 
 
     /**
@@ -1055,7 +1077,7 @@ export enum MinTreeNodeType {
      * TODO Optional Notes
      */
 
-    NamedImports = (60 << 24),
+    NamedImports = (61 << 24),
 
 
     /**
@@ -1071,7 +1093,7 @@ export enum MinTreeNodeType {
      * TODO Optional Notes
      */
 
-    NewExpression = (61 << 24) | MinTreeNodeClass.EXPRESSION,
+    NewExpression = (62 << 24) | MinTreeNodeClass.EXPRESSION,
 
 
     /**
@@ -1087,7 +1109,7 @@ export enum MinTreeNodeType {
      * TODO Optional Notes
      */
 
-    NewInstanceExpression = (62 << 24) | MinTreeNodeClass.EXPRESSION,
+    NewInstanceExpression = (63 << 24) | MinTreeNodeClass.EXPRESSION,
 
 
     /**
@@ -1103,7 +1125,7 @@ export enum MinTreeNodeType {
      * TODO Optional Notes
      */
 
-    NewTarget = (63 << 24),
+    NewTarget = (64 << 24),
 
 
     /**
@@ -1116,7 +1138,7 @@ export enum MinTreeNodeType {
      * This node has no extended members.
      */
 
-    NullLiteral = (64 << 24) | MinTreeNodeClass.LITERAL,
+    NullLiteral = (65 << 24) | MinTreeNodeClass.LITERAL,
 
 
     /**
@@ -1133,7 +1155,7 @@ export enum MinTreeNodeType {
      * - @property {number} computed_value - The value of original parsed value transformed into a float;
      */
 
-    NumericLiteral = (65 << 24) | MinTreeNodeClass.LITERAL,
+    NumericLiteral = (66 << 24) | MinTreeNodeClass.LITERAL,
 
 
     /**
@@ -1149,7 +1171,7 @@ export enum MinTreeNodeType {
      * TODO Optional Notes
      */
 
-    ObjectLiteral = (66 << 24) | MinTreeNodeClass.LITERAL,
+    ObjectLiteral = (67 << 24) | MinTreeNodeClass.LITERAL,
 
 
     /**
@@ -1162,7 +1184,7 @@ export enum MinTreeNodeType {
      * 'expression' = nodes[0]
      */
 
-    Parameters = (67 << 24) | MinTreeNodeClass.LIST,
+    Parameters = (68 << 24) | MinTreeNodeClass.LIST,
 
 
     /**
@@ -1177,7 +1199,7 @@ export enum MinTreeNodeType {
      * 
      */
 
-    Parenthesized = (68 << 24) | MinTreeNodeClass.EXPRESSION,
+    Parenthesized = (69 << 24) | MinTreeNodeClass.EXPRESSION,
 
 
     /**
@@ -1194,7 +1216,7 @@ export enum MinTreeNodeType {
      *
      */
 
-    PostExpression = (69 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.UNARY_EXPRESSION,
+    PostExpression = (70 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.UNARY_EXPRESSION,
 
 
     /**
@@ -1211,7 +1233,7 @@ export enum MinTreeNodeType {
      *
      */
 
-    PreExpression = (70 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.UNARY_EXPRESSION,
+    PreExpression = (71 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.UNARY_EXPRESSION,
 
 
     /**
@@ -1227,7 +1249,7 @@ export enum MinTreeNodeType {
      * 
      */
 
-    PropertyBinding = (71 << 24),
+    PropertyBinding = (72 << 24),
 
 
     /**
@@ -1243,7 +1265,7 @@ export enum MinTreeNodeType {
      * 
      */
 
-    RegexLiteral = (72 << 24) | MinTreeNodeClass.LITERAL,
+    RegexLiteral = (73 << 24) | MinTreeNodeClass.LITERAL,
 
 
     /**
@@ -1262,7 +1284,7 @@ export enum MinTreeNodeType {
      *
      */
 
-    RelationalExpression = (73 << 24) | MinTreeNodeClass.EXPRESSION,
+    RelationalExpression = (74 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.BINARY_EXPRESSION,
 
 
     /**
@@ -1277,7 +1299,7 @@ export enum MinTreeNodeType {
     *
     */
 
-    ReturnStatement = (74 << 24) | MinTreeNodeClass.STATEMENT,
+    ReturnStatement = (75 << 24) | MinTreeNodeClass.STATEMENT,
 
 
 
@@ -1285,7 +1307,7 @@ export enum MinTreeNodeType {
      * The root node of a JS file. 
      */
 
-    Script = (75 << 24),
+    Script = (76 << 24),
 
 
     /**
@@ -1299,7 +1321,7 @@ export enum MinTreeNodeType {
      * 2. `body`
      */
 
-    SetterMethod = (76 << 24) | MinTreeNodeClass.METHOD,
+    SetterMethod = (77 << 24) | MinTreeNodeClass.METHOD,
 
 
     /**
@@ -1317,7 +1339,7 @@ export enum MinTreeNodeType {
      *
      */
 
-    ShiftExpression = (77 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.BINARY_EXPRESSION,
+    ShiftExpression = (78 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.BINARY_EXPRESSION,
 
 
 
@@ -1335,7 +1357,7 @@ export enum MinTreeNodeType {
     * Used in `ImportDeclarations` and `ExportDeclarations`
     */
 
-    Specifier = (78 << 24),
+    Specifier = (79 << 24),
 
 
     /**
@@ -1350,7 +1372,7 @@ export enum MinTreeNodeType {
      *
      */
 
-    SpreadExpression = (79 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.UNARY_EXPRESSION,
+    SpreadExpression = (80 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.UNARY_EXPRESSION,
 
 
     /**
@@ -1369,7 +1391,7 @@ export enum MinTreeNodeType {
      * @property {string} quote_type - A string with a value of either `"` or `'`
      */
 
-    StringLiteral = (80 << 24) | MinTreeNodeClass.LITERAL,
+    StringLiteral = (81 << 24) | MinTreeNodeClass.LITERAL,
 
 
     /**
@@ -1384,7 +1406,7 @@ export enum MinTreeNodeType {
      * 
      */
 
-    SuperCall = (81 << 24) | MinTreeNodeClass.EXPRESSION,
+    SuperCall = (82 << 24) | MinTreeNodeClass.EXPRESSION,
 
 
     /**
@@ -1404,7 +1426,7 @@ export enum MinTreeNodeType {
      * 1. 'member'  
      */
 
-    SuperExpression = (82 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.UNARY_EXPRESSION,
+    SuperExpression = (83 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.UNARY_EXPRESSION,
 
 
     /**
@@ -1420,7 +1442,7 @@ export enum MinTreeNodeType {
      * 
      */
 
-    SwitchStatement = (83 << 24) | MinTreeNodeClass.STATEMENT,
+    SwitchStatement = (84 << 24) | MinTreeNodeClass.STATEMENT,
 
 
     /**
@@ -1436,7 +1458,7 @@ export enum MinTreeNodeType {
      * TODO Optional Notes
      */
 
-    Template = (84 << 24) | MinTreeNodeClass.LITERAL | MinTreeNodeClass.TEMPLATE,
+    Template = (85 << 24) | MinTreeNodeClass.LITERAL | MinTreeNodeClass.TEMPLATE,
 
 
     /**
@@ -1452,7 +1474,7 @@ export enum MinTreeNodeType {
      * TODO Optional Notes
      */
 
-    TemplateHead = (85 << 24),
+    TemplateHead = (86 << 24),
 
 
     /**
@@ -1468,7 +1490,7 @@ export enum MinTreeNodeType {
      * TODO Optional Notes
      */
 
-    TemplateMiddle = (86 << 24),
+    TemplateMiddle = (87 << 24),
 
 
     /**
@@ -1484,7 +1506,7 @@ export enum MinTreeNodeType {
      * TODO Optional Notes
      */
 
-    TemplateTail = (87 << 24),
+    TemplateTail = (88 << 24),
 
 
     /**
@@ -1497,7 +1519,7 @@ export enum MinTreeNodeType {
      * This node has no extended members.
      */
 
-    ThisLiteral = (88 << 24) | MinTreeNodeClass.LITERAL,
+    ThisLiteral = (89 << 24) | MinTreeNodeClass.LITERAL,
 
 
     /**
@@ -1513,7 +1535,7 @@ export enum MinTreeNodeType {
      * TODO Optional Notes
      */
 
-    ThrowStatement = (89 << 24) | MinTreeNodeClass.STATEMENT,
+    ThrowStatement = (90 << 24) | MinTreeNodeClass.STATEMENT,
 
 
     /**
@@ -1529,7 +1551,7 @@ export enum MinTreeNodeType {
      * TODO Optional Notes
      */
 
-    TryStatement = (90 << 24) | MinTreeNodeClass.STATEMENT,
+    TryStatement = (91 << 24) | MinTreeNodeClass.STATEMENT,
 
 
     /**
@@ -1544,7 +1566,7 @@ export enum MinTreeNodeType {
      *
      */
 
-    TypeofExpression = (91 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.UNARY_EXPRESSION,
+    TypeofExpression = (92 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.UNARY_EXPRESSION,
 
 
     /**
@@ -1562,7 +1584,7 @@ export enum MinTreeNodeType {
      * 
      */
 
-    UnaryExpression = (92 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.UNARY_EXPRESSION,
+    UnaryExpression = (93 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.UNARY_EXPRESSION,
 
 
     /**
@@ -1576,7 +1598,7 @@ export enum MinTreeNodeType {
      * 
      */
 
-    VariableStatement = (93 << 24) | MinTreeNodeClass.STATEMENT | MinTreeNodeClass.LIST,
+    VariableStatement = (94 << 24) | MinTreeNodeClass.STATEMENT | MinTreeNodeClass.LIST,
 
 
     /**
@@ -1592,7 +1614,7 @@ export enum MinTreeNodeType {
      * 
      */
 
-    VariableDeclaration = (94 << 24) | MinTreeNodeClass.LIST,
+    VariableDeclaration = (95 << 24) | MinTreeNodeClass.LIST,
 
 
     /**
@@ -1607,7 +1629,7 @@ export enum MinTreeNodeType {
      * 
      */
 
-    VoidExpression = (95 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.UNARY_EXPRESSION,
+    VoidExpression = (96 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.UNARY_EXPRESSION,
 
 
     /**
@@ -1623,7 +1645,7 @@ export enum MinTreeNodeType {
      *
      */
 
-    WhileStatement = (96 << 24) | MinTreeNodeClass.STATEMENT,
+    WhileStatement = (97 << 24) | MinTreeNodeClass.STATEMENT,
 
 
     /**
@@ -1639,7 +1661,7 @@ export enum MinTreeNodeType {
      * 
      */
 
-    WithStatement = (97 << 24) | MinTreeNodeClass.STATEMENT,
+    WithStatement = (98 << 24) | MinTreeNodeClass.STATEMENT,
 
 
     /**
@@ -1653,5 +1675,5 @@ export enum MinTreeNodeType {
      * 1. **`expression`**
      */
 
-    YieldExpression = (98 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.UNARY_EXPRESSION,
+    YieldExpression = (99 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.UNARY_EXPRESSION,
 }
