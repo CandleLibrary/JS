@@ -21,7 +21,7 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.ArrowFunction,
         ["arguments", "body", { isASYNC: "async", type: Boolean }],
-        "@async? @1 => @2"),
+        "@1 => @2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.AssignmentExpression,
@@ -75,7 +75,7 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.CatchClause,
         ["expression", "body"],
-        "catch(@1){@2}"),
+        "catch(@1)@2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.Class,
@@ -325,7 +325,7 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.Parameters,
         [],
-        "@...,"),
+        "(@...,)"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.Parenthesized,
@@ -345,7 +345,7 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.PropertyBinding,
         ["identifier", "expression"],
-        "@1.@2"),
+        "@1:@2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.RegexLiteral,
@@ -364,6 +364,11 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.Script,
+        [],
+        "@... "),
+
+    new MinTreeNodeDefinition(
+        MinTreeNodeType.Module,
         [],
         "@... "),
 
@@ -440,7 +445,7 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.TryStatement,
         [],
-        ""),
+        "try@1@2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.TypeofExpression,

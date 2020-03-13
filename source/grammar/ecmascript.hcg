@@ -284,7 +284,9 @@
 # https://www.ecma-international.org/ecma-262/10.0/index.html#sec-try-statement
 ###############################################################################################################
 
-    <> try_statement → τtry block [catch? finally?]                                                             ↦r { { type:env.est.TryStatement, nodes:[$$sym2,$$sym3,$$sym4], pos } }
+    <> try_statement → τtry block catch                                                                         ↦r { { type:env.est.TryStatement, nodes:[$$sym2,$$sym3,null], pos } }
+        │ τtry block finally                                                                                    ↦r { { type:env.est.TryStatement, nodes:[$$sym2,null,$$sym3], pos } }
+        │ τtry block catch  finally                                                                            ↦r { { type:env.est.TryStatement, nodes:[$$sym2,$$sym3,$$sym4], pos } }
 
     <> catch → τcatch \( catch_parameter \) block                                                               ↦r { { type:env.est.CatchClause, nodes:[$$sym3, $$sym5], pos } }
 
@@ -684,7 +686,7 @@
         │ \( expression , ... binding_pattern  \)                                                               ↦r { { type: env.est.Parameters, nodes:[$$sym2, {type:env.est.SpreadExpression, nodes:[$$sym4]}], pos } }
         │ parenthesized                                                                                         
     
-    <> parenthesized → \( expression \)                                                                         ↦r { { type: env.est.Parenthesized, nodes:[$$sym2], pos } }
+    <> parenthesized → \( expression? \)                                                                         ↦r { { type: env.est.Parenthesized, nodes:[$$sym2], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/10.0/index.html#prod-BindingPattern
@@ -847,8 +849,8 @@
 
     <> null_literal →  τnull                                                                                    ↦r { { type: env.est.NullLiteral, pos  } }
 
-    <> boolean_literal → τtrue                                                                                  ↦r { { type: env.est.BooleanLiteral, value: !!$$sym1,  pos  } }
-        │ τfalse                                                                                                ↦r { { type: env.est.BooleanLiteral, value: !!$$sym1,  pos  } }
+    <> boolean_literal → τtrue                                                                                  ↦r { { type: env.est.BooleanLiteral, value: $$sym1,  pos  } }
+        │ τfalse                                                                                                ↦r { { type: env.est.BooleanLiteral, value: $$sym1,  pos  } }
 
     <> label_identifier → identifier                                                                            ↦r { $sym1.type = env.est.IdentifierLabel, $sym1 }   
             #│ τyield                          
