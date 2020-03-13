@@ -268,9 +268,6 @@ export function render(node: MinTreeNode, map: SourceMap = null): string {
     if (map && !map.meta.col)
         map.meta.col = 0;
 
-    //  console.log({ node });
-    //  console.log(MinTreeNodeType[node.type]);
-
     /*
         Load Renderers on demand to allow for MinTreeNodeDefinition modifications, additions.
     */
