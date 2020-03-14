@@ -1159,16 +1159,14 @@ export enum MinTreeNodeType {
 
 
     /**
-     * TODO Description
+     * An object declaration of the form
      *
      * >```
-     * > undefined
+     * > \{ PropertyBinding  [, PropertyBinding ]* \}
      * >```
      *
      * Extended members are:
-     * 1. **`undefined`**
-     * 
-     * TODO Optional Notes
+     * 1. **`properties`**
      */
 
     ObjectLiteral = (67 << 24) | MinTreeNodeClass.LITERAL,
