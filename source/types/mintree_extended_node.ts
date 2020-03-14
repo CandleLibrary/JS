@@ -6,44 +6,49 @@ export type MinTreeExtendedNode = MinTreeNode & {
     /**
      *
      */
-    expression?: MinTreeNode;
-    identifier?: MinTreeNode;
-    object?: MinTreeNode;
-    member?: MinTreeNode;
-    property?: MinTreeNode;
-    module_id?: MinTreeNode;
+    expression?: MinTreeExtendedNode;
+    identifier?: MinTreeExtendedNode;
+    object?: MinTreeExtendedNode;
+    member?: MinTreeExtendedNode;
+    property?: MinTreeExtendedNode;
+    module_id?: MinTreeExtendedNode;
+
+    /**
+     * Available on FromClause
+     */
+    url?: MinTreeExtendedNode;
 
     /**
      * Available on Specifier
      */
-    local_id?: MinTreeNode;
+    local_id?: MinTreeExtendedNode;
 
     /**
      * Available on ImportDeclaration and ExportDeclaration
      */
-    from?: MinTreeNode;
+    from?: MinTreeExtendedNode;
 
     /**
      * Available on binary expression nodes
      */
-    left?: MinTreeNode;
+    left?: MinTreeExtendedNode;
 
     /**
      * Available on binary expression nodes
      */
-    right?: MinTreeNode;
+    right?: MinTreeExtendedNode;
 
     /**
      * Available on Specifier nodes
      */
-    original?: MinTreeNode;
+    original?: MinTreeExtendedNode;
 
     /**
      * An IdentifierModule node
      * 
      * Available on Specifier nodes
      */
-    transformed?: MinTreeNode;
+    transformed?: MinTreeExtendedNode;
 
 
 };
