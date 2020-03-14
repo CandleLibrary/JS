@@ -17,7 +17,7 @@ export interface MinTreeNode {
 
     /**
      * A number with information on the MinTreeNodeType and
-     *  MinTreeNodeClass of this particalar node.
+     *  MinTreeNodeClass of this particular node.
      * 
      * MinTreeNodeType member can be determined with a equality expression, e.g:
      * ``js
