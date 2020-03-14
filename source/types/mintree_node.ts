@@ -16,7 +16,18 @@ export interface MinTreeNode {
     pos: Lexer;
 
     /**
-     * A string with the type name of the node. 
+     * A number with information on the MinTreeNodeType and
+     *  MinTreeNodeClass of this particalar node.
+     * 
+     * MinTreeNodeType member can be determined with a equality expression, e.g:
+     * ``js
+     * node.type == MinTreeNodeType.*
+     * ```
+     * 
+     * MinTreeNodeClass membership can be determined using a bitwise AND expression, e.g:
+     * ```js
+     * node.type & MinTreeNodeClass.*
+     * ```
      */
     type: MinTreeNodeType;
 
