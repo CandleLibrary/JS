@@ -6,9 +6,9 @@ import { MinTreeNodeType } from "./mintree_node_type.js";
 export interface MinTreeNode {
 
     /**
-     *  A {Lexer} that has been fenced to the 
-     *  to the starting point of node's production
-     *  within the input string.  
+     *  A **cfw.whind** Lexer that has been fenced to the 
+     *  to the starting point of the node's production
+     *  within the parsed string.  
      * 
      * Calling `node.pos.slice()` will return a string
      * with the exact text the node covers. 
@@ -19,8 +19,8 @@ export interface MinTreeNode {
      * A number with information on the MinTreeNodeType and
      *  MinTreeNodeClass of this particular node.
      * 
-     * MinTreeNodeType member can be determined with a equality expression, e.g:
-     * ``js
+     * MinTreeNodeType membership can be determined with an equality expression, e.g:
+     * ```js
      * node.type == MinTreeNodeType.*
      * ```
      * 
