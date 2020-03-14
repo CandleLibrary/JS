@@ -320,7 +320,7 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.ObjectLiteral,
         [],
-        "{@...,}"),
+        "{ @..., }"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.Parameters,
