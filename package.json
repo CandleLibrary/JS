@@ -1,11 +1,12 @@
 {
   "name": "@candlefw/js",
-  "version": "0.1.0-ts",
-  "description": "ECMASCRIPT Parser",
+  "version": "0.1.0",
+  "description": "Javascript Parser",
   "main": "./build/library/ecma.js",
   "types": "./build/types/ecma.d.ts",
   "type": "module",
   "scripts": {
+    "prepublish": "tsc -p ./tsconfig.json",
     "test": "cfw_test ./test/test.js",
     "test.watch": "mocha test/test.js -r esm --watch",
     "build": "tsc",
