@@ -1,6 +1,6 @@
 {
   "name": "@candlefw/js",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Javascript Parser",
   "main": "./build/library/ecma.js",
   "types": "./build/types/ecma.d.ts",
@@ -36,11 +36,11 @@
   "homepage": "https://github.com/candlefw/js#readme",
   "dependencies": {
     "@candlefw/conflagrate": "latest",
+    "@candlefw/hydrocarbon": "0.3.0",
     "@candlefw/url": "0.1.0",
     "@candlefw/whind": "0.4.0"
   },
   "devDependencies": {
-    "@candlefw/hydrocarbon": "0.3.0",
     "rollup": "2.0.6",
     "rollup-plugin-commonjs": "latest",
     "rollup-plugin-gzip": "2.3.0",
