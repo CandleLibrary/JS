@@ -26,7 +26,7 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.AssignmentExpression,
         ["identifier", "expression"],
-        "@1 @operator @2"),
+        "@1 @symbol @2"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.AwaitExpression,
