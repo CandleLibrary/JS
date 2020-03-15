@@ -14,7 +14,7 @@
 #### Repeated Functions
 ###############################################################################################################
 
-↦BindingExpression{ { type:env.est.BindingExpression, operator:"=", nodes: [$sym1, $sym2],  pos  } }
+↦BindingExpression{ { type:env.est.BindingExpression, symbol:"=", nodes: [$sym1, $sym2],  pos  } }
 
 ↦Spread{ { type:env.est.SpreadExpression, nodes: $sym2,  pos  } }
 
@@ -547,8 +547,8 @@
     <> assignment_expression → conditional_expression 
         │ yield_expression
         │ arrow_function
-        │ left_hand_side_expression = assignment_expression                                                     ↦r { { type: env.est.AssignmentExpression, operator:"=",  nodes:[$sym1,$sym3], pos } }
-        │ left_hand_side_expression assignement_operator assignment_expression                                  ↦r { { type: env.est.AssignmentExpression, operator:$sym2,  nodes:[$sym1,$sym3], pos } }
+        │ left_hand_side_expression = assignment_expression                                                     ↦r { { type: env.est.AssignmentExpression, symbol:"=",  nodes:[$sym1,$sym3], pos } }
+        │ left_hand_side_expression assignement_operator assignment_expression                                  ↦r { { type: env.est.AssignmentExpression, symbol:$sym2,  nodes:[$sym1,$sym3], pos } }
         
         #│ async_arrow_function
 
@@ -669,10 +669,10 @@
 ###############################################################################################################
 
     <> update_expression →  left_hand_side_expression 
-        │ left_hand_side_expression  ++                                                                         ↦r { { type: env.est.PostExpression, symbol:$$sym2, nodes:$$sym1, pos } }
-        │ left_hand_side_expression  --                                                                         ↦r { { type: env.est.PostExpression, symbol:$$sym2, nodes:$$sym1, pos } }
-        │ ++ unary_expression                                                                                   ↦r { { type: env.est.PreExpression, symbol:$$sym1, nodes:$$sym2, pos } }
-        │ -- unary_expression                                                                                   ↦r { { type: env.est.PreExpression, symbol:$$sym1, nodes:$$sym2, pos } }
+        │ left_hand_side_expression  ++                                                                         ↦r { { type: env.est.PostExpression, symbol:$$sym2, nodes:[$$sym1], pos } }
+        │ left_hand_side_expression  --                                                                         ↦r { { type: env.est.PostExpression, symbol:$$sym2, nodes:[$$sym1], pos } }
+        │ ++ unary_expression                                                                                   ↦r { { type: env.est.PreExpression, symbol:$$sym1, nodes:[$$sym2], pos } }
+        │ -- unary_expression                                                                                   ↦r { { type: env.est.PreExpression, symbol:$$sym1, nodes:[$$sym2], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/10.0/index.html#prod-CoverParenthesizedExpressionAndArrowParameterList
