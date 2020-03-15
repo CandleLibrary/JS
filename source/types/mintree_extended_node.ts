@@ -50,5 +50,17 @@ export type MinTreeExtendedNode = MinTreeNode & {
      */
     transformed?: MinTreeExtendedNode;
 
+    /**
+     * An Identifier node
+     * 
+     * Available on FunctionDeclaration and FunctionExpression nodes
+     */
+    name?: MinTreeExtendedNode;
 
+    /**
+     * A Block node
+     * 
+     * Available on FunctionDeclaration and FunctionExpression nodes
+     */
+    body?: MinTreeExtendedNode[];
 };
