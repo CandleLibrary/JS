@@ -827,8 +827,8 @@
         │ string_literal                    
         │ numeric_literal       
 
-    <> string_literal → \" (ERR θnl ) string_data (ERR θnl ) \"                                                 ↦r { { quote_type:$sym1, type: env.est.StringLiteral, value:$sym2,  pos  } }
-        │ \' (ERR θnl ) string_data (ERR θnl ) \'                                                               ↦r { { quote_type:$sym1, type: env.est.StringLiteral, value:$sym2,  pos  } }
+    <> string_literal → \" (ERR θnl ) string_data? (ERR θnl ) \"                                                 ↦r { { quote_type:$sym1, type: env.est.StringLiteral, value:$sym2,  pos  } }
+        │ \' (ERR θnl ) string_data? (ERR θnl ) \'                                                               ↦r { { quote_type:$sym1, type: env.est.StringLiteral, value:$sym2,  pos  } }
 
     <> string_data → ( θws │ θany │ escaped_sequence )(*")                                                      ↦r { { type: env.est.StringLiteral, value:$sym1,  pos  } }
 
