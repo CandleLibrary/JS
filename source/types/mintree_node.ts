@@ -1,4 +1,4 @@
-import { Lexer } from "@candlefw/whind";
+import { Lexer } from "@candlefw/wind";
 import { MinTreeNodeType } from "./mintree_node_type.js";
 /**
  * A Node within a JS MinTree AST
