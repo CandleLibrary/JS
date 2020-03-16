@@ -35,10 +35,10 @@
   },
   "homepage": "https://github.com/candlefw/js#readme",
   "dependencies": {
-    "@candlefw/conflagrate": "latest",
+    "@candlefw/conflagrate": "0.0.3",
     "@candlefw/hydrocarbon": "0.3.2",
     "@candlefw/url": "0.1.0",
-    "@candlefw/whind": "0.4.0"
+    "@candlefw/wind": "0.4.0"
   },
   "devDependencies": {
     "rollup": "2.0.6",

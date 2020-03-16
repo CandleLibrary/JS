@@ -1,5 +1,5 @@
 import { lrParse } from "@candlefw/hydrocarbon";
-import { Lexer } from "@candlefw/whind";
+import { Lexer } from "@candlefw/wind";
 import { traverse, bit_filter } from "@candlefw/conflagrate";
 
 import { MinTreeNode } from "../types/mintree_node";

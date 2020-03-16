@@ -18,10 +18,10 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@candlefw/conflagrate@latest":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@candlefw/conflagrate/-/conflagrate-0.0.1.tgz#3e0254214c9bd2a36a600885dd4a84af11466d7f"
-  integrity sha512-LvfeaJSnxcMVmsPxethO7THzevIlV85FzSNYsE3pfQan1wYNvoU9/bSSHZ+A8JOrRKCTP4EzSrpsvck5vfbfsg==
+"@candlefw/conflagrate@0.0.3", "@candlefw/conflagrate@latest":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@candlefw/conflagrate/-/conflagrate-0.0.3.tgz#27dccb4effc8cb5b1163d651f20add8d53c45d9c"
+  integrity sha512-1UTY3HEOvDBogEme0yMltACIqsmhX+WI7R5tLwKuNiAqOl0MiONggBzsnwR4+nePXUz47dfj3FnACp3tmH7+RA==
 
 "@candlefw/hydrocarbon@0.3.2":
   version "0.3.2"
@@ -50,10 +50,15 @@
   dependencies:
     "@candlefw/whind" latest
 
-"@candlefw/whind@0.4.0", "@candlefw/whind@latest":
+"@candlefw/whind@latest":
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/@candlefw/whind/-/whind-0.4.0.tgz#5a0de6edfbe2c1d3f0776bd7694acc150cb9bf6b"
   integrity sha512-IhK2lIHWK037E6P6StRVK0po9YacIKAZ8mGCHZACslFi0Svi3PIMDlGCRA3gQyJFy7ihOy3AaBCcmw1SCgP3Kg==
+
+"@candlefw/wind@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@candlefw/wind/-/wind-0.4.0.tgz#a46c07bdfd0d9d1180b061447473ea8cfaf21209"
+  integrity sha512-G5fHDMnDmLBDR3IWZUnAfGD3n9N5CQFvnr4U2p3NW7ZR5uTs9K4EZ+3Vm0NBs/DaLLgHQbCF1Mc5KLBi4GKbqA==
 
 "@types/estree@0.0.39":
   version "0.0.39"
