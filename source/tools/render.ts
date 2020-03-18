@@ -3,7 +3,6 @@ import { MinTreeNode } from "../types/mintree_node.js";
 import { MinTreeNodeDefinition } from "../nodes/mintree_node_definition.js";
 import { MinTreeNodeType } from "../ecma.js";
 import { createSourceMapEntry, SourceMap } from "@candlefw/conflagrate";
-import { ext } from "./extend.js";
 type RenderStub = (arg0: MinTreeNode, map?: SourceMap) => string;
 
 class RenderAction {
@@ -45,15 +44,12 @@ class NodeRenderer {
 
     render(node: MinTreeNode, map?: SourceMap): string {
 
-        let out = "";
-
         for (const cond of this.condition_branches) {
             if (!!node[cond.prop])
                 return cond.action.render(node, map);
         }
 
         const flag = (node.nodes) ? node.nodes.map((v, i) => !!v ? 1 << i : 0).reduce((r, v) => r | v, 0) : 0xFFFFFFFF;
-
 
         for (const cond of this.val_presence_branches) {
 
@@ -73,12 +69,12 @@ function buildRendererFromTemplateString(template_pattern: string): RenderAction
         on the surrounding syntax:
         
         1. Value-Index-Insertion
-        @\n* => This indicates the rendering of the node contained in node.vals[*] should be
+        @\n*\?? => This indicates the rendering of the node contained in node.nodes[*] should be
                 rendered and the result inserted at this point. 
 
         2. Spread-Value-Insertion
-        @...[.\s] => This indicates that all node.vals should be rendered and results inserted into 
-                the output string with a comma separating the entries. If there are proceeding 
+        @...[.\s] => This indicates that all node.nodes should be rendered and results inserted into
+                the output string with a single character separating the entries. If there are proceeding 
                 Value-Index-Insertion, the spread will start at the index location following the 
                 one specified in Value-Index-Insertion. The spread will be delimited by the character 
                 following [@...]
@@ -87,92 +83,123 @@ function buildRendererFromTemplateString(template_pattern: string): RenderAction
         @\w* => This indicates that a property of node should be inserted into the output
                 string, after being coerced to a string value using the string constructor
                 String()
+
+        3. Conditional-Insertion
+        @(\w+,\.+) => This indicates the truthiness of a node property determines whether
+                a string expression is rendered.
     */
 
-    const regex = /(\@\.\.\.[^])|(\@[\w\_][\w\_\n]*)|(\@[\w]*)|([^@]+)*/g,
+    const
+        regex = /(\@\((\w+),\s*([^\)]+)\s*\))|(\@\.\.\.[^])|(\@[\w\_][\w\_\n]*\??)|(\@[\w]*\??)|((\\\?|[^?@])+)*/g,
         actions_iterator: IterableIterator<RegExpMatchArray> = template_pattern.matchAll(regex),
         action_list: Array<RenderStub> = [];
 
     let last_index = -1;
 
     for (const match of actions_iterator) {
+        let str = match[0];
+
 
         //Need to determine what type of match we have
-        if (match[0][0] == "@") {
+        if (str[0] == "@") {
 
-            //Spread-Value-Insertion
-            if (match[0].slice(0, 4) == "@...") {
-                const
-                    index = last_index + 1,
-                    delimiter = match[0][4];
+            let CONDITIONAL = false;
+
+            if (str.slice(-1) == "?") {
+
+                str = str.slice(0, -1);
+
+                CONDITIONAL = true;
+            }
+
+            //Conditional - Insertion
+            if (str.slice(0, 2) == "@(") {
+
+                const CONDITION_PROP_NAME = match[2],
+                    sym = match[3];
 
                 action_list.push((node: MinTreeNode, map?: SourceMap): string => {
-                    return node.nodes.slice(index).map((n, i, { length: l }) => {
-                        if (i > 0 && map) {
+                    if (node[CONDITION_PROP_NAME]) {
+
+                        if (map) {
+
                             const col = map.meta.col;
-                            map.meta.col += 1;
-                            createSourceMapEntry(
-                                0,
-                                col,
-                                node.pos.line,
-                                node.pos.char,
-                                "source",
-                                "",
-                                map
-                            );
+
+                            map.meta.col += String(sym).length;
+
+                            createSourceMapEntry(0, col, node.pos.line, node.pos.char, "source", "", map);
                         }
+                        return String(sym);
+                    }
+                    return "";
+                });
+            }
+
+            //Spread-Value-Insertion
+            else if (str.slice(0, 4) == "@...") {
+                const
+                    index = last_index + 1,
+                    delimiter = str[4];
+
+                action_list.push((node: MinTreeNode, map?: SourceMap): string => {
+
+                    return node.nodes.slice(index).map((n, i, { length: l }) => {
+
+                        if (i > 0 && map) {
+
+                            const col = map.meta.col;
+
+                            map.meta.col += 1;
+
+                            createSourceMapEntry(0, col, node.pos.line, node.pos.char, "source", "", map);
+                        }
+
                         return render(n, map);
+
                     }).join(delimiter);
                 });
             }
 
             //Value-Index-Insertion
-            else if (!isNaN(parseInt(match[0].slice(1)))) {
-                const index = parseInt(match[0].slice(1)) - 1;
+            else if (!isNaN(parseInt(str.slice(1)))) {
+
+                const index = parseInt(str.slice(1)) - 1;
+
                 action_list.push((node: MinTreeNode, map?: SourceMap): string => {
-                    return render(node.nodes[index], map);
+                    if (CONDITIONAL && !node.nodes[index]) return "";
+                    return render(node.nodes[index], map, node, index);
                 });
+
                 last_index = index;
             }
 
             //Non-Value-Insertion
             else {
-                const prop = match[0].slice(1);
+                const prop = str.slice(1);
                 action_list.push((node: MinTreeNode, map?: SourceMap): string => {
+
                     if (map) {
                         const col = map.meta.col;
                         map.meta.col += String(node[prop]).length;
-                        createSourceMapEntry(
-                            0,
-                            col,
-                            node.pos.line,
-                            node.pos.char,
-                            "source",
-                            "",
-                            map
-                        );
+                        createSourceMapEntry(0, col, node.pos.line, node.pos.char, "source", "", map);
                     }
+
                     return String(node[prop]);
                 });
             }
         }
         //Plain old string insertion
         else {
-            const str = match[0];
+
+            str = str.replace(/\\\?/, "?");
+
             if (str)
                 action_list.push((node: MinTreeNode, map?: SourceMap): string => {
+
                     if (map) {
                         const col = map.meta.col;
                         map.meta.col += String(str).length;
-                        createSourceMapEntry(
-                            0,
-                            col,
-                            node.pos.line,
-                            node.pos.char,
-                            "source",
-                            "",
-                            map
-                        );
+                        createSourceMapEntry(0, col, node.pos.line, node.pos.char, "source", "", map);
                     }
 
                     return str;
@@ -263,7 +290,11 @@ let Renderers: Array<NodeRenderer> = null;
 /**
  *  Takes a MinTreeNode and produces a string comprising the rendered productions of the ast.
  */
-export function render(node: MinTreeNode, map: SourceMap = null): string {
+export function render(node: MinTreeNode, map: SourceMap = null, parent = node, index = 0): string {
+
+    if (!node)
+        throw new Error(`Unknown node type passed to render method from ${MinTreeNodeType[parent.type]}.nodes[${index}]`);
+
 
     if (map && !map.meta.col)
         map.meta.col = 0;

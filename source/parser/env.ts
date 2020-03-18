@@ -1,8 +1,9 @@
-import { MinTreeNodeType } from "../types/mintree_node_type.js";
+import { MinTreeNodeType, MinTreeNodeClass } from "../types/mintree_node_type.js";
 
 const env = {
     ASI: true,
-    est: MinTreeNodeType,
+    typ: MinTreeNodeType,
+    cls: MinTreeNodeClass,
     functions: {
 
         buildJSAST(node) {

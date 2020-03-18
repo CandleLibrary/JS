@@ -62,5 +62,9 @@ export type MinTreeExtendedNode = MinTreeNode & {
      * 
      * Available on FunctionDeclaration and FunctionExpression nodes
      */
-    body?: MinTreeExtendedNode[];
+    body?: MinTreeExtendedNode;
+
+    arguments?: MinTreeExtendedNode;
+
+    parameters?: MinTreeExtendedNode;
 };

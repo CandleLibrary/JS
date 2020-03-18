@@ -95,7 +95,7 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.ConditionalExpression,
         ["condition", "pass_expression", "fail_expression"],
-        "@1 ? @2 : @3"),
+        "@1 \\? @2 : @3"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.DebuggerStatement,
@@ -170,7 +170,7 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.FormalParameters,
         [],
-        ""),
+        "@...,"),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.FromClause,
@@ -180,7 +180,12 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
     new MinTreeNodeDefinition(
         MinTreeNodeType.FunctionDeclaration,
         ["name", "parameters", "body"],
-        ""),
+        "@(ASYNC, async)function @(GENERATOR, *) @1?(@2?){@3?} "),
+
+    new MinTreeNodeDefinition(
+        MinTreeNodeType.FunctionBody,
+        [],
+        "@... "),
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.GetterMethod,
@@ -194,6 +199,11 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = [
 
     new MinTreeNodeDefinition(
         MinTreeNodeType.IdentifierDefault,
+        [],
+        "@value"),
+
+    new MinTreeNodeDefinition(
+        MinTreeNodeType.IdentifierName,
         [],
         "@value"),
 
