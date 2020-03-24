@@ -64,6 +64,20 @@ export type MinTreeExtendedNode = MinTreeNode & {
      */
     body?: MinTreeExtendedNode;
 
+    /**
+     * An Identifer node
+     * 
+     * Available on LabeledStatement nodes
+     */
+    label?: MinTreeExtendedNode;
+
+    /**
+     * An node with class of STATEMENT
+     * 
+     * Available on LabeledStatement nodes
+     */
+    statement?: MinTreeExtendedNode;
+
     arguments?: MinTreeExtendedNode;
 
     parameters?: MinTreeExtendedNode;

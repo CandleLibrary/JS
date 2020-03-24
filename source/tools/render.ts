@@ -1,9 +1,25 @@
-import { MinTreeNodeDefinitions } from "../nodes/mintree_node_extensions.js";
+import { MinTreeNodeDefinitions, MinTreeNodeRenderClass } from "../nodes/mintree_node_extensions.js";
 import { MinTreeNode } from "../types/mintree_node.js";
 import { MinTreeNodeDefinition } from "../nodes/mintree_node_definition.js";
 import { MinTreeNodeType } from "../ecma.js";
-import { createSourceMapEntry, SourceMap } from "@candlefw/conflagrate";
-type RenderStub = (arg0: MinTreeNode, map?: SourceMap) => string;
+import { createSourceMapEntry } from "@candlefw/conflagrate";
+
+type FormatRule = MinTreeNodeRenderClass;
+
+function tabFill(count: number): string {
+    return ("    ").repeat(count);
+}
+
+
+type RenderStub = (
+    node: MinTreeNode,
+    format_rules: FormatRule[],
+    level: number,
+    line: number,
+    map?: Array<number[]>,
+    source_index?: number,
+    names?: Map<string, number>,
+) => { str: string, level: number, line: number; };
 
 class RenderAction {
     action_list: Array<RenderStub>;
@@ -12,8 +28,20 @@ class RenderAction {
         this.action_list = action_list;
     }
 
-    render(node: MinTreeNode, map: SourceMap): string {
-        return this.action_list.map(a => a(node, map)).join("");
+    render(node: MinTreeNode, map: Array<number[]>, format_rules: FormatRule[], level: number, source_index?: number, names?: Map<string, number>)
+        : string {
+
+        let string = [], line = 0;
+
+        for (const action of this.action_list) {
+            const { str, level: lvl, line: ln }
+                = action(node, format_rules, level, line, map, source_index, names);
+            line = ln;
+            level = lvl;
+            string.push(str);
+        }
+
+        return string.join("");
     }
 }
 
@@ -34,6 +62,7 @@ class NodeRenderer {
     HAS_CONDITIONS: boolean;
     HAS_VAL_ABSENCE: boolean;
 
+
     constructor(condition_branches: Array<ConditionBranch>, val_presence_branches: Array<ValuePresenceBranch>, default_branch: RenderAction) {
         this.HAS_CONDITIONS = !!condition_branches.length;
         this.HAS_VAL_ABSENCE = !!val_presence_branches.length;
@@ -42,23 +71,34 @@ class NodeRenderer {
         this.default_branch = default_branch;
     }
 
-    render(node: MinTreeNode, map?: SourceMap): string {
-
+    render(node: MinTreeNode, format_rules: FormatRule[] = [], level: number = 0, map: Array<number[]> = null, source_index: number = -1, names = null): string {
         for (const cond of this.condition_branches) {
             if (!!node[cond.prop])
-                return cond.action.render(node, map);
+                return cond.action.render(node, map, format_rules, level, source_index, names);
         }
 
         const flag = (node.nodes) ? node.nodes.map((v, i) => !!v ? 1 << i : 0).reduce((r, v) => r | v, 0) : 0xFFFFFFFF;
 
         for (const cond of this.val_presence_branches) {
-
             if ((cond.flag & flag) == flag)
-                return cond.action.render(node, map);
+                return cond.action.render(node, map, format_rules, level, source_index, names);
         }
 
-        return this.default_branch.render(node, map);
+        return this.default_branch.render(node, map, format_rules, level, source_index, names);
     }
+}
+
+function getRenderRule(node: MinTreeNode, format_rules: FormatRule[]) {
+
+    const rule = format_rules[(node.type >>> 24) & 0xFF] || 0;
+
+    return {
+        min_element_split: (rule >> MinTreeNodeRenderClass.MIN_LIST_ELE_LIMIT_SHIFT) & 0xF,
+        new_line_count: (rule >> MinTreeNodeRenderClass.NEW_LINES_SHIFT) & 0xF,
+        line_split_count: (rule >> MinTreeNodeRenderClass.LIST_SPLIT_SHIFT) & 0xF,
+        indent_count: (rule >> MinTreeNodeRenderClass.INDENT_SHIFT) & 0xF,
+        OPTIONAL_SPACE: (rule >> MinTreeNodeRenderClass.OPTIONAL_SPACE_SHIFT) & 0x1
+    };
 }
 
 function buildRendererFromTemplateString(template_pattern: string): RenderAction {
@@ -90,125 +130,263 @@ function buildRendererFromTemplateString(template_pattern: string): RenderAction
     */
 
     const
-        regex = /(\@\((\w+),\s*([^\)]+)\s*\))|(\@\.\.\.[^])|(\@[\w\_][\w\_\n]*\??)|(\@[\w]*\??)|((\\\?|[^?@])+)*/g,
+        regex = /\t|\n|%|0|1|(\@\((\w+),([^\)]+)\s*\))|(\@\.\.\.[^])|(\@[\w\_][\w\_]*\??)|(\@[\w]*\??)|(\\\?|[^01\n?@%])+/g,
         actions_iterator: IterableIterator<RegExpMatchArray> = template_pattern.matchAll(regex),
         action_list: Array<RenderStub> = [];
 
     let last_index = -1;
-
+    //*
     for (const match of actions_iterator) {
-        let str = match[0];
 
+        let string = match[0];
 
-        //Need to determine what type of match we have
-        if (str[0] == "@") {
+        switch (string[0]) {
 
-            let CONDITIONAL = false;
+            case "@": {
 
-            if (str.slice(-1) == "?") {
+                let CONDITIONAL = false;
 
-                str = str.slice(0, -1);
+                if (string.slice(-1) == "?") {
+                    string = string.slice(0, -1);
+                    CONDITIONAL = true;
+                }
 
-                CONDITIONAL = true;
-            }
+                //Conditional - Insertion
+                if (string.slice(0, 2) == "@(") {
 
-            //Conditional - Insertion
-            if (str.slice(0, 2) == "@(") {
+                    const
+                        CONDITION_PROP_NAME = match[2],
+                        sym = match[3];
 
-                const CONDITION_PROP_NAME = match[2],
-                    sym = match[3];
+                    action_list.push((node: MinTreeNode, format_rules, level, line, map, source_index) => {
 
-                action_list.push((node: MinTreeNode, map?: SourceMap): string => {
-                    if (node[CONDITION_PROP_NAME]) {
+                        if (node[CONDITION_PROP_NAME]) {
 
-                        if (map) {
+                            if (map) addNewColumn(map, String(sym).length, source_index, node.pos.line, node.pos.column, sym);
 
-                            const col = map.meta.col;
+                            return { str: String(sym), level, line };
 
-                            map.meta.col += String(sym).length;
+                        } else return { str: "", level, line };
 
-                            createSourceMapEntry(0, col, node.pos.line, node.pos.char, "source", "", map);
+                    });
+                }
+
+                //Spread-Value-Insertion
+                else if (string.slice(0, 4) == "@...") {
+
+                    const
+                        index = last_index + 1,
+                        delimiter = string[4] == "%" ? "" : string[4];
+
+                    action_list.push((node: MinTreeNode, format_rules, level, line, map, source_index, names) => {
+
+                        const { line_split_count, min_element_split, OPTIONAL_SPACE } = getRenderRule(node, format_rules),
+                            nodes = node.nodes;
+
+                        let sub_map = map ? [] : null, len = nodes.length;
+
+                        const strings = nodes.slice(index).map((n, i) => {
+
+                            let child_map: number[][] = map ? [] : null;
+
+                            const str = render(n, child_map, source_index, names, format_rules, level, node, i);
+
+                            if (map) sub_map.push(child_map);
+
+                            len += str.length;
+
+                            return str;
+                        }),
+                            SPLIT_LINES = (line_split_count > 0 && min_element_split > 0
+                                && (min_element_split < (len / 10) || nodes.length > min_element_split));
+
+                        line += strings.length * +SPLIT_LINES;
+
+                        if (SPLIT_LINES) {
+
+                            const
+                                space_fill = tabFill(level),
+                                delim_string = ("\n").repeat(line_split_count) + space_fill,
+                                dls = delimiter.length;
+
+                            if (map) {
+                                const l = sub_map.length;
+                                let i = 0;
+                                for (const child_map of sub_map) {
+                                    addNewLines(map, line_split_count);
+                                    addNewColumn(map, space_fill.length, source_index);
+                                    getLastLine(map).push(...child_map[0]);
+                                    map.push(...child_map.slice(1));
+                                    if (i++ < l)
+                                        addNewColumn(map, dls);
+                                }
+                            }
+
+                            return { str: delim_string + strings.join(delimiter + delim_string), level, line };
+                        } else {
+                            const
+                                delim_string = delimiter + (" ").repeat(OPTIONAL_SPACE);
+
+                            if (map) {
+                                const l = sub_map.length;
+                                let i = 0;
+                                for (const child_map of sub_map) {
+                                    getLastLine(map).push(...child_map[0]);
+                                    map.push(...child_map.slice(1));
+                                    if (i++ < l)
+                                        addNewColumn(map, delim_string.length);
+                                }
+                            }
+
+                            return { str: strings.join(delim_string), level: -1, line };
                         }
-                        return String(sym);
-                    }
-                    return "";
-                });
-            }
+                    });
+                }
 
-            //Spread-Value-Insertion
-            else if (str.slice(0, 4) == "@...") {
-                const
-                    index = last_index + 1,
-                    delimiter = str[4];
+                //Value-Index-Insertion
+                else if (!isNaN(parseInt(string.slice(1)))) {
 
-                action_list.push((node: MinTreeNode, map?: SourceMap): string => {
+                    const index = parseInt(string.slice(1)) - 1;
 
-                    return node.nodes.slice(index).map((n, i, { length: l }) => {
+                    action_list.push((node: MinTreeNode, format_rules, level, line, map, source_index, names) => {
 
-                        if (i > 0 && map) {
+                        if (CONDITIONAL && !node.nodes[index]) return { str: "", level, line };
 
-                            const col = map.meta.col;
+                        return ({
+                            str: render(node.nodes[index], map, source_index, names, format_rules, level, node, index),
+                            line,
+                            level
+                        });
+                    });
 
-                            map.meta.col += 1;
+                    last_index = index;
+                }
 
-                            createSourceMapEntry(0, col, node.pos.line, node.pos.char, "source", "", map);
-                        }
+                //Non-Value-Insertion
+                else {
+                    const prop = string.slice(1);
+                    action_list.push((node: MinTreeNode, fr, level, line, map, source_index) => {
 
-                        return render(n, map);
+                        const str = String(node[prop]);
 
-                    }).join(delimiter);
-                });
-            }
+                        if (map) addNewColumn(map, str.length, source_index, node.pos.line, node.pos.column, str);
 
-            //Value-Index-Insertion
-            else if (!isNaN(parseInt(str.slice(1)))) {
+                        return { str, level, line };
+                    });
+                }
+            } break;//*
+            case "\n": {
 
-                const index = parseInt(str.slice(1)) - 1;
+                action_list.push((node: MinTreeNode, format_rules, level, line, map, source_index) => {
 
-                action_list.push((node: MinTreeNode, map?: SourceMap): string => {
-                    if (CONDITIONAL && !node.nodes[index]) return "";
-                    return render(node.nodes[index], map, node, index);
-                });
+                    const { new_line_count } = getRenderRule(node, format_rules),
+                        str = new_line_count > 0 ? ("\n").repeat(new_line_count) + tabFill(level) : "";
 
-                last_index = index;
-            }
+                    line += new_line_count;
 
-            //Non-Value-Insertion
-            else {
-                const prop = str.slice(1);
-                action_list.push((node: MinTreeNode, map?: SourceMap): string => {
-
-                    if (map) {
-                        const col = map.meta.col;
-                        map.meta.col += String(node[prop]).length;
-                        createSourceMapEntry(0, col, node.pos.line, node.pos.char, "source", "", map);
+                    if (map && new_line_count > 0) {
+                        addNewLines(map, new_line_count);
+                        addNewColumn(map, tabFill(level).length, source_index, node.pos.line, node.pos.column);
                     }
 
-                    return String(node[prop]);
+                    return { str, level, line };
                 });
-            }
-        }
-        //Plain old string insertion
-        else {
+            } break;
+            case "%": {
 
-            str = str.replace(/\\\?/, "?");
+                action_list.push((node: MinTreeNode, format_rules, level, line, map, source_index) => {
 
-            if (str)
-                action_list.push((node: MinTreeNode, map?: SourceMap): string => {
+                    const { OPTIONAL_SPACE } = getRenderRule(node, format_rules),
+                        str = (" ").repeat(OPTIONAL_SPACE);
 
-                    if (map) {
-                        const col = map.meta.col;
-                        map.meta.col += String(str).length;
-                        createSourceMapEntry(0, col, node.pos.line, node.pos.char, "source", "", map);
+                    if (map) addNewColumn(map, OPTIONAL_SPACE, -1, node.pos.line, node.pos.column, str);
+
+                    return { str, level, line };
+                });
+            } break;
+            case "1": {
+
+                action_list.push((node: MinTreeNode, format_rules, level, line) => {
+
+                    const { indent_count } = getRenderRule(node, format_rules);
+
+                    return { str: "", level: level + indent_count, line };
+                });
+            } break;
+            case "0": {
+
+                action_list.push((node: MinTreeNode, format_rules, level, line, map, source_index) => {
+
+                    const { indent_count } = getRenderRule(node, format_rules),
+                        REMOVE_INDENT = (indent_count && line > 0),
+                        nl = REMOVE_INDENT ? ("\n") + tabFill(level - indent_count) : "";
+
+                    line += +REMOVE_INDENT;
+
+                    if (map && +REMOVE_INDENT) {
+                        addNewLines(map, 1);
+                        addNewColumn(map, tabFill(level - indent_count).length, source_index, node.pos.line, node.pos.column);
                     }
 
-                    return str;
+                    return { str: nl, level: level - indent_count, line };
+
                 });
+            } break;
+            default: {
+
+                const str = string.replace(/\\\?/, "?");
+
+                if (str)
+                    action_list.push((node: MinTreeNode, fr, level, line, map, source_index) => {
+
+                        if (map) addNewColumn(map, String(str).length, source_index, node.pos.line, node.pos.column);
+
+                        return { str, level, line };
+                    });
+            } break;
         }
     }
 
     return new RenderAction(action_list);
 }
+
+function addNewLines(
+    map: Array<number[]>, number_of_lines: number
+) {
+
+    getLastLine(map);
+
+    for (let i = 0; i < number_of_lines; i++)
+        map.push([]);
+};
+
+function incrementColumn(
+    map: Array<number[]>, column: number) {
+    const ln = getLastLine(map);
+    ln[ln.length - 5] += column;
+};
+
+function addNewColumn(
+    map: Array<number[]>, column: number, source_index: number = -1, original_line: number = 0,
+    original_col: number = 0, name: string = "",
+    names: Map<string, number> = null) {
+    let name_index = -1;
+
+    if (name && names) {
+        if (!names.has(name))
+            names.set(name, names.size);
+        name_index = names.get(name);
+    }
+
+    if (column > 0)
+        getLastLine(map).push(column, source_index, original_line, original_col, name_index);
+};
+
+function getLastLine(map: Array<number[]>) {
+    if (map.length == 0)
+        map.push([]);
+    return map[map.length - 1];
+};
 
 /**
  *   Builds a string renderer from a MinTreeNodeDefinition
@@ -238,7 +416,15 @@ function buildRenderer(node_definition: MinTreeNodeDefinition): NodeRenderer {
 
     let _default: RenderAction = null;
 
-    if (typeof template_pattern == "object") {
+    /* Elision nodes are special cases that have a unique render action */
+    if (node_definition.type == MinTreeNodeType.Elision) {
+        _default = new RenderAction(
+            [(n, m, level, line, map) => {
+                if (map) addNewColumn(map, n.count, n.pos.line, n.pos.column);
+                return { str: (",").repeat(n.count), level, line };
+            }]
+        );
+    } else if (typeof template_pattern == "object") {
 
         const template_pattern_object = template_pattern;
 
@@ -257,12 +443,10 @@ function buildRenderer(node_definition: MinTreeNodeDefinition): NodeRenderer {
             } else
                 conditions.push({ prop: key, action: buildRendererFromTemplateString(template_pattern_object[key]) });
         }
-    } else {
+    } else
         _default = buildRendererFromTemplateString(template_pattern);
-    }
 
     return new NodeRenderer(conditions, present_vals, _default);
-
 }
 
 /**
@@ -270,7 +454,8 @@ function buildRenderer(node_definition: MinTreeNodeDefinition): NodeRenderer {
  * 
  *  @param node_definitions
  */
-function RendererBuilder(node_definitions: Array<MinTreeNodeDefinition>): Array<NodeRenderer> {
+export function RendererBuilder(node_definitions: Array<MinTreeNodeDefinition>)
+    : { renderers: NodeRenderer[]; } {
 
     const renderers = new Array(256);
 
@@ -278,38 +463,63 @@ function RendererBuilder(node_definitions: Array<MinTreeNodeDefinition>): Array<
 
         const renderer = buildRenderer(node_definition);
 
-        renderers[node_definition.name >>> 24] = renderer;
+        renderers[node_definition.type >>> 24] = renderer;
     }
 
-    return renderers;
+    return { renderers };
 
 }
 
-let Renderers: Array<NodeRenderer> = null;
+export function RenderFormatBuilder(node_definitions: Array<MinTreeNodeDefinition>)
+    : { format_rules: FormatRule[]; } {
+    const format_rules = new Array(256);
+
+    for (const node_definition of node_definitions) {
+        format_rules[node_definition.type >>> 24] = node_definition.format_rule;
+    }
+
+    return { format_rules };
+}
+
+let Renderers: Array<NodeRenderer> = null, FormatRules: FormatRule[] = null;
 
 /**
  *  Takes a MinTreeNode and produces a string comprising the rendered productions of the ast.
  */
-export function render(node: MinTreeNode, map: SourceMap = null, parent = node, index = 0): string {
+export function render(
+    node: MinTreeNode,
+    map: Array<number[]> = null,
+    source_index = -1,
+    names: Map<string, number> = null,
+    format_rules = FormatRules,
+    level = 0,
+    parent = node,
+    index = 0,
+): string {
 
     if (!node)
         throw new Error(`Unknown node type passed to render method from ${MinTreeNodeType[parent.type]}.nodes[${index}]`);
 
-
-    if (map && !map.meta.col)
-        map.meta.col = 0;
-
     /*
         Load Renderers on demand to allow for MinTreeNodeDefinition modifications, additions.
     */
-    if (!Renderers)
-        Renderers = RendererBuilder(MinTreeNodeDefinitions);
+    if (!Renderers) {
+        const
+            { renderers } = RendererBuilder(MinTreeNodeDefinitions),
+            { format_rules: frs } = RenderFormatBuilder(MinTreeNodeDefinitions);
+        Renderers = renderers;
+        FormatRules = frs;
+        if (!format_rules)
+            format_rules = frs;
+    }
 
     const renderer = Renderers[node.type >>> 24];
 
-    if (!renderer) {
-        throw new Error(`Cannot find string renderer for MinTree node type ${MinTreeNodeType[node.type]}`);
+    if (!renderer)
+        throw new Error(`Cannot find string renderer for MinTree node type ${MinTreeNodeType[node.type]} from ${MinTreeNodeType[parent.type]}.nodes[${index}]`);
+    try {
+        return renderer.render(node, format_rules, level, map, source_index, names);
+    } catch (e) {
+        throw new Error(`Cannot render ${MinTreeNodeType[node.type]}${parent !== node ? ` child of ${MinTreeNodeType[parent.type]}.nodes[${index}]` : ""}:\n ${e.message}`);
     }
-
-    return renderer.render(node, map);
 }
