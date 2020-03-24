@@ -2,8 +2,11 @@ import { MinTreeNodeDefinitions, MinTreeNodeRenderClass } from "../nodes/mintree
 import { MinTreeNode } from "../types/mintree_node.js";
 import { MinTreeNodeDefinition } from "../nodes/mintree_node_definition.js";
 import { MinTreeNodeType } from "../ecma.js";
-import { createSourceMapEntry } from "@candlefw/conflagrate";
+import { addNewColumn, addNewLines, incrementColumn, getLastLine } from "./source_map_functions.js";
 
+const defaultStringFormatter = (str: string, type: MinTreeNodeType): string => str;
+
+let Renderers: Array<NodeRenderer> = null, FormatRules: FormatRule[] = null, g_formatString = defaultStringFormatter;
 type FormatRule = MinTreeNodeRenderClass;
 
 function tabFill(count: number): string {
@@ -267,7 +270,7 @@ function buildRendererFromTemplateString(template_pattern: string): RenderAction
                     const prop = string.slice(1);
                     action_list.push((node: MinTreeNode, fr, level, line, map, source_index) => {
 
-                        const str = String(node[prop]);
+                        const str = g_formatString(String(node[prop]), node.type);
 
                         if (map) addNewColumn(map, str.length, source_index, node.pos.line, node.pos.column, str);
 
@@ -299,7 +302,7 @@ function buildRendererFromTemplateString(template_pattern: string): RenderAction
                     const { OPTIONAL_SPACE } = getRenderRule(node, format_rules),
                         str = (" ").repeat(OPTIONAL_SPACE);
 
-                    if (map) addNewColumn(map, OPTIONAL_SPACE, -1, node.pos.line, node.pos.column, str);
+                    if (map) incrementColumn(map, OPTIONAL_SPACE);
 
                     return { str, level, line };
                 });
@@ -339,9 +342,11 @@ function buildRendererFromTemplateString(template_pattern: string): RenderAction
                 if (str)
                     action_list.push((node: MinTreeNode, fr, level, line, map, source_index) => {
 
-                        if (map) addNewColumn(map, String(str).length, source_index, node.pos.line, node.pos.column);
+                        const out_str = g_formatString(str, node.type);
 
-                        return { str, level, line };
+                        if (map) addNewColumn(map, out_str.length, source_index, node.pos.line, node.pos.column);
+
+                        return { str: out_str, level, line };
                     });
             } break;
         }
@@ -349,44 +354,6 @@ function buildRendererFromTemplateString(template_pattern: string): RenderAction
 
     return new RenderAction(action_list);
 }
-
-function addNewLines(
-    map: Array<number[]>, number_of_lines: number
-) {
-
-    getLastLine(map);
-
-    for (let i = 0; i < number_of_lines; i++)
-        map.push([]);
-};
-
-function incrementColumn(
-    map: Array<number[]>, column: number) {
-    const ln = getLastLine(map);
-    ln[ln.length - 5] += column;
-};
-
-function addNewColumn(
-    map: Array<number[]>, column: number, source_index: number = -1, original_line: number = 0,
-    original_col: number = 0, name: string = "",
-    names: Map<string, number> = null) {
-    let name_index = -1;
-
-    if (name && names) {
-        if (!names.has(name))
-            names.set(name, names.size);
-        name_index = names.get(name);
-    }
-
-    if (column > 0)
-        getLastLine(map).push(column, source_index, original_line, original_col, name_index);
-};
-
-function getLastLine(map: Array<number[]>) {
-    if (map.length == 0)
-        map.push([]);
-    return map[map.length - 1];
-};
 
 /**
  *   Builds a string renderer from a MinTreeNodeDefinition
@@ -481,17 +448,32 @@ export function RenderFormatBuilder(node_definitions: Array<MinTreeNodeDefinitio
     return { format_rules };
 }
 
-let Renderers: Array<NodeRenderer> = null, FormatRules: FormatRule[] = null;
+
+
 
 /**
  *  Takes a MinTreeNode and produces a string comprising the rendered productions of the ast.
+ * @param node - A root node of a MinTree
+ * @param map - An optional array to store source map information.
+ * @param source_index - The index of the source file to store in the source map information.
+ * @param names - A Map of translation names that 
+ * @param format_rules - A an array of @type {FormatRule} values.
+ * @param formatString - A function that is called on primitive values to allow for syntax highlighting.
+ * @param level - Internal Use - Disregard
+ * @param parent - Internal Use - Disregard
+ * @param index - Internal Use - Disregard
  */
 export function render(
     node: MinTreeNode,
+
+    //source map data
     map: Array<number[]> = null,
     source_index = -1,
     names: Map<string, number> = null,
+
+    //format rules
     format_rules = FormatRules,
+
     level = 0,
     parent = node,
     index = 0,
@@ -499,6 +481,29 @@ export function render(
 
     if (!node)
         throw new Error(`Unknown node type passed to render method from ${MinTreeNodeType[parent.type]}.nodes[${index}]`);
+
+    const renderer = Renderers[node.type >>> 24];
+
+    if (!renderer)
+        throw new Error(`Cannot find string renderer for MinTree node type ${MinTreeNodeType[node.type]} from ${MinTreeNodeType[parent.type]}.nodes[${index}]`);
+    try {
+        return renderer.render(node, format_rules, level, map, source_index, names);
+    } catch (e) {
+        throw new Error(`Cannot render ${MinTreeNodeType[node.type]}${parent !== node ? ` child of ${MinTreeNodeType[parent.type]}.nodes[${index}]` : ""}:\n ${e.message}`);
+    }
+}
+
+function prepareRender(
+    node: MinTreeNode,
+    //source map data
+    map: Array<number[]> = null,
+    source_index = -1,
+    names: Map<string, number> = null,
+
+    //format rules
+    format_rules = FormatRules
+): string {
+
 
     /*
         Load Renderers on demand to allow for MinTreeNodeDefinition modifications, additions.
@@ -513,13 +518,59 @@ export function render(
             format_rules = frs;
     }
 
-    const renderer = Renderers[node.type >>> 24];
+    const str = render(node, map, source_index, names, format_rules, 0, node, 0);
+    //Reset formatStrings
 
-    if (!renderer)
-        throw new Error(`Cannot find string renderer for MinTree node type ${MinTreeNodeType[node.type]} from ${MinTreeNodeType[parent.type]}.nodes[${index}]`);
-    try {
-        return renderer.render(node, format_rules, level, map, source_index, names);
-    } catch (e) {
-        throw new Error(`Cannot render ${MinTreeNodeType[node.type]}${parent !== node ? ` child of ${MinTreeNodeType[parent.type]}.nodes[${index}]` : ""}:\n ${e.message}`);
-    }
+    g_formatString = defaultStringFormatter;
+
+    return str;
+}
+
+export function renderCompressed(
+    node: MinTreeNode
+) {
+    return prepareRender(node);
+}
+
+export function renderWithFormatting(
+    node: MinTreeNode,
+
+    //format rules
+    format_rules = FormatRules,
+    formatString: (str: string, type: MinTreeNodeType) => string = defaultStringFormatter
+) {
+    if (typeof formatString == "function")
+        g_formatString = formatString;
+
+    return prepareRender(node, undefined, undefined, undefined, format_rules);
+}
+
+export function renderWithSourceMap(
+    node: MinTreeNode,
+
+    //source map data
+    map: Array<number[]> = null,
+    source_index = -1,
+    names: Map<string, number> = null,
+) {
+    return prepareRender(node, map, source_index, name);
+}
+
+export function renderWithFormattingAndSourceMap(
+    node: MinTreeNode,
+
+    //format rules
+    format_rules = FormatRules,
+    formatString: (str: string, type: MinTreeNodeType) => string = defaultStringFormatter,
+
+
+    //source map data
+    map: Array<number[]> = null,
+    source_index = -1,
+    names: Map<string, number> = null,
+) {
+    if (typeof formatString == "function")
+        g_formatString = formatString;
+
+    return prepareRender(node, map, source_index, names, format_rules);
 }
