@@ -4,7 +4,7 @@ import { traverse, bit_filter } from "@candlefw/conflagrate";
 
 import { MinTreeNode } from "../types/mintree_node";
 import javascript_parser_data from "./ecmascript.js";
-import { MinTreeNodeClass } from "../types/mintree_node_type.js";
+import { MinTreeNodeClass, MinTreeNodeType } from "../types/mintree_node_type.js";
 import env from "./env.js";
 import { ext } from "../tools/extend.js";
 
@@ -31,12 +31,12 @@ export function ecmascript_parser(...args: (any[] | string[] | Lexer[])): MinTre
     if (!(lexer instanceof Lexer))
         throw new ReferenceError("Invalid argument. lex is not a string or a Lexer.");
 
-    const result: ParserResult = lrParse(lexer, javascript_parser_data, env);
+    const result: ParserResult = lrParse<MinTreeNode>(lexer, javascript_parser_data, env);
 
     if (result.error)
         throw new SyntaxError(result.error);
 
-    return <MinTreeNode>result.value;
+    return result.value;
 }
 
 /**
@@ -48,7 +48,7 @@ export function expression_parser(...expression: (any[] | string[] | Lexer[])) {
 
     const ast = ecmascript_parser(...expression);
 
-    for (const node of traverse(ast, "nodes")
+    for (const { node } of traverse(ast, "nodes")
         .then(bit_filter("type",
             MinTreeNodeClass.EXPRESSION
             | MinTreeNodeClass.LITERAL
@@ -67,7 +67,7 @@ export function statement_parser(...statement: any[] | string[] | Lexer[]) {
 
     const ast = ecmascript_parser(...statement);
 
-    for (const node of traverse(ast, "nodes").then(bit_filter("type", MinTreeNodeClass.STATEMENT)))
+    for (const { node } of traverse(ast, "nodes").then(bit_filter("type", MinTreeNodeClass.STATEMENT)))
         return node;
 
     throw new EvalError(`String [ ${statement.join("")} ] does not contain a statement.`);
