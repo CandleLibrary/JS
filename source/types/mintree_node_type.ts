@@ -1,3 +1,5 @@
+import { MinTreeNodeRenderClass } from "../ecma";
+
 export enum MinTreeNodeClass {
     /**
      * Any node that produces a block structure.
@@ -83,7 +85,12 @@ export enum MinTreeNodeClass {
     /**
      * Any node that assigns a value to variable or object member.
      */
-    ASSIGNMENT = 1 << 16
+    ASSIGNMENT = 1 << 16,
+
+    /**
+     * Any node that assigns a value to variable or object member.
+     */
+    CLOSURE = 1 << 17
 }
 
 export enum MinTreeNodeType {
@@ -137,7 +144,7 @@ export enum MinTreeNodeType {
      *
      */
 
-    ArrayLiteral = (4 << 24),
+    ArrayLiteral = (4 << 24) | MinTreeNodeClass.LITERAL,
 
 
     /**
@@ -242,7 +249,7 @@ export enum MinTreeNodeType {
      *
      */
 
-    BlockStatement = (10 << 24) | MinTreeNodeClass.STATEMENT,
+    BlockStatement = (10 << 24) | MinTreeNodeClass.STATEMENT | MinTreeNodeClass.BLOCK,
 
 
     /**
@@ -290,30 +297,14 @@ export enum MinTreeNodeType {
 
     CallExpression = (13 << 24) | MinTreeNodeClass.EXPRESSION,
 
-
-    /**
-     * Expression of the form:
-     *
-     * >```
-     * > [ member | identifier ]  arguments
-     * >```
-     *
-     * Extended members are:
-     * 1. **`identifier`**
-     * 1. **`arguments`**
-     */
-    CallMemberExpression = (14 << 24) | MinTreeNodeClass.EXPRESSION,
-
-
     /**
      * Block expression of the form:
      *
      * >```
-     * > { [ case_clauses* | default_clause ] } 
+     * > { [ case_clauses ]* default_clause? [ case_clauses ]* }
      * >```
      *
-     * Extended member is:
-     * 1. **`clauses`**
+     * This node does not have any extended members
      *
      * Found only as sub-node of `SwitchStatements`
      * 
@@ -353,7 +344,7 @@ export enum MinTreeNodeType {
      *
      */
 
-    CatchClause = (17 << 24) | MinTreeNodeClass.BLOCK,
+    CatchClause = (17 << 24),
 
 
     /**
@@ -432,6 +423,20 @@ export enum MinTreeNodeType {
 
     DebuggerStatement = (22 << 24) | MinTreeNodeClass.STATEMENT,
 
+    /**
+     * Switch clause of the form:
+     *
+     * >```
+     * > default : statement_list?
+     * >```
+     *
+     * Extended members are:
+     * 1. **`case_expression`**
+     * 2. **`statements`**
+     *
+     */
+
+    DefaultClause = (101 << 24),
 
     /**
      * Expression of the form
@@ -465,11 +470,11 @@ export enum MinTreeNodeType {
     /**
     * A comma or series of commas of the form:
     *
-    * >```
+    * >```js
     * > ,+
     * >```
     *
-    * This node has no extended members.
+    * This node does not have extended members.
     * 
     * This node has the regular member:
     * - @property {number} count - The number of commas this elision node represents.
@@ -621,7 +626,7 @@ export enum MinTreeNodeType {
      * TODO Optional Notes
      */
 
-    ForInStatement = (34 << 24) | MinTreeNodeClass.STATEMENT,
+    ForInStatement = (34 << 24) | MinTreeNodeClass.STATEMENT | MinTreeNodeClass.BLOCK,
 
 
     /**
@@ -637,7 +642,7 @@ export enum MinTreeNodeType {
      * TODO Optional Notes
      */
 
-    ForOfStatement = (35 << 24) | MinTreeNodeClass.STATEMENT,
+    ForOfStatement = (35 << 24) | MinTreeNodeClass.STATEMENT | MinTreeNodeClass.BLOCK,
 
 
     /**
@@ -653,7 +658,7 @@ export enum MinTreeNodeType {
      * TODO Optional Notes
      */
 
-    ForStatement = (36 << 24) | MinTreeNodeClass.STATEMENT,
+    ForStatement = (36 << 24) | MinTreeNodeClass.STATEMENT | MinTreeNodeClass.BLOCK,
 
 
     /**
@@ -694,7 +699,7 @@ export enum MinTreeNodeType {
      * > statements+ 
      * >```
      *
-     * This node has no extended members.
+     * This node does not have extended members.
      * 
      */
 
@@ -797,6 +802,23 @@ export enum MinTreeNodeType {
      * - @property {string} value - The name of the identifier
      */
 
+    IdentifierProperty = Identifier | MinTreeNodeClass.IDENTIFIER | MinTreeNodeClass.PROPERTY_NAME,
+
+    /**
+     * Identifier literal used as a module reference. This is either as the name of an exported 
+     * object, or the name of an imported object.
+     *
+     * >```
+     * > identifier
+     * >```
+     *
+     * This node does not have extended members.
+     * 
+     * This node has the regular property:
+     *
+     * - @property {string} value - The name of the identifier
+     */
+
     IdentifierDefault = (44 << 24) | MinTreeNodeClass.IDENTIFIER | MinTreeNodeClass.MODULE,
 
 
@@ -831,7 +853,7 @@ export enum MinTreeNodeType {
      * - @property {string} value - The name of the identifier
      */
 
-    IdentifierReference = (46 << 24) | MinTreeNodeClass.VARIABLE | MinTreeNodeClass.IDENTIFIER,
+    IdentifierReference = ((46 << 24) | MinTreeNodeClass.VARIABLE | MinTreeNodeClass.IDENTIFIER),
 
 
     /**
@@ -886,7 +908,9 @@ export enum MinTreeNodeType {
      * TODO Description
      *
      * >```
-     * > undefined
+     * > identifier
+     * > //or
+     *  identifier [, name_space_import ]
      * >```
      *
      * Extended members are:
@@ -899,23 +923,25 @@ export enum MinTreeNodeType {
 
 
     /**
-     * TODO Description
+     * Import statement of the forms:
      *
-     * >```
-     * > undefined
+     * >```js
+     * > τimport imports from_clause ;
+     * > // or
+     * > τimport module_specifier ;
      * >```
      *
      * Extended members are:
-     * 1. **`undefined`**
+     * 1. **`imports`**
+     * 1. **`from`**
      *
-     * TODO Optional Notes
      */
 
     ImportDeclaration = (51 << 24) | MinTreeNodeClass.STATEMENT | MinTreeNodeClass.MODULE,
 
 
     /**
-     * TODO Description
+     * TODO Description:
      *
      * >```
      * > undefined
@@ -927,36 +953,36 @@ export enum MinTreeNodeType {
      * TODO Optional Notes
      */
 
-    InExpression = (52 << 24),
+    InExpression = (52 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.BINARY_EXPRESSION,
 
 
     /**
-     * TODO Description
+     * A binary expression of the form:
      *
-     * >```
-     * > undefined
+     * >```javascript
+     * > expression instanceof expression
      * >```
      *
      * Extended members are:
-     * 1. **`undefined`**
+     * 1. **`left`**
+     * 2. **`right`**
      *
-     * TODO Optional Notes
      */
 
-    InstanceOfExpression = (53 << 24),
+    InstanceOfExpression = (53 << 24) | MinTreeNodeClass.BINARY_EXPRESSION | MinTreeNodeClass.EXPRESSION,
 
 
     /**
-     * TODO Description
+     * Statement of the form:
      *
-     * >```
-     * > undefined
+     * >```javascript
+     * > identifier :  ( statement | function_declaration )
      * >```
      *
      * Extended members are:
-     * 1. **`undefined`**
+     * 1. **`label`**
+     * 1. **`statement`**
      *
-     * TODO Optional Notes
      */
 
     LabeledStatement = (54 << 24) | MinTreeNodeClass.STATEMENT,
@@ -965,8 +991,8 @@ export enum MinTreeNodeType {
 
     /**
      * Lexical declaration used in the initialization field of `for` statements.
-     * ```
-     * ... for( { ( let | const ) ( BindingExpression ) (, BindingExpression )* } ;... 
+     * ```javascript
+     * ( let | const )  binding_expression  [, binding_expression ]*
      * ```
      * Extended members is:
      * 1. **`bindings`**
@@ -1035,16 +1061,21 @@ export enum MinTreeNodeType {
 
 
     /**
-     * TODO Description
+     * Object method property of the form:
      *
-     * >```
-     * > undefined
+     * >```js
+     * > async? *? name ( parameters? ) { body? }
      * >```
      *
      * Extended members are:
-     * 1. **`undefined`**
+     * 1. **name**
+     * 1. **parameters**
+     * 1. **body**
      *
-     * TODO Optional Notes
+     * This node has the regular properties
+     *
+     * - @property {boolean} ASYNC - True if the parse encountered the `async` keyword.
+     * - @property {boolean} GENERATOR - True if the parse encountered the symbol `*`.
      */
 
     Method = (59 << 24),
@@ -1067,93 +1098,86 @@ export enum MinTreeNodeType {
 
 
     /**
-     * TODO Description
+     * Import module expression of the form
      *
-     * >```
-     * > undefined
+     * >```js
+     * > * as import_binding
      * >```
      *
-     * Extended members are:
-     * 1. **`undefined`**
-     * 
-     * TODO Optional Notes
+     * The extended member is:
+     * 1. **`import_binding`**
+     *
      */
 
     NameSpaceImport = (61 << 24),
 
 
     /**
-     * TODO Description
+     * Import module expression of the form
      *
-     * >```
-     * > undefined
+     * >```js
+     * > { [imports_specifier [, imports_specifier ]  ] }
      * >```
      *
-     * Extended members are:
-     * 1. **`undefined`**
+     * This node does not have extended members.
      * 
-     * TODO Optional Notes
      */
 
     NamedImports = (62 << 24),
 
 
     /**
-     * TODO Description
+     * Expression of the form:
      *
-     * >```
-     * > undefined
+     * >```js
+     * > new expression
      * >```
      *
-     * Extended members are:
-     * 1. **`undefined`**
+     * The extended member is:
+     * 1. **`expression`**
      * 
-     * TODO Optional Notes
      */
 
     NewExpression = (63 << 24) | MinTreeNodeClass.EXPRESSION,
 
 
     /**
-     * TODO Description
+     * Expression of the form:
      *
-     * >```
-     * > undefined
+     * >```js
+     * > new (identifier | member_expression ) arguments
      * >```
      *
-     * Extended members are:
-     * 1. **`undefined`**
+     * The extended member is:
+     * 1. **`identifier`**
      * 
-     * TODO Optional Notes
      */
 
     NewInstanceExpression = (64 << 24) | MinTreeNodeClass.EXPRESSION,
 
 
     /**
-     * TODO Description
+     * Expression of the form:
      *
-     * >```
-     * > undefined
+     * >```js
+     * > new . target
      * >```
      *
-     * Extended members are:
-     * 1. **`undefined`**
-     * 
-     * TODO Optional Notes
+     * This node does not have extended members. 
+     *
      */
 
-    NewTarget = (65 << 24),
+    NewTarget = (65 << 24) | MinTreeNodeClass.LITERAL,
 
 
     /**
      * Literally null, of the form:
      *
-     * >```
+     * >```javascript
      * > null
      * >```
      *
-     * This node has no extended members.
+     * This node does not have extended members.
      */
 
     NullLiteral = (66 << 24) | MinTreeNodeClass.LITERAL,
@@ -1162,11 +1186,11 @@ export enum MinTreeNodeType {
     /**
      * A literal number 
      *
-     * >```
+     * >```javascript
      * > number
      * >```
      *
-     * This node has no extended members.
+     * This node does not have extended members.
      * 
      * This node has the regular properties:
      * - @property {string} value - The original parsed value;
@@ -1177,10 +1201,10 @@ export enum MinTreeNodeType {
 
 
     /**
-     * An object declaration of the form
+     * An object literal declaration of the form
      *
-     * >```
-     * > \{ PropertyBinding  [, PropertyBinding ]* \}
+     * >```javascript
+     * > { PropertyBinding  [, PropertyBinding ]* }
      * >```
      *
      * Extended members are:
@@ -1192,7 +1216,8 @@ export enum MinTreeNodeType {
 
     /**
      * Expression of the form:
-     * ```
+     * 
+     * ```javascript
      * ( expression )
      * ```
      * 
@@ -1206,7 +1231,7 @@ export enum MinTreeNodeType {
     /**
      * Expression of the form 
      *
-     * >```
+     * >```javascript
      * > ( expression )
      * >```
      *
@@ -1221,7 +1246,7 @@ export enum MinTreeNodeType {
     /**
      * Expression of one of the forms:
      *
-     * >```
+     * >```javascript
      * > expression ++
      * >
      * > expression --
@@ -1238,7 +1263,7 @@ export enum MinTreeNodeType {
     /**
      * Expression of one of the forms:
      *
-     * >```
+     * >```javascript
      * > ++ expression
      * >
      * > -- expression
@@ -1255,8 +1280,10 @@ export enum MinTreeNodeType {
     /**
      * A binding of the form:
      *
-     * >```
+     * >```javascript
      * > identifier : expression
+     * > //or
+     * > [ expression ] : expression //if COMPUTED is set to `true`
      * >```
      *
      * Extended members are:
@@ -1271,8 +1298,8 @@ export enum MinTreeNodeType {
     /**
      * A Regular Expression literal of the form:
      *
-     * >```
-     * > / string_data / identifer
+     * >```javascript
+     * > / expression_string / meta
      * >```
      *
      * Extended members are:
@@ -1306,12 +1333,12 @@ export enum MinTreeNodeType {
     /**
     * Statement of the form:
     *
-    *>```
-    *> return expression?;
+    *>```javascript
+    *> return expression? ;
     *>```
     *
     * Extended members are
-    * 1. 'expression'
+    * 1.  **expression** *(optional - may be `null`)*
     *
     */
 
@@ -1320,7 +1347,7 @@ export enum MinTreeNodeType {
 
 
     /**
-     * The root node of a JS file. 
+     * The root node of a JavaScript module or script.
      */
 
     Script = (77 << 24),
@@ -1328,9 +1355,10 @@ export enum MinTreeNodeType {
 
     /**
      * A method declaration of the form
-     * ```
-     * set ( binding )  { body }
-     * ```
+     * 
+     * >```javascript
+     * >set ( binding )  { body }
+     * >```
      * 
      * Extended members are:
      * 1. `binding`
@@ -1343,10 +1371,12 @@ export enum MinTreeNodeType {
     /**
      * A binary expression of one of the forms:
      *
-     * >```
-     * > expression << expression
-     * > expression >> expression
-     * > expression >>> expression
+     * >```javascript
+     * > left << right
+     * > //or
+     * > left >> right
+     * > //or
+     * > left >>> right
      * >```
      *
      * Extended members are:
@@ -1377,7 +1407,7 @@ export enum MinTreeNodeType {
 
 
     /**
-     * Expression of the form
+     * Character sequence of the form
      *
      * >```
      * > ... expression
@@ -1388,20 +1418,24 @@ export enum MinTreeNodeType {
      *
      */
 
-    SpreadExpression = (81 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.UNARY_EXPRESSION,
+    Spread = (81 << 24),
 
+    /**
+     * TODO - remove the following
+     */
+    SpreadExpression = Spread,
 
     /**
      * String literal with one of the forms
      *
-     * >```
-     * > ' * '
-     * > " * "
+     * >```javascript
+     * > ' value '
+     * > //or
+     * > " value "
      * >```
      *
-     * This node has no extended members.
+     * This node does not have extended members.
      *
-     * 
      * The node has the regular members: 
      * @property {string} value - The string of characters found between the quotes.
      * @property {string} quote_type - A string with a value of either `"` or `'`
@@ -1413,7 +1447,7 @@ export enum MinTreeNodeType {
     /**
      * Expression of the form:
      *
-     * >```
+     * >```javascript
      * > super arguments
      * >```
      *
@@ -1454,7 +1488,7 @@ export enum MinTreeNodeType {
      *
      * Extended members are:
      * 1. **`expression`**
-     * 2. **`case_block`**
+     * 2. **`block`**
      * 
      */
 
@@ -1532,7 +1566,7 @@ export enum MinTreeNodeType {
      * > this
      * >```
      *
-     * This node has no extended members.
+     * This node does not have extended members.
      */
 
     ThisLiteral = (90 << 24) | MinTreeNodeClass.LITERAL,
