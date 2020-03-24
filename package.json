@@ -1,55 +1,56 @@
 {
-  "name": "@candlefw/js",
-  "version": "0.1.5",
-  "description": "Javascript Parser",
-  "main": "./build/library/ecma.js",
-  "types": "./build/types/ecma.d.ts",
-  "type": "module",
-  "scripts": {
-    "prepublish": "tsc -p ./tsconfig.json",
-    "test": "cfw_test ./test/test.js",
-    "test.watch": "mocha test/test.js -r esm --watch",
-    "build": "tsc",
-    "build.watch": "rollup --config  ./build/config/config.js --watch",
-    "build.ui.watch": "rollup --config  ./build/config/ui.config.js --watch",
-    "compile": "hydrocarbon compile --unattended --parser glalr -u -o ./source/parser -e ./build/library/parser/env.js --type module ./source/grammar/ecmascript.hcg",
-    "compile.attended": "hydrocarbon compile -o ./source/parser -e ./source/parser/env.mjs -t mjs ./source/grammar/ecmascript.hcg",
-    "compile.test": "hydrocarbon compile --unattended --parser glalr -u -d -e ./build/library/parser/env.js --type module ./source/grammar/ecmascript.hcg",
-    "compile.mount": "hydrocarbon compile -d -e ./build/library/parser/env.js -m ./source/grammar/ecmascript.hcg  ",
-    "test.mount": "hydrocarbon mount -e ./build/library/parser/env.js ./build/library/parser/ecmascript.js --string 'function temp(temp){return  new env.fn.body(\"\",[$sym1], env, (env.host_lex.fence(lex), env.host_lex) ) }'"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/candlefw/js.git"
-  },
-  "keywords": [
-    "ECMASCRIPT",
-    "ecma",
-    "javascript",
-    "Parser"
-  ],
-  "author": "Anthony Weathersby",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/candlefw/js/issues"
-  },
-  "homepage": "https://github.com/candlefw/js#readme",
-  "dependencies": {
-    "@candlefw/conflagrate": "0.0.3",
-    "@candlefw/hydrocarbon": "0.3.2",
-    "@candlefw/url": "0.1.0",
-    "@candlefw/wind": "0.4.0"
-  },
-  "devDependencies": {
-    "rollup": "2.0.6",
-    "rollup-plugin-commonjs": "latest",
-    "rollup-plugin-gzip": "2.3.0",
-    "rollup-plugin-node-resolve": "latest",
-    "rollup-plugin-resolve": "latest",
-    "rollup-plugin-terser": "5.3.0"
-  },
-  "jshintConfig": {
-    "esversion": 6,
-    "unused": true
-  }
+    "name": "@candlefw/js",
+    "version": "0.1.5",
+    "description": "Javascript Parser",
+    "main": "./build/library/ecma.js",
+    "types": "./build/types/ecma.d.ts",
+    "type": "module",
+    "scripts": {
+        "prepublish": "tsc -p ./tsconfig.json",
+        "test": "cfw.test ./test/candlefw.js.spec.js",
+        "test.watch": "cfw.test -w ./test/candlefw.js.spec.js",
+        "build": "tsc",
+        "build.watch": "rollup --config  ./build/config/config.js --watch",
+        "build.ui.watch": "rollup --config  ./build/config/ui.config.js --watch",
+        "compile": "hydrocarbon compile --unattended --parser glalr -u -o ./source/parser -e ./build/library/parser/env.js --type module ./source/grammar/ecmascript.hcg",
+        "compile.attended": "hydrocarbon compile -o ./source/parser -e ./source/parser/env.mjs -t mjs ./source/grammar/ecmascript.hcg",
+        "compile.test": "hydrocarbon compile --unattended --parser glalr -u -d -e ./build/library/parser/env.js --type module ./source/grammar/ecmascript.hcg",
+        "compile.mount": "hydrocarbon compile -d -e ./build/library/parser/env.js -m ./source/grammar/ecmascript.hcg  ",
+        "test.mount": "hydrocarbon mount -e ./build/library/parser/env.js ./build/library/parser/ecmascript.js --string 'function temp(temp){return  new env.fn.body(\"\",[$sym1], env, (env.host_lex.fence(lex), env.host_lex) ) }'"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/candlefw/js.git"
+    },
+    "keywords": [
+        "ECMASCRIPT",
+        "ecma",
+        "javascript",
+        "Parser"
+    ],
+    "author": "Anthony Weathersby",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/candlefw/js/issues"
+    },
+    "homepage": "https://github.com/candlefw/js#readme",
+    "dependencies": {
+        "@candlefw/conflagrate": "0.0.3",
+        "@candlefw/hydrocarbon": "0.3.2",
+        "@candlefw/url": "0.1.0",
+        "@candlefw/wind": "0.4.0"
+    },
+    "devDependencies": {
+        "rollup": "2.0.6",
+        "rollup-plugin-commonjs": "latest",
+        "rollup-plugin-gzip": "2.3.0",
+        "rollup-plugin-node-resolve": "latest",
+        "rollup-plugin-resolve": "latest",
+        "rollup-plugin-terser": "5.3.0",
+        "@candlefw/test": "0.1.0-alpha"
+    },
+    "jshintConfig": {
+        "esversion": 6,
+        "unused": true
+    }
 }
