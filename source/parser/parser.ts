@@ -3,7 +3,7 @@ import { Lexer } from "@candlefw/wind";
 import { traverse, bit_filter } from "@candlefw/conflagrate";
 
 import { MinTreeNode } from "../types/mintree_node";
-import ecmascript_parser_data from "./ecmascript.js";
+import javascript_parser_data from "./ecmascript.js";
 import { MinTreeNodeClass } from "../types/mintree_node_type.js";
 import env from "./env.js";
 import { ext } from "../tools/extend.js";
@@ -15,21 +15,23 @@ interface ParserResult {
 /**
  * Parses an input string and returns a MinTree AST data structure. 
  * @throws it will throw a SyntaxError if the input could be completely parsed.
- * @param lex Either a string or a cfw.Whind Lexer that contains the string data to be parsed.
+ * @param lex Either a string or a cfw.wind Lexer that contains the string data to be parsed.
  */
-export function ecmascript_parser(lex: string | Lexer | TemplateStringsArray): MinTreeNode {
-    let lexer = lex;
+export function ecmascript_parser(...args: (any[] | string[] | Lexer[])): MinTreeNode {
 
-    if (Array.isArray(lex))
-        lex = lex.join("");
+    let str = args[0],
+        lexer = str;
 
-    if (typeof lex === "string")
-        lexer = new Lexer(lex);
+    if (args.length > 0)
+        str = args.join("");
+
+    if (typeof str === "string")
+        lexer = new Lexer(str);
 
     if (!(lexer instanceof Lexer))
         throw new ReferenceError("Invalid argument. lex is not a string or a Lexer.");
 
-    const result: ParserResult = lrParse(lexer, ecmascript_parser_data, env);
+    const result: ParserResult = lrParse(lexer, javascript_parser_data, env);
 
     if (result.error)
         throw new SyntaxError(result.error);
@@ -37,24 +39,38 @@ export function ecmascript_parser(lex: string | Lexer | TemplateStringsArray): M
     return <MinTreeNode>result.value;
 }
 
+/**
+ * Parses an input string and returns the AST of the first MinTreeNode identified as a MinTreeTypeClass EXPRESSION or LITERAL
+ * @param expression
+ * @throws Throws an EvalError if the string cannot be parsed into an expression AST.
+ */
+export function expression_parser(...expression: (any[] | string[] | Lexer[])) {
 
-export function expression_parser(expression: string | TemplateStringsArray | Lexer) {
+    const ast = ecmascript_parser(...expression);
 
-    const ast = ecmascript_parser(expression);
-
-    for (const node of traverse(ast, "nodes").then(bit_filter("type", MinTreeNodeClass.EXPRESSION))) {
+    for (const node of traverse(ast, "nodes")
+        .then(bit_filter("type",
+            MinTreeNodeClass.EXPRESSION
+            | MinTreeNodeClass.LITERAL
+            | MinTreeNodeClass.IDENTIFIER)
+        ))
         return node;
-    }
 
-    return null;
+    throw new EvalError(`String [ ${expression.join("")} ] does not contain an expression.`);
+}
+/**
+ * Parses an input string and returns the AST of the first MinTreeNode identified as a MinTreeTypeClass STATEMENT
+ * @param statement 
+ * @throws Throws an EvalError if the string cannot be parsed into a statement AST.
+ */
+export function statement_parser(...statement: any[] | string[] | Lexer[]) {
+
+    const ast = ecmascript_parser(...statement);
+
+    for (const node of traverse(ast, "nodes").then(bit_filter("type", MinTreeNodeClass.STATEMENT)))
+        return node;
+
+    throw new EvalError(`String [ ${statement.join("")} ] does not contain a statement.`);
 }
 
-export function statement_parser(statement) {
-    const ast = ecmascript_parser(statement);
-
-    for (const node of traverse(ast, "nodes").then(bit_filter("type", MinTreeNodeClass.STATEMENT))) {
-        return node;
-    }
-
-    return null;
-}
+const t = { null: {} };
