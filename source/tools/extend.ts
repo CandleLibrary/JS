@@ -5,7 +5,6 @@ import { MinTreeNodeDefinition } from "../nodes/mintree_node_definition.js";
 import { MinTreeExtendedNode } from "../types/mintree_extended_node.js";
 import { MinTreeNode } from "../types/mintree_node.js";
 import { MinTreeNodeType } from "../types/mintree_node_type.js";
-import { parser } from "../ecma.js";
 
 class NodeExtender {
 
@@ -15,10 +14,10 @@ class NodeExtender {
     };
 
     extend(node: MinTreeNode, parent: MinTreeNode): MinTreeExtendedNode {
+
         const object = { typename: MinTreeNodeType[node.type], parent };
+
         let index = 0;
-
-
 
         for (const prop of this.getters) {
             if (typeof prop == "string") {
@@ -62,7 +61,7 @@ function ExtenderBuilder(node_definitions: Array<MinTreeNodeDefinition>): Array<
 
         const extender = buildExtender(node_definition);
 
-        extenders[node_definition.name >>> 24] = extender;
+        extenders[node_definition.type >>> 24] = extender;
     }
 
     return extenders;
@@ -77,7 +76,7 @@ let Extenders: Array<NodeExtender> = null;
  * @param {MinTreeNode} node - A MinTreeNode to extend.
  * @param {boolean} EXTEND_ENTIRE_TREE - If true, the entire tree of subnode extending from `node` will also be extended. 
  */
-export function ext(node: MinTreeNode, EXTEND_ENTIRE_TREE: boolean = false): MinTreeExtendedNode {
+export function ext(node: MinTreeNode, EXTEND_ENTIRE_TREE: boolean = false, parent = node, index = 0): MinTreeExtendedNode {
 
     if (EXTEND_ENTIRE_TREE) {
 
@@ -91,7 +90,7 @@ export function ext(node: MinTreeNode, EXTEND_ENTIRE_TREE: boolean = false): Min
             const extender = Extenders[node.type >>> 24];
 
             if (!extender)
-                throw new Error(`Cannot find string renderer for MinTree node type ${MinTreeNodeType[node.type]}`);
+                throw new Error(`Cannot find Node Extender for MinTree node type ${MinTreeNodeType[node.type]}`);
 
             const replaced = extender.extend(node, parent);
 
@@ -108,13 +107,16 @@ export function ext(node: MinTreeNode, EXTEND_ENTIRE_TREE: boolean = false): Min
         return object.ast;
     } else {
 
+        if (!node)
+            throw new Error(`Unknown node type passed to render method from ${MinTreeNodeType[parent.type]}.nodes[${index}]`);
+
         if (!Extenders)
             Extenders = ExtenderBuilder(MinTreeNodeDefinitions);
 
         const extender = Extenders[node.type >>> 24];
 
         if (!extender)
-            throw new Error(`Cannot find string renderer for MinTree node type ${node.type}`);
+            throw new Error(`Cannot find Node Extender for MinTree node type ${node.type}`);
 
         return extender.extend(node, null);
     }
