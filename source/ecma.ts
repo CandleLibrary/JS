@@ -55,7 +55,6 @@ export {
     expression_parser as exp,
     statement_parser as stmt,
 
-    render,
     renderCompressed,
     renderWithFormatting,
     renderWithSourceMap,
