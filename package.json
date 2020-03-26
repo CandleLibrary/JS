@@ -1,6 +1,6 @@
 {
     "name": "@candlefw/js",
-    "version": "0.1.5",
+    "version": "0.1.6-dev",
     "description": "Javascript Parser",
     "main": "./build/library/ecma.js",
     "types": "./build/types/ecma.d.ts",
@@ -41,13 +41,13 @@
         "@candlefw/wind": "0.4.0"
     },
     "devDependencies": {
+        "@candlefw/test": "0.1.0-alpha",
         "rollup": "2.0.6",
         "rollup-plugin-commonjs": "latest",
         "rollup-plugin-gzip": "2.3.0",
         "rollup-plugin-node-resolve": "latest",
         "rollup-plugin-resolve": "latest",
-        "rollup-plugin-terser": "5.3.0",
-        "@candlefw/test": "0.1.0-alpha"
+        "rollup-plugin-terser": "5.3.0"
     },
     "jshintConfig": {
         "esversion": 6,
