@@ -570,18 +570,27 @@
 # https://www.ecma-international.org/ecma-262/10.0/index.html#prod-ConditionalExpression
 ###############################################################################################################
 
-    <> conditional_expression → logical_or_expression
-        │ logical_or_expression \? assignment_expression : assignment_expression                                ↦r { { type: env.typ.ConditionalExpression, nodes:[$$sym1, $$sym3, $$sym5], pos } }
+    <> conditional_expression → short_circuit_expression
+        │ short_circuit_expression \? assignment_expression : assignment_expression                                ↦r { { type: env.typ.ConditionalExpression, nodes:[$$sym1, $$sym3, $$sym5], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/10.0/index.html#sec-binary-logical-operators
 ###############################################################################################################
+    
+    <> short_circuit_expression → logical_or_expression
+
+## https://tc39.es/ecma262/#prod-CoalesceExpression Latest
+# TODO │ coalesce_expression
+# TODO  <> coalesce_expression → (coalesce_expression │ bitwise_or_expression) ??  bitwise_or_expression        ↦r { { type: env.typ.CoalesceExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
 
     <> logical_or_expression → logical_and_expression 
         │ logical_or_expression || logical_and_expression                                                       ↦r { { type: env.typ.LogicalExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
 
     <> logical_and_expression → bitwise_or_expression 
         │ logical_and_expression && bitwise_or_expression                                                       ↦r { { type: env.typ.LogicalExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
+
+
+
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/10.0/index.html#sec-binary-bitwise-operators
@@ -799,7 +808,7 @@
     <> template_literal → no_substitute_template
         │ substitute_template 
 
-    <> no_substitute_template → ↦^parseTemplate ` `                                                             ↦r { { type: env.typ.Template, nodes:[ { quote_type:"" type: env.typ.StringLiteral, value:$sym1,  pos  } ], NO_SUBSTITUTE:true, pos } }
+    <> no_substitute_template → ↦^parseTemplate ` `                                                             ↦r { { type: env.typ.Template, nodes:[ { quote_type:"", type: env.typ.StringLiteral, value:$sym1,  pos  } ], NO_SUBSTITUTE:true, pos } }
 
     <> substitute_template → template_head expression template_spans                                            ↦r { $sym3.unshift($sym1, $sym2), { type: env.typ.Template, nodes:$$sym3, pos } }
 
@@ -809,7 +818,7 @@
     <> template_middle_list → template_middle expression                                                        ↦r { [ $sym1, $sym2 ] }
         │ template_middle_list template_middle expression                                                       ↦r { $sym1.push($sym2, $sym3), $sym1 }
 
-    <> template_head →      ↦^parseTemplate `   \${                                                             ↦r { { type:env.typ.TemplateHead, value:$sym1, pos  } }
+    <> template_head →      ↦^parseTemplate  `  \${                                                             ↦r { { type:env.typ.TemplateHead, value:$sym1, pos  } }
 
     <> template_middle →    ↦^parseTemplate \}  \${                                                             ↦r { { type:env.typ.TemplateMiddle, value:$sym1,  pos  } }
 
@@ -827,7 +836,8 @@
     <> literal → boolean_literal                
         │ null_literal
         │ string_literal                    
-        │ numeric_literal       
+        │ numeric_literal
+        │ bigint       
 
     <> string_literal → ↦^parseString \" \"                                                                     ↦r { { quote_type:$sym2, type: env.typ.StringLiteral, value:$$sym1 || "",  pos  } }
         │ ↦^parseString \' \'                                                                                   ↦r { { quote_type:$sym2, type: env.typ.StringLiteral, value:$$sym1 || "",  pos  } }
@@ -844,9 +854,11 @@
     #<> unicode_escape_sequence → τu def::hex_digit def::hex_digit def::hex_digit def::hex_digit                 ↦r { $sym1 + $sym2 + $sym3 + $sym4 + $sym5 }
     #    │ τu \{ def::hex \}                                                                                     ↦r { $sym1 + $sym2 + $sym3 + $sym4 }
 
-    <> numeric_literal → -? number                                                                                 ↦r { { type: env.typ.NumericLiteral, value:$sym2.original_val, computed_value:$sym2.val, value_data:$sym1, pos, NEGATIVE:!!$$sym1 } }
+    <> numeric_literal → -? number                                                                               ↦r { { type: env.typ.NumericLiteral, value:$sym2.original_val, computed_value:$sym2.val, value_data:$sym1, pos, NEGATIVE:!!$$sym1 } }
+    
+    <> bigint →  -? θnum τn                                                                                     ↦r { { type: env.typ.BigIntLiteral, value:$sym2, valpos, NEGATIVE:!!$$sym1 } }
 
-    <> number →  def::float 
+    <> number → def::float 
         │ def::octal 
         │ def::binary 
         │ def::hex                                                             
