@@ -5,10 +5,10 @@ import { MinTreeNodeType } from "../types/mintree_node_type.js";
  * Returns the root Identifier value when passed a
  * node of one of the following types:
  * 
-* - MemberExpressio
+* - MemberExpression
  * - Identifier
  * 
- * Returns empty string otherwise.
+ * Returns an empty string otherwise.
  * 
  * @param {MinTreeNode} node - a MinTreeNode
  */
