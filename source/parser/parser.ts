@@ -49,12 +49,11 @@ export function expression_parser(...expression: (any[] | string[] | Lexer[])) {
     const ast = ecmascript_parser(...expression);
 
     for (const { node } of traverse(ast, "nodes")
-        .then(bit_filter("type",
+        .bitFilter("type",
             MinTreeNodeClass.EXPRESSION
             | MinTreeNodeClass.LITERAL
             | MinTreeNodeClass.IDENTIFIER)
-        ))
-        return node;
+    ) return node;
 
     throw new EvalError(`String [ ${expression.join("")} ] does not contain an expression.`);
 }
@@ -67,7 +66,7 @@ export function statement_parser(...statement: any[] | string[] | Lexer[]) {
 
     const ast = ecmascript_parser(...statement);
 
-    for (const { node } of traverse(ast, "nodes").then(bit_filter("type", MinTreeNodeClass.STATEMENT)))
+    for (const { node } of traverse(ast, "nodes").bitFilter("type", MinTreeNodeClass.STATEMENT))
         return node;
 
     throw new EvalError(`String [ ${statement.join("")} ] does not contain a statement.`);
