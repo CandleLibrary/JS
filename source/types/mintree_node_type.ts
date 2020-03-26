@@ -1201,6 +1201,23 @@ export enum MinTreeNodeType {
 
 
     /**
+     * A literal large integer
+     *
+     * >```javascript
+     * > #number n
+     * >```
+     *
+     * This node does not have extended members.
+     * 
+     * This node has the regular properties:
+     * - @property {string} value - The original parsed value;
+     * - @property {number} computed_value - The value of original parsed value transformed into a float;
+     */
+
+    BigIntLiteral = (108 << 24) | MinTreeNodeClass.LITERAL,
+
+
+    /**
      * An object literal declaration of the form
      *
      * >```javascript
@@ -1726,4 +1743,30 @@ export enum MinTreeNodeType {
      */
 
     YieldExpression = (100 << 24) | MinTreeNodeClass.EXPRESSION | MinTreeNodeClass.UNARY_EXPRESSION,
+
+    /**
+     * Expression of the form 
+     *
+     * >```
+     * > yield expression
+     * >```
+     *
+     * Extended member is:
+     * 1. **`expression`**
+     */
+
+    ObjectBinding = (150 << 24),
+
+    /**
+     * Expression of the form 
+     *
+     * >```
+     * > yield expression
+     * >```
+     *
+     * Extended member is:
+     * 1. **`expression`**
+     */
+
+    ArrayBinding = (151 << 24),
 }

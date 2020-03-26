@@ -24,7 +24,7 @@ export function createNodeDefinitions(
     ...args: Array<{
         type?: MinTreeNodeType,
         ext_name?: string[],
-        format_string?: string,
+        format_string?: string | object,
         format_rules?: MinTreeNodeRenderClass;
     }>): MinTreeNodeDefinition[] {
     return args.reduce(
@@ -81,6 +81,11 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = createNodeDe
         type: MinTreeNodeType.AwaitExpression,
         ext_name: ["expression"],
         format_string: "await @1",
+    },
+    {
+        type: MinTreeNodeType.BigIntLiteral,
+        ext_name: [],
+        format_string: "@(NEGATIVE,-)@value%n",
     },
     {
         type: MinTreeNodeType.BindingExpression,
@@ -569,5 +574,15 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = createNodeDe
         type: MinTreeNodeType.YieldExpression,
         ext_name: ["expression"],
         format_string: "yield @1",
+    },
+    {
+        type: MinTreeNodeType.ObjectBinding,
+        ext_name: ["expression"],
+        format_string: "{1%@...,%0}",
+    },
+    {
+        type: MinTreeNodeType.ArrayBinding,
+        ext_name: ["expression"],
+        format_string: "[1%@...,%0]",
     }
 );
