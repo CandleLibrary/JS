@@ -1,17 +1,17 @@
-import { MinTreeNodeClass, getIdentifierName, MinTreeNodeType, MinTreeNodeDefinition, MinTreeNodeDefinitions, parser, exp, stmt, render, ext } from "../build/library/ecma.js";
+import { MinTreeNodeClass, getIdentifierName, MinTreeNodeType, MinTreeNodeDefinition, MinTreeNodeDefinitions, parser, exp, stmt, renderCompressed, ext } from "../build/library/ecma.js";
 import { traverse, bit_filter } from "@candlefw/conflagrate";
 import { MinTreeNodeRenderClass } from "../build/library/nodes/mintree_node_extensions.js";
 import utils from "util";
 "@candlefw/js test spec";
 
-const r = (...str) => render(parser(...str), null, []);
-const s = (...str) => render(stmt(...str), null, []);
-const e = (...str) => render(exp(...str), null, []);
+const r = (...str) => renderCompressed(parser(...str), null, []);
+const s = (...str) => renderCompressed(stmt(...str), null, []);
+const e = (...str) => renderCompressed(exp(...str), null, []);
 
 const id = (...str) => {
     const n = exp(...str);
 
-    for (const node of traverse(n, "nodes")
+    for (const { node } of traverse(n, "nodes")
         .then(bit_filter("type", MinTreeNodeClass.IDENTIFIER))
     )
         return node;
@@ -903,381 +903,381 @@ const id = (...str) => {
     {
         "AdditiveExpression"; "#";
 
-        ((render(exp("1+2")) == "1+2"));
+        ((renderCompressed(exp("1+2")) == "1+2"));
 
-        ((render(exp("1-2")) == "1-2"));
+        ((renderCompressed(exp("1-2")) == "1-2"));
 
     }
 
     "Arguments";
-    ((render(exp("d(1)")) == "d(1)"));
+    ((renderCompressed(exp("d(1)")) == "d(1)"));
 
     "ArrayLiteral";
-    ((render(exp("[1,2,3]")) == "[1,2,3]"));
+    ((renderCompressed(exp("[1,2,3]")) == "[1,2,3]"));
 
     "ArrowFunction";
-    ((render(exp("()=>2")) == "()=>2"));
+    ((renderCompressed(exp("()=>2")) == "()=>2"));
 
     "AssignmentExpression";
-    ((render(exp("a=2")) == "a=2"));
+    ((renderCompressed(exp("a=2")) == "a=2"));
 
     "BlockStatement";
-    ((render(stmt("{}")) == "{}"));
+    ((renderCompressed(stmt("{}")) == "{}"));
 
     "AwaitExpression";
-    ((render(exp("await call()")) == "await call()"));
+    ((renderCompressed(exp("await call()")) == "await call()"));
 
     "BindingExpression";
-    ((render(stmt("var i=2")) == "var i=2;"));
+    ((renderCompressed(stmt("var i=2")) == "var i=2;"));
 
     {
         "BitwiseExpression"; "#";
-        ((render(exp("1 | 1")) == "1|1"));
-        ((render(exp("1 & 1")) == "1&1"));
-        ((render(exp("1 ^ 1")) == "1^1"));
+        ((renderCompressed(exp("1 | 1")) == "1|1"));
+        ((renderCompressed(exp("1 & 1")) == "1&1"));
+        ((renderCompressed(exp("1 ^ 1")) == "1^1"));
     }
 
     {
         "BooleanLiteral"; "#";
-        ((render(exp("true")) == "true"));
-        ((render(exp("false")) == "false"));
+        ((renderCompressed(exp("true")) == "true"));
+        ((renderCompressed(exp("false")) == "false"));
     }
 
     "BreakStatement";
-    ((render(stmt("break")) == "break;"));
+    ((renderCompressed(stmt("break")) == "break;"));
 
     "CallExpression";
-    ((render(exp("call()")) == "call()"));
+    ((renderCompressed(exp("call()")) == "call()"));
 
     "CaseBlock";
-    ((render(stmt("switch(1){}")) == "switch(1){}"));
+    ((renderCompressed(stmt("switch(1){}")) == "switch(1){}"));
 
     "CaseClause";
-    ((render(stmt("switch(1){case 2: 2; break;}")) == "switch(1){case 2:2;break;}"));
+    ((renderCompressed(stmt("switch(1){case 2: 2; break;}")) == "switch(1){case 2:2;break;}"));
 
     "DefaultClause";
-    ((render(stmt("switch(1){default: 2; break;}")) == "switch(1){default:2;break;}"));
+    ((renderCompressed(stmt("switch(1){default: 2; break;}")) == "switch(1){default:2;break;}"));
 
     "CatchClause";
-    ((render(stmt("try{}catch(e){}")) == "try{}catch(e){}"));
+    ((renderCompressed(stmt("try{}catch(e){}")) == "try{}catch(e){}"));
 
     "Class";
-    ((render(stmt("class id extends me{constructor(a,b){1;} method(a){} get get(){}}")) == "class id extends me{constructor(a,b){1;}method(a){}get get(){}}"));
+    ((renderCompressed(stmt("class id extends me{constructor(a,b){1;} method(a){} get get(){}}")) == "class id extends me{constructor(a,b){1;}method(a){}get get(){}}"));
 
     "ComputedProperty";
-    ((render(exp("({['test']:2})")) == "({['test']:2})"));
+    ((renderCompressed(exp("({['test']:2})")) == "({['test']:2})"));
 
     "ContinueStatement";
-    ((render(stmt("continue label;")) == "continue label;"));
+    ((renderCompressed(stmt("continue label;")) == "continue label;"));
 
     "ConditionalExpression";
-    ((render(exp("e ? 1 : 2")) == "e?1:2"));
+    ((renderCompressed(exp("e ? 1 : 2")) == "e?1:2"));
 
     "DebuggerStatement";
-    ((render(stmt("debugger;")) == "debugger;"));
+    ((renderCompressed(stmt("debugger;")) == "debugger;"));
 
     "DeleteExpression";
-    ((render(exp("delete me")) == "delete me"));
+    ((renderCompressed(exp("delete me")) == "delete me"));
 
     "DoStatement";
-    ((render(stmt("do{1;}while(2)")) == "do {1;} while(2)"));
+    ((renderCompressed(stmt("do{1;}while(2)")) == "do {1;} while(2)"));
 
     "Elision";
-    ((render(exp("[,,,]")) == "[,,,]"));
+    ((renderCompressed(exp("[,,,]")) == "[,,,]"));
 
     "EmptyStatement";
-    ((render(stmt(";")) == ";"));
+    ((renderCompressed(stmt(";")) == ";"));
 
     {
         "EqualityExpression"; "#";
 
-        ((render(exp("1==1")) == "1==1"));
-        ((render(exp("1===1")) == "1===1"));
-        ((render(exp("1!=1")) == "1!=1"));
-        ((render(exp("1!==1")) == "1!==1"));
+        ((renderCompressed(exp("1==1")) == "1==1"));
+        ((renderCompressed(exp("1===1")) == "1===1"));
+        ((renderCompressed(exp("1!=1")) == "1!=1"));
+        ((renderCompressed(exp("1!==1")) == "1!==1"));
     }
 
 
     "ExponentiationExpression";
-    ((render(exp("a**2")) == "a**2"));
+    ((renderCompressed(exp("a**2")) == "a**2"));
 
     "ExportClause";
-    ((render(stmt("export {a};")) == "export {a};"));
+    ((renderCompressed(stmt("export {a};")) == "export {a};"));
 
     "ExportDeclaration";
-    ((render(stmt("export {a} from 'module';")) == "export {a} from'module';"));
+    ((renderCompressed(stmt("export {a} from 'module';")) == "export {a} from'module';"));
 
     "ExpressionList";
-    ((render(exp("1,2,3,4;")) == "1,2,3,4"));
+    ((renderCompressed(exp("1,2,3,4;")) == "1,2,3,4"));
 
     "ExpressionStatement";
-    ((render(stmt("1;")) == "1;"));
+    ((renderCompressed(stmt("1;")) == "1;"));
 
     "FinallyClause";
-    ((render(stmt("try{}finally{}")) == "try{}finally{}"));
+    ((renderCompressed(stmt("try{}finally{}")) == "try{}finally{}"));
 
     "ForInStatement";
-    ((render(stmt("for(const i in d){}")) == "for(const i in d){}"));
+    ((renderCompressed(stmt("for(const i in d){}")) == "for(const i in d){}"));
 
     "ForOfStatement";
-    ((render(stmt("for(const u of a){}")) == "for(const u of a){}"));
+    ((renderCompressed(stmt("for(const u of a){}")) == "for(const u of a){}"));
 
 
     {
         "ForStatement"; "#";
 
-        ((render(stmt("for (var i = 0; i < 1; i++){}")) == "for(var i=0;i<1;i++){}"));
+        ((renderCompressed(stmt("for (var i = 0; i < 1; i++){}")) == "for(var i=0;i<1;i++){}"));
 
-        ((render(stmt("for (;;){}")) == "for(;;){}"));
+        ((renderCompressed(stmt("for (;;){}")) == "for(;;){}"));
 
-        ((render(stmt("for (let i = 1, b; i < b;){b++;}")) == "for(let i=1,b;i<b;){b++;}"));
+        ((renderCompressed(stmt("for (let i = 1, b; i < b;){b++;}")) == "for(let i=1,b;i<b;){b++;}"));
 
-        ((render(stmt("for(a;i < b;){b++;}")) == "for(a;i<b;){b++;}"));
+        ((renderCompressed(stmt("for(a;i < b;){b++;}")) == "for(a;i<b;){b++;}"));
     }
 
     "FormalParameters: a,b,c";
-    ((render(stmt("function d(a,b,c){}")) == "function d(a,b,c){}"));
+    ((renderCompressed(stmt("function d(a,b,c){}")) == "function d(a,b,c){}"));
 
     "FromClause";
-    ((render(stmt("import d from 'module';")) == "import d from'module';"));
+    ((renderCompressed(stmt("import d from 'module';")) == "import d from'module';"));
 
     "FunctionDeclaration";
-    ((render(stmt("async function * d (a,b,c) {const d = a; return d;}")) == "async function* d(a,b,c){const d=a;return d;}"));
+    ((renderCompressed(stmt("async function * d (a,b,c) {const d = a; return d;}")) == "async function* d(a,b,c){const d=a;return d;}"));
 
     "FunctionExpression";
-    ((render(exp("(async function * d (a,b,c) {const d = a; return d;})")) == "(async function* d(a,b,c){const d=a;return d;})"));
+    ((renderCompressed(exp("(async function * d (a,b,c) {const d = a; return d;})")) == "(async function* d(a,b,c){const d=a;return d;})"));
 
     "FunctionBody";
-    ((render(stmt("function d(){a}")) == "function d(){a;}"));
+    ((renderCompressed(stmt("function d(){a}")) == "function d(){a;}"));
 
     "GetterMethod";
-    ((render(exp("({get d(){a}})")) == "({get d(){a;}})"));
+    ((renderCompressed(exp("({get d(){a}})")) == "({get d(){a;}})"));
 
     "IfStatement";
-    ((render(stmt("if(true){}")) == "if(true){}"));
+    ((renderCompressed(stmt("if(true){}")) == "if(true){}"));
 
     "ImportClause";
-    ((render(stmt("import {a as d} from 'm'")) == "import {a as d} from'm';"));
+    ((renderCompressed(stmt("import {a as d} from 'm'")) == "import {a as d} from'm';"));
 
     "ImportDeclaration";
-    ((render(stmt("import {a as d} from 'm'")) == "import {a as d} from'm';"));
+    ((renderCompressed(stmt("import {a as d} from 'm'")) == "import {a as d} from'm';"));
 
     "InExpression";
-    ((render(exp("a in b")) == "a in b"));
+    ((renderCompressed(exp("a in b")) == "a in b"));
 
     "InstanceOfExpression";
-    ((render(exp("a instanceof b")) == "a instanceof b"));
+    ((renderCompressed(exp("a instanceof b")) == "a instanceof b"));
 
     "LabeledStatement";
-    ((render(stmt("label: {} ")) == "label:{}"));
+    ((renderCompressed(stmt("label: {} ")) == "label:{}"));
 
     {
         "LexicalBinding"; "#";
 
-        ((render(stmt("for(const d of a){}")) == "for(const d of a){}"));
+        ((renderCompressed(stmt("for(const d of a){}")) == "for(const d of a){}"));
 
-        ((render(stmt("for(let d in a){}")) == "for(let d in a){}"));
+        ((renderCompressed(stmt("for(let d in a){}")) == "for(let d in a){}"));
     }
 
     {
         "LexicalDeclaration"; "#";
 
-        ((render(stmt("let d = 0, i = [...d];")) == "let d=0,i=[...d];"));
+        ((renderCompressed(stmt("let d = 0, i = [...d];")) == "let d=0,i=[...d];"));
 
-        ((render(stmt("const d = 0, i = [...d];")) == "const d=0,i=[...d];"));
+        ((renderCompressed(stmt("const d = 0, i = [...d];")) == "const d=0,i=[...d];"));
     }
 
     {
         "LogicalExpression"; "#";
 
-        ((render(exp("a || b")) == "a||b"));
+        ((renderCompressed(exp("a || b")) == "a||b"));
 
-        ((render(exp("1 && 2")) == "1&&2"));
+        ((renderCompressed(exp("1 && 2")) == "1&&2"));
     }
 
     "MemberExpression";
-    ((render(exp("a.b['dd']")) == "a.b['dd']"));
+    ((renderCompressed(exp("a.b['dd']")) == "a.b['dd']"));
 
     {
         "Method"; "#";
 
-        ((render(exp("({d(){a;}})")) == "({d(){a;}})"));
+        ((renderCompressed(exp("({d(){a;}})")) == "({d(){a;}})"));
 
-        ((render(exp("({async d(){a;}})")) == "({async d(){a;}})"));
+        ((renderCompressed(exp("({async d(){a;}})")) == "({async d(){a;}})"));
 
-        ((render(exp("({async * d(){a;}})")) == "({async *d(){a;}})"));
+        ((renderCompressed(exp("({async * d(){a;}})")) == "({async *d(){a;}})"));
 
-        ((render(exp("({* d(){a;}})")) == "({*d(){a;}})"));
+        ((renderCompressed(exp("({* d(){a;}})")) == "({*d(){a;}})"));
     }
 
     {
         "MultiplicativeExpression"; "#";
 
-        ((render(exp("1/1")) == "1/1"));
-        ((render(exp("1*1")) == "1*1"));
+        ((renderCompressed(exp("1/1")) == "1/1"));
+        ((renderCompressed(exp("1*1")) == "1*1"));
     }
 
     "NameSpaceImport";
-    ((render(stmt("import * as d from 'm'")) == "import * as d from'm';"));
+    ((renderCompressed(stmt("import * as d from 'm'")) == "import * as d from'm';"));
 
     "NamedImports";
-    ((render(stmt("import {a as d} from 'm'")) == "import {a as d} from'm';"));
+    ((renderCompressed(stmt("import {a as d} from 'm'")) == "import {a as d} from'm';"));
 
     "NewExpression";
-    ((render(exp("new d")) == "new d"));
+    ((renderCompressed(exp("new d")) == "new d"));
 
     "NewInstanceExpression";
-    ((render(exp("new d()")) == "new d()"));
+    ((renderCompressed(exp("new d()")) == "new d()"));
 
     "NewTarget";
-    ((render(exp("new.target")) == "new.target"));
+    ((renderCompressed(exp("new.target")) == "new.target"));
 
     "NullLiteral";
-    ((render(exp("null")) == "null"));
+    ((renderCompressed(exp("null")) == "null"));
 
 
     {
         "NumericLiteral"; "#";
 
-        ((render(exp(1)) == 1));
+        ((renderCompressed(exp(1)) == 1));
 
-        ((render(exp("0o1234")) == "0o1234"));
+        ((renderCompressed(exp("0o1234")) == "0o1234"));
 
-        ((render(exp("-0x1")) == "-0x1"));
+        ((renderCompressed(exp("-0x1")) == "-0x1"));
 
-        ((render(exp("0X1")) == "0X1"));
+        ((renderCompressed(exp("0X1")) == "0X1"));
 
-        ((render(exp("0b11001")) == "0b11001"));
+        ((renderCompressed(exp("0b11001")) == "0b11001"));
 
-        ((render(exp("0B11001")) == "0B11001"));
+        ((renderCompressed(exp("0B11001")) == "0B11001"));
 
-        ((render(exp("-0.256")) == "-0.256"));
+        ((renderCompressed(exp("-0.256")) == "-0.256"));
 
-        ((render(exp("0.256")) == "0.256"));
+        ((renderCompressed(exp("0.256")) == "0.256"));
 
-        ((render(exp("256.25e123")) == "256.25e123"));
+        ((renderCompressed(exp("256.25e123")) == "256.25e123"));
     }
 
     "ObjectLiteral";
-    ((render(exp("({})")) == "({})"));
+    ((renderCompressed(exp("({})")) == "({})"));
 
     "Parameters";
-    ((render(exp("(a,b,c)=>{;};")) == "(a,b,c)=>{;}"));
+    ((renderCompressed(exp("(a,b,c)=>{;};")) == "(a,b,c)=>{;}"));
 
     "Parenthesized";
-    ((render(exp("(a)")) == "(a)"));
+    ((renderCompressed(exp("(a)")) == "(a)"));
 
     {
         "PostExpression"; "#";
-        ((render(exp("p++")) == "p++"));
-        ((render(exp("p++")) == "p++"));
+        ((renderCompressed(exp("p++")) == "p++"));
+        ((renderCompressed(exp("p++")) == "p++"));
     }
 
     {
         "PreExpression"; "#";
-        ((render(exp("++p")) == "++p"));
-        ((render(exp("--p")) == "--p"));
+        ((renderCompressed(exp("++p")) == "++p"));
+        ((renderCompressed(exp("--p")) == "--p"));
     }
 
     "PropertyBinding";
-    ((render(exp("({b:2})")) == "({b:2})"));
+    ((renderCompressed(exp("({b:2})")) == "({b:2})"));
 
     "RegexLiteral";
-    ((render(exp("/#\\d\\d/g")) == "/#\\d\\d/g"));
+    ((renderCompressed(exp("/#\\d\\d/g")) == "/#\\d\\d/g"));
 
     {
         "RelationalExpression"; "#";
 
-        ((render(exp("a<b")) == "a<b"));
+        ((renderCompressed(exp("a<b")) == "a<b"));
 
-        ((render(exp("a>b")) == "a>b"));
+        ((renderCompressed(exp("a>b")) == "a>b"));
 
-        ((render(exp("a<=b")) == "a<=b"));
+        ((renderCompressed(exp("a<=b")) == "a<=b"));
 
-        ((render(exp("a>=b")) == "a>=b"));
+        ((renderCompressed(exp("a>=b")) == "a>=b"));
     }
 
     "ReturnStatement";
-    ((render(stmt("return true;")) == "return true;"));
+    ((renderCompressed(stmt("return true;")) == "return true;"));
 
     "Script";
-    ((render(parser("var i = 0; i++; return 0;")) == "var i=0;i++;return 0;"));
+    ((renderCompressed(parser("var i = 0; i++; return 0;")) == "var i=0;i++;return 0;"));
 
     "Module";
-    ((render(parser("import a from 's'; var i = 0; i++; return 0;")) == "import a from's';var i=0;i++;return 0;"));
+    ((renderCompressed(parser("import a from 's'; var i = 0; i++; return 0;")) == "import a from's';var i=0;i++;return 0;"));
 
     "SetterMethod";
-    ((render(exp("({set a(a){test;}})")) == "({set a(a){test;}})"));
+    ((renderCompressed(exp("({set a(a){test;}})")) == "({set a(a){test;}})"));
 
     {
         "ShiftExpression"; "#";
 
-        ((render(exp("1<<b")) == "1<<b"));
-        ((render(exp("1>>b")) == "1>>b"));
-        ((render(exp("1>>>b")) == "1>>>b"));
+        ((renderCompressed(exp("1<<b")) == "1<<b"));
+        ((renderCompressed(exp("1>>b")) == "1>>b"));
+        ((renderCompressed(exp("1>>>b")) == "1>>>b"));
 
     }
 
     "Specifier";
-    ((render(stmt("import {a as b} from 'g'")) == "import {a as b} from'g';"));
+    ((renderCompressed(stmt("import {a as b} from 'g'")) == "import {a as b} from'g';"));
 
     "Spread";
-    ((render(exp("[...a]")) == "[...a]"));
+    ((renderCompressed(exp("[...a]")) == "[...a]"));
 
     "StringLiteral";
-    ((render(exp('"a"')) == '"a"'));
+    ((renderCompressed(exp('"a"')) == '"a"'));
 
     "SuperCall";
-    ((render(exp("super(a,b,c)")) == "super(a,b,c)"));
+    ((renderCompressed(exp("super(a,b,c)")) == "super(a,b,c)"));
 
     "SuperExpression";
-    ((render(exp("super.member")) == "super.member"));
+    ((renderCompressed(exp("super.member")) == "super.member"));
 
     "SwitchStatement";
-    ((render(stmt("switch(a){default:2;}")) == "switch(a){default:2;}"));
+    ((renderCompressed(stmt("switch(a){default:2;}")) == "switch(a){default:2;}"));
 
     "Template";
-    ((render(exp("\`This is a template\`")) == "\`This is a template\`"));
+    ((renderCompressed(exp("\`This is a template\`")) == "\`This is a template\`"));
 
     "TemplateHead";
-    ((render(exp("\`This ${is} a template\`")) == "\`This ${is} a template\`"));
+    ((renderCompressed(exp("\`This ${is} a template\`")) == "\`This ${is} a template\`"));
 
     "TemplateMiddle";
-    ((render(exp("\`This is \${0} \${0} a template\`")) == "\`This is \${0} \${0} a template\`"));
+    ((renderCompressed(exp("\`This is \${0} \${0} a template\`")) == "\`This is \${0} \${0} a template\`"));
 
     "TemplateTail";
-    ((render(exp("\`This is ${is} a template\`")) == "\`This is ${is} a template\`"));
+    ((renderCompressed(exp("\`This is ${is} a template\`")) == "\`This is ${is} a template\`"));
 
     "ThisLiteral";
-    ((render(exp("this")) == "this"));
+    ((renderCompressed(exp("this")) == "this"));
 
     "ThrowStatement";
-    ((render(stmt("throw new Error('I\\'ve been thrown!');")) == "throw new Error('I\\'ve been thrown!');"));
+    ((renderCompressed(stmt("throw new Error('I\\'ve been thrown!');")) == "throw new Error('I\\'ve been thrown!');"));
 
     "TryStatement";
-    ((render(stmt("try{1;}catch(e){1;}finally{1;}")) == "try{1;}catch(e){1;}finally{1;}"));
+    ((renderCompressed(stmt("try{1;}catch(e){1;}finally{1;}")) == "try{1;}catch(e){1;}finally{1;}"));
 
     "TypeofExpression";
-    ((render(exp("typeof a")) == "typeof a"));
+    ((renderCompressed(exp("typeof a")) == "typeof a"));
 
     "UnaryExpression";
-    ((render(exp("+1")) == "+1"));
+    ((renderCompressed(exp("+1")) == "+1"));
 
     "VariableDeclaration";
-    ((render(stmt("for(var i =0;;)1;")) == "for(var i=0;;)1;"));
+    ((renderCompressed(stmt("for(var i =0;;)1;")) == "for(var i=0;;)1;"));
 
     "VariableStatement";
-    ((render(stmt("var d = 2;")) == "var d=2;"));
+    ((renderCompressed(stmt("var d = 2;")) == "var d=2;"));
 
     "VoidExpression";
-    ((render(exp("void 2;")) == "void 2"));
+    ((renderCompressed(exp("void 2;")) == "void 2"));
 
     "WhileStatement";
-    ((render(stmt("while(2)1;")) == "while(2)1;"));
+    ((renderCompressed(stmt("while(2)1;")) == "while(2)1;"));
 
     "WithStatement";
-    ((render(stmt("with(1)2;")) == "with(1)2;"));
+    ((renderCompressed(stmt("with(1)2;")) == "with(1)2;"));
 
     "YieldExpression";
-    ((render(exp("yield 2")) == "yield 2"));
+    ((renderCompressed(exp("yield 2")) == "yield 2"));
 }
