@@ -56,5 +56,10 @@ export interface MinTreeNode {
      * 
      * Available on binary expression nodes
      */
-    symbol?;
+    symbol?: string;
+
+    /**
+     * Number of commas in an Elision node.
+     */
+    count?: number;
 }
