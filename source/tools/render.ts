@@ -218,7 +218,7 @@ function buildRendererFromTemplateString(template_pattern: string): RenderAction
                                 for (const child_map of sub_map) {
                                     addNewLines(map, line_split_count);
                                     addNewColumn(map, space_fill.length, source_index);
-                                    getLastLine(map).push(...child_map[0]);
+                                    getLastLine(map).push(...(child_map[0] || []));
                                     map.push(...child_map.slice(1));
                                     if (i++ < l)
                                         addNewColumn(map, dls);
@@ -234,7 +234,7 @@ function buildRendererFromTemplateString(template_pattern: string): RenderAction
                                 const l = sub_map.length;
                                 let i = 0;
                                 for (const child_map of sub_map) {
-                                    getLastLine(map).push(...child_map[0]);
+                                    getLastLine(map).push(...(child_map[0] || []));
                                     map.push(...child_map.slice(1));
                                     if (i++ < l)
                                         addNewColumn(map, delim_string.length);
