@@ -82,7 +82,7 @@ export function ext(node: MinTreeNode, EXTEND_ENTIRE_TREE: boolean = false, pare
 
         const object = { ast: <MinTreeExtendedNode>null };
 
-        traverse(node, "nodes").then(replace((node, parent, index) => {
+        traverse(node, "nodes").replace((node, parent, index) => {
 
             if (!Extenders)
                 Extenders = ExtenderBuilder(MinTreeNodeDefinitions);
@@ -102,7 +102,7 @@ export function ext(node: MinTreeNode, EXTEND_ENTIRE_TREE: boolean = false, pare
 
             return replaced;
 
-        })).then(extract(object)).run();
+        }).extract(object).run();
 
         return object.ast;
     } else {
