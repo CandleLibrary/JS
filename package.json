@@ -1,6 +1,6 @@
 {
     "name": "@candlefw/js",
-    "version": "0.1.6-dev",
+    "version": "0.1.6-dev-1",
     "description": "Javascript Parser",
     "main": "./build/library/ecma.js",
     "types": "./build/types/ecma.d.ts",
@@ -41,7 +41,7 @@
         "@candlefw/wind": "0.4.1-dev"
     },
     "devDependencies": {
-        "@candlefw/test": "0.1.0-alpha",
+        "@candlefw/test": "latest",
         "rollup": "2.0.6",
         "rollup-plugin-commonjs": "latest",
         "rollup-plugin-gzip": "2.3.0",
