@@ -1,23 +1,7 @@
 import { MinTreeNodeDefinition } from "./mintree_node_definition.js";
 import { MinTreeNodeType } from "../types/mintree_node_type.js";
+import { FormatRule } from "@candlefw/conflagrate";
 
-export const enum MinTreeNodeRenderClass {
-    MIN_LIST_ELE_LIMIT_SHIFT = 0,
-
-    MIN_LIST_ELE_LIMIT = 1 << MIN_LIST_ELE_LIMIT_SHIFT,
-
-    LIST_SPLIT_SHIFT = 4,
-    LIST_SPLIT = 1 << LIST_SPLIT_SHIFT,
-
-    NEW_LINES_SHIFT = 8,
-    NEW_LINES = 1 << NEW_LINES_SHIFT,
-
-    INDENT_SHIFT = 12,
-    INDENT = 1 << INDENT_SHIFT,
-
-    OPTIONAL_SPACE_SHIFT = 16,
-    OPTIONAL_SPACE = 1 << OPTIONAL_SPACE_SHIFT,
-}
 
 export function createNodeDefinitions(
     bd: MinTreeNodeDefinition[] = [],
@@ -25,7 +9,7 @@ export function createNodeDefinitions(
         type?: MinTreeNodeType,
         ext_name?: string[],
         format_string?: string | object,
-        format_rules?: MinTreeNodeRenderClass;
+        format_rules?: FormatRule;
     }>): MinTreeNodeDefinition[] {
     return args.reduce(
         (ret, def) => {

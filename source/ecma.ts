@@ -1,10 +1,12 @@
-import { MinTreeNodeDefinitions, createNodeDefinitions, MinTreeNodeRenderClass } from "./nodes/mintree_node_extensions.js";
-import { MinTreeNode } from "./types/mintree_node.js";
+import { MinTreeNodeDefinitions, createNodeDefinitions } from "./nodes/mintree_node_extensions.js";
+import { MinTreeNode, FullMintreeNode } from "./types/mintree_node.js";
 import { MinTreeNodeDefinition } from "./nodes/mintree_node_definition.js";
-import { render, RenderFormatBuilder, RendererBuilder, renderCompressed, renderWithFormatting, renderWithSourceMap, renderWithFormattingAndSourceMap } from "./tools/render.js";
+import { renderCompressed, renderWithFormatting, renderWithSourceMap, renderWithFormattingAndSourceMap } from "./tools/render.js";
 import { MinTreeNodeType, MinTreeNodeClass } from "./types/mintree_node_type.js";
 import { ext } from "./tools/extend.js";
 import { expression_parser, ecmascript_parser, statement_parser } from "./parser/parser.js";
+import env, { JSParserEnv } from "./parser/env.js";
+
 
 const extendAll = node => ext(node, true);
 
@@ -27,12 +29,10 @@ if (global_object) {
         render: {
             compressed: renderCompressed,
             withFormatting: renderWithFormatting,
+
             withSourceMap: renderWithSourceMap,
             withFormattingAndSourceMap: renderWithFormattingAndSourceMap,
-
-            createNodeDefinitions,
-            RenderFormatBuilder,
-            RendererBuilder,
+            createNodeDefinitions
         }
     };
     //@ts-ignore
@@ -40,17 +40,20 @@ if (global_object) {
         //@ts-ignore
         global_object.cfw = { js: cfw_js_data };
         //@ts-ignore
-    } else Object.assign(global.cfw, { js: cfw_js_data });
+    } else Object.assign(global_object.cfw, { js: cfw_js_data });
 }
-
 export {
+    JSParserEnv,
     MinTreeNodeClass,
     MinTreeNodeType,
     MinTreeNodeDefinition,
     MinTreeNodeDefinitions,
-    MinTreeNodeRenderClass,
     MinTreeNode,
+    FullMintreeNode,
 
+
+
+    env as JSParserEnvironment,
     ecmascript_parser as parser,
     expression_parser as exp,
     statement_parser as stmt,
@@ -62,7 +65,5 @@ export {
 
     ext,
     extendAll,
-    createNodeDefinitions,
-    RenderFormatBuilder as buildRenderFormatArray,
-    RendererBuilder as buildRendererArray
+    createNodeDefinitions
 };
