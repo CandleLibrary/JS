@@ -14,7 +14,7 @@ function ConvertArrowParameters(node: MinTreeNode) {
         } else if (type == MinTreeNodeType.AssignmentExpression
             && sub.nodes[0].type & MinTreeNodeClass.IDENTIFIER) {
             sub.nodes[0].type = MinTreeNodeType.IdentifierBinding;
-        } else
+        } else if (type == MinTreeNodeType.ObjectLiteral || type == MinTreeNodeType.ArrayLiteral) { } else
             sub.pos.throw(`Unexpected ${MinTreeNodeType[sub.type]} in arrow function parameters`);
     }
 }
@@ -25,7 +25,15 @@ type JSParserEnv = ParserEnvironment & {
      */
     typ: any;
     cls: any;
+    functions: {
+        parseString: (a, b, lex: Lexer) => void,
+        parseTemplate: (a, b, lex: Lexer) => void,
+        reinterpretArrowParameters: (symbol: any) => MinTreeNode;
+        reinterpretParenthesized: (symbol: any) => MinTreeNode;
+        buildJSAST: (node: MinTreeNode) => MinTreeNode;
+    };
 };
+export { JSParserEnv };
 const env = <JSParserEnv>{
     ASI: true,
     typ: MinTreeNodeType,
@@ -48,8 +56,11 @@ const env = <JSParserEnv>{
         },
 
         parseString: (a, b, lex) => {
+
+
             const pk = lex.pk,
                 end = lex.tx;
+
             lex.next();
 
             while (!pk.END && pk.tx != end) {
@@ -102,7 +113,8 @@ const env = <JSParserEnv>{
         },
 
         defaultError: (tk, env: JSParserEnv, output, lex, prv_lex, ss, lu) => {
-
+            //Comments
+            const t = lex.copy();
             if (lex.tx == "//" || lex.tx == "/*") {
                 if (lex.tx == "//") {
                     while (!lex.END && lex.ty !== lex.types.nl)
@@ -114,9 +126,12 @@ const env = <JSParserEnv>{
                     }
                 } else
                     if (lex.tx == "/*") {
-                        //@ts-ignore
-                        while (!lex.END && (lex.tx !== "*" || lex.pk.tx !== "/"))
+                        while (!lex.END) {
+                            //@ts-ignore
+                            if ((lex.tx == "*" || lex.tx == "/*") && lex.pk.tx == "/")
+                                break;
                             lex.next();
+                        }
                         lex.next(); //"*"
                     }
 
