@@ -63,3 +63,10 @@ export interface MinTreeNode {
      */
     count?: number;
 }
+
+export interface ExportDeclaration extends MinTreeNode {
+    //@ts-ignore
+}
+
+
+export type FullMintreeNode = MinTreeNode | ExportDeclaration;
