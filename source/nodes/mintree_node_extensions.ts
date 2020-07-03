@@ -14,7 +14,7 @@ export function createNodeDefinitions(
     return args.reduce(
         (ret, def) => {
             if (def.type) {
-                const index = def.type >>> 24;
+                const index = def.type >>> 23;
                 if (def.ext_name)
                     ret[index].getters = def.ext_name;
                 if (def.format_string)
@@ -24,9 +24,9 @@ export function createNodeDefinitions(
             }
             return ret;
         },
-        new Array(255)
+        new Array(512)
             .fill(null)
-            .map((e, i) => Object.assign({}, bd[i] || new MinTreeNodeDefinition(i << 24, [], "", 0)))
+            .map((e, i) => Object.assign({}, bd[i] || new MinTreeNodeDefinition(i << 23, [], "", 0)))
     );
 }
 
@@ -71,6 +71,215 @@ export const MinTreeNodeDefinitions: Array<MinTreeNodeDefinition> = createNodeDe
         ext_name: [],
         format_string: "@(NEGATIVE,-)@value%n",
     },
+
+
+    const enum DATA_DIRECTION {
+        DOWN = 1,
+        UP = 2
+    }
+    
+    function updateChildren(data, flags) {
+    
+        for (const name in data) {
+    
+            if (typeof data[name] == "undefined") {
+    
+                let i = 0;
+    
+                for (const chup of this.chups) {
+    
+                    if (chup[name])
+                        this.ch[i].update({ [chup[name]]: data[name] }, flags | DATA_FLOW_FLAG.FROM_PARENT);
+                    i++;
+                }
+            }
+        }
+    }
+    
+    function updateParent(data) {
+        if (this.par)
+            updateFromChild.call(this.par, data);
+    }
+    
+    function updateFromParent(local_index, v, flags) {
+    
+        if (flags >> 24 == this.ci + 1)
+         
+
+
+const enum DATA_DIRECTION {
+    DOWN = 1,
+    UP = 2
+}
+
+function updateChildren(data, flags) {
+
+    for (const name in data) {
+
+        if (typeof data[name] == "undefined") {
+
+            let i = 0;
+
+            for (const chup of this.chups) {
+
+                if (chup[name])
+                    this.ch[i].update({ [chup[name]]: data[name] }, flags | DATA_FLOW_FLAG.FROM_PARENT);
+                i++;
+            }
+        }
+    }
+}
+
+function updateParent(data) {
+    if (this.par)
+        updateFromChild.call(this.par, data);
+}
+
+function updateFromParent(local_index, v, flags) {
+
+    if (flags >> 24 == this.ci + 1)
+       
+
+
+const enum DATA_DIRECTION {
+    DOWN = 1,
+    UP = 2
+}
+
+function updateChildren(data, flags) {
+
+    for (const name in data) {
+
+        if (typeof data[name] == "undefined") {
+
+            let i = 0;
+
+            for (const chup of this.chups) {
+
+                if (chup[name])
+                    this.ch[i].update({ [chup[name]]: data[name] }, flags | DATA_FLOW_FLAG.FROM_PARENT);
+                i++;
+            }
+        }
+    }
+}
+
+function updateParent(data) {
+    if (this.par)
+        updateFromChild.call(this.par, data);
+}
+
+function updateFromParent(local_index, v, flags) {
+
+    if (flags >> 24 == this.ci + 1)
+        return;
+
+    this["u" + local_index](v, DATA_FLOW_FLAG.FROM_PARENT | flags);
+}
+
+function syncParentMethod(this_index, parent_method_index, child_index) {
+
+    this.ci = child_index;
+    this.pui[this_index] = this.par["u" + parent_method_index];
+}
+
+
+function updateFromChild(local_index, val, flags) {
+
+    const method = this.pui[local_index];
+
+    if (typeof method == "function")
+        method.call(this.par, val, flags | DATA_FLOW_FLAG.FROM_CHILD | ((this.ci + 1) << 24));
+
+};
+
+function updateModel() {
+    // Go through the model's props and test whether they are different then the 
+    // currently cached variables
+    const model = this.model;
+
+    for (const name in this.nlu) {
+
+        if ((this.nlu[name] >>> 24) & DATA_FLOW_FLAG.FROM_MODEL) {
+            const index = this.nlu[name] & 0xFFFFFF;
+            const v = this[index];
+
+            if (model[name] && model[name] !== v)
+                this.update({ [name]: model[name] }, DATA_FLOW_FLAG.FROM_MODEL);
+        }
+    }
+}
+    this["u" + local_index](v, DATA_FLOW_FLAG.FROM_PARENT | flags);
+}
+
+function syncParentMethod(this_index, parent_method_index, child_index) {
+
+    this.ci = child_index;
+    this.pui[this_index] = this.par["u" + parent_method_index];
+}
+
+
+function updateFromChild(local_index, val, flags) {
+
+    const method = this.pui[local_index];
+
+    if (typeof method == "function")
+        method.call(this.par, val, flags | DATA_FLOW_FLAG.FROM_CHILD | ((this.ci + 1) << 24));
+
+};
+
+function updateModel() {
+    // Go through the model's props and test whether they are different then the 
+    // currently cached variables
+    const model = this.model;
+
+    for (const name in this.nlu) {
+
+        if ((this.nlu[name] >>> 24) & DATA_FLOW_FLAG.FROM_MODEL) {
+            const index = this.nlu[name] & 0xFFFFFF;
+            const v = this[index];
+
+            if (model[name] && model[name] !== v)
+                this.update({ [name]: model[name] }, DATA_FLOW_FLAG.FROM_MODEL);
+        }
+    }
+}   return;
+    
+        this["u" + local_index](v, DATA_FLOW_FLAG.FROM_PARENT | flags);
+    }
+    
+    function syncParentMethod(this_index, parent_method_index, child_index) {
+    
+        this.ci = child_index;
+        this.pui[this_index] = this.par["u" + parent_method_index];
+    }
+    
+    
+    function updateFromChild(local_index, val, flags) {
+    
+        const method = this.pui[local_index];
+    
+        if (typeof method == "function")
+            method.call(this.par, val, flags | DATA_FLOW_FLAG.FROM_CHILD | ((this.ci + 1) << 24));
+    
+    };
+    
+    function updateModel() {
+        // Go through the model's props and test whether they are different then the 
+        // currently cached variables
+        const model = this.model;
+    
+        for (const name in this.nlu) {
+    
+            if ((this.nlu[name] >>> 24) & DATA_FLOW_FLAG.FROM_MODEL) {
+                const index = this.nlu[name] & 0xFFFFFF;
+                const v = this[index];
+    
+                if (model[name] && model[name] !== v)
+                    this.update({ [name]: model[name] }, DATA_FLOW_FLAG.FROM_MODEL);
+            }
+        }
+    }
     {
         type: MinTreeNodeType.BindingExpression,
         ext_name: ["property", "expression"],
