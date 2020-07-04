@@ -61,7 +61,7 @@ function ExtenderBuilder(node_definitions: Array<MinTreeNodeDefinition>): Array<
 
         const extender = buildExtender(node_definition);
 
-        extenders[node_definition.type >>> 24] = extender;
+        extenders[node_definition.type >>> 23] = extender;
     }
 
     return extenders;
@@ -87,7 +87,7 @@ export function ext(node: MinTreeNode, EXTEND_ENTIRE_TREE: boolean = false, pare
             if (!Extenders)
                 Extenders = ExtenderBuilder(MinTreeNodeDefinitions);
 
-            const extender = Extenders[node.type >>> 24];
+            const extender = Extenders[node.type >>> 23];
 
             if (!extender)
                 throw new Error(`Cannot find Node Extender for MinTree node type ${MinTreeNodeType[node.type]}`);
@@ -113,7 +113,7 @@ export function ext(node: MinTreeNode, EXTEND_ENTIRE_TREE: boolean = false, pare
         if (!Extenders)
             Extenders = ExtenderBuilder(MinTreeNodeDefinitions);
 
-        const extender = Extenders[node.type >>> 24];
+        const extender = Extenders[node.type >>> 23];
 
         if (!extender)
             throw new Error(`Cannot find Node Extender for MinTree node type ${node.type}`);
