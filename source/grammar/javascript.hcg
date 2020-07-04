@@ -8,7 +8,7 @@
 
 @ERROR /* //
 
-@IMPORT @candlefw/hydrocarbon/source/grammars/misc/default-productions.hcg as def 
+@IMPORT ../../node_modules/@candlefw/hydrocarbon/source/grammars/misc/default-productions.hcg as def 
 
 ###############################################################################################################
 #### Repeated Functions
@@ -243,7 +243,7 @@
 # https://www.ecma-international.org/ecma-262/10.0/index.html#sec-return-statement
 ###############################################################################################################
 
-    <> return_statement → τreturn expression? ;                                                                 ↦r { { type:env.typ.ReturnStatement, nodes:[$$sym2], pos } }
+    <> return_statement → τreturn expression? ;                                                                 ↦r { { type:env.typ.ReturnStatement, nodes:[$sym2], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/10.0/index.html#sec-throw-statement
