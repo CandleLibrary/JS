@@ -57,7 +57,6 @@ const env = <JSParserEnv>{
 
         parseString: (a, b, lex) => {
 
-
             const pk = lex.pk,
                 end = lex.tx;
 
@@ -126,12 +125,9 @@ const env = <JSParserEnv>{
                     }
                 } else
                     if (lex.tx == "/*") {
-                        while (!lex.END) {
-                            //@ts-ignore
-                            if ((lex.tx == "*" || lex.tx == "/*") && lex.pk.tx == "/")
-                                break;
+                        //@ts-ignore
+                        while (!lex.END && (lex.tx !== "*" || lex.pk.tx !== "/"))
                             lex.next();
-                        }
                         lex.next(); //"*"
                     }
 
