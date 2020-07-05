@@ -1,6 +1,6 @@
 import { MinTreeNodeType, MinTreeNodeClass } from "../types/mintree_node_type.js";
 import { MinTreeNode } from "../types/mintree_node.js";
-import { ParserEnvironment } from "@candlefw/hydrocarbon";
+import { ParserEnvironment } from "@candlefw/hydrocarbon/build/library/runtime";
 import { Lexer } from "@candlefw/wind";
 
 function ConvertArrowParameters(node: MinTreeNode) {

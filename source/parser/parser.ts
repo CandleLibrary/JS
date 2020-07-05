@@ -1,4 +1,4 @@
-import { lrParse } from "@candlefw/hydrocarbon";
+import { lrParse } from "@candlefw/hydrocarbon/build/library/runtime";
 import { Lexer } from "@candlefw/wind";
 import { traverse, bit_filter } from "@candlefw/conflagrate";
 
