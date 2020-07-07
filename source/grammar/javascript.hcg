@@ -1,4 +1,4 @@
-@NAME ECMAScriptParser
+@NAME JavaScriptParser
 
 @EXT js
 
@@ -605,10 +605,7 @@
     <> bitwise_and_expression → equality_expression 
         │ bitwise_and_expression & equality_expression                                                          ↦r { { type: env.typ.BitwiseExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
 
-###############################################################################################################
-# https://www.ecma-international.org/ecma-262/10.0/index.html#sec-equality-operators
-###############################################################################################################
-
+##########################################################################################call_expression
     <> equality_expression → relational_expression 
         │ equality_expression == relational_expression                                                          ↦r { { type: env.typ.EqualityExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
         │ equality_expression != relational_expression                                                          ↦r { { type: env.typ.EqualityExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }

@@ -1,12 +1,11 @@
-import { lrParse } from "@candlefw/hydrocarbon/build/library/runtime";
+import { lrParse } from "@candlefw/hydrocarbon/build/library/runtime.js";
 import { Lexer } from "@candlefw/wind";
 import { traverse, bit_filter } from "@candlefw/conflagrate";
 
 import { MinTreeNode } from "../types/mintree_node";
 import javascript_parser_data from "./ecmascript.js";
-import { MinTreeNodeClass, MinTreeNodeType } from "../types/mintree_node_type.js";
+import { MinTreeNodeClass } from "../types/mintree_node_type.js";
 import env from "./env.js";
-import { ext } from "../tools/extend.js";
 
 interface ParserResult {
     error: string;
