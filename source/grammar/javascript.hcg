@@ -584,7 +584,7 @@
 # TODO  <> coalesce_expression → (coalesce_expression │ bitwise_or_expression) ??  bitwise_or_expression        ↦r { { type: env.typ.CoalesceExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
 
     <> logical_or_expression → logical_and_expression 
-        │ logical_or_expression || logical_and_expression                                                       ↦r { { type: env.typ.LogicalExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
+        │ logical_or_expression \|| logical_and_expression                                                       ↦r { { type: env.typ.LogicalExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
 
     <> logical_and_expression → bitwise_or_expression 
         │ logical_and_expression && bitwise_or_expression                                                       ↦r { { type: env.typ.LogicalExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
@@ -597,7 +597,7 @@
 ###############################################################################################################
 
     <> bitwise_or_expression → bitwise_xor_expression 
-        │ bitwise_or_expression | bitwise_xor_expression                                                        ↦r { { type: env.typ.BitwiseExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
+        │ bitwise_or_expression \| bitwise_xor_expression                                                        ↦r { { type: env.typ.BitwiseExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
 
     <> bitwise_xor_expression → bitwise_and_expression 
         │ bitwise_xor_expression ^ bitwise_and_expression                                                       ↦r { { type: env.typ.BitwiseExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
@@ -618,7 +618,7 @@
 
     <> relational_expression → shift_expression 
         │ relational_expression < shift_expression                                                              ↦r { { type: env.typ.RelationalExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
-        │ relational_expression >  shift_expression                                                             ↦r { { type: env.typ.RelationalExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
+        │ relational_expression \>  shift_expression                                                             ↦r { { type: env.typ.RelationalExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
         │ relational_expression <= shift_expression                                                             ↦r { { type: env.typ.RelationalExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
         │ relational_expression >= shift_expression                                                             ↦r { { type: env.typ.RelationalExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
         │ relational_expression τinstanceof shift_expression                                                    ↦r { { type: env.typ.InstanceOfExpression,  nodes:[$$sym1, $$sym3], pos } }
@@ -745,8 +745,9 @@
 
     <> regular_expression_literal → \/  regular_expression_characters(+") \/ regular_expression_flags?          ↦r { { type:env.typ.RegexLiteral, value:$sym2, flags:$sym4.value,  pos  } }
 
-    <> regular_expression_characters →  θany 
+    <> regular_expression_characters →  θany  | θws 
         │ \\ θany                                                                                               ↦r { $sym1 + $sym2 } 
+                                                                                                         
 
     <> regular_expression_flags → identifier_name  
 
