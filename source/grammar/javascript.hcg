@@ -709,19 +709,19 @@
 
     <> array_binding_pattern → \[ \]                                                                            ↦r { { type: env.typ.ArrayBinding, nodes:[], pos } }
         │ \[ elision binding_rest_element \]                                                                    ↦r { { type: env.typ.ArrayBinding, nodes:[$sym2, $sym3], pos } }
-        │ \[ elision \]                                                                                         ↦r { { type: env.typ.ArrayBinding, nodes:[($sym2.count++, $sym2)], pos } }    
+        │ \[ elision \]                                                                                         ↦r { { type: env.typ.ArrayBinding, nodes:[$sym2], pos } }    
         │ \[ binding_rest_element \]                                                                            ↦r { { type: env.typ.ArrayBinding, nodes:[$sym2], pos } }    
-        │ \[ binding_element_list \]                                                                            ↦r { { type: env.typ.ArrayBinding, nodes:[$sym2], pos } }    
+        │ \[ binding_element_list \]                                                                            ↦r { { type: env.typ.ArrayBinding, nodes:[...$sym2], pos } }    
         │ \[ binding_element_list , \]                                                                          ↦r { { type: env.typ.ArrayBinding, nodes:[...$sym2], pos } }    
-        │ \[ binding_element_list , elision? \]                                                                 ↦r { { type: env.typ.ArrayBinding, nodes:[...$sym2, ($sym4.count++, $sym4)], pos } }    
+        │ \[ binding_element_list , elision? \]                                                                 ↦r { { type: env.typ.ArrayBinding, nodes:[...$sym2, $sym4], pos } }    
         │ \[ binding_element_list , elision? binding_rest_element \]                                            ↦r { { type: env.typ.ArrayBinding, nodes:[...$sym2, $sym4, $sym5], pos } }    
         │ \[ binding_element_list , binding_rest_element \]                                                     ↦r { { type: env.typ.ArrayBinding, nodes:[...$sym2, $sym4], pos } }    
 
     <> binding_rest_property → ... binding_identifier                                                           ↦r=>Spread
 
-    <> binding_property_list → binding_property(+,)                                                                         
-
-    <> binding_element_list → binding_elision_element(+,)                                                       ↦r { $$sym1.flat() }
+    <> binding_property_list → (binding_property (+,) )  
+    
+    <> binding_element_list → ( binding_elision_element(+,) )                                                   ↦r { ($$sym1).flat() }
 
     <> binding_elision_element → elision? binding_element                                                       ↦r { [$sym1, $sym2] }                                                    
 
@@ -785,9 +785,9 @@
 # https://www.ecma-international.org/ecma-262/10.0/index.html#sec-array-initializer
 ###############################################################################################################
 
-    <> array_literal → \[ elision? \]                                                                           ↦r { { type: env.typ.ArrayLiteral, nodes:[($sym2.count++, $sym2)], pos } }
+    <> array_literal → \[ elision? \]                                                                           ↦r { { type: env.typ.ArrayLiteral, nodes:[$sym2], pos } }
         │ \[ element_list \]                                                                                    ↦r { { type: env.typ.ArrayLiteral, nodes:$$sym2, pos } }
-        │ \[ element_list , elision? \]                                                                         ↦r { { type: env.typ.ArrayLiteral, nodes:[...$$sym2, ($sym4.count++, $sym4)], pos } }
+        │ \[ element_list , elision? \]                                                                         ↦r { { type: env.typ.ArrayLiteral, nodes:[...$$sym2, $sym4], pos } }
 
     <> element_list → elision? assignment_expression                                                            ↦r { [$sym1, $sym2 ] }
         │ elision? spread_element                                                                               ↦r { [ $sym1,$sym2 ] }
@@ -795,7 +795,7 @@
         │ element_list , elision? spread_element                                                                ↦r { [ ...$sym1, $sym3, $sym4 ] }
 
     <> elision → ,                                                                                              ↦r { { type: env.typ.Elision, count:0, pos } }
-        │ elision ,                                                                                             ↦r { $sym1.count++ , $sym1 }
+        │ elision ,                                                                                             ↦r { { type: env.typ.Elision, count:$sym1.count+1, pos } }
 
     <> spread_element → ... assignment_expression                                                               ↦r=>Spread
 

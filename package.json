@@ -1,9 +1,9 @@
 {
     "name": "@candlefw/js",
-    "version": "0.1.7-dev",
+    "version": "0.2.0-dev",
     "description": "Javascript Parser",
-    "main": "./build/library/ecma.js",
-    "types": "./build/types/ecma.d.ts",
+    "main": "./build/library/javascript.js",
+    "types": "./build/types/javascript.d.ts",
     "type": "module",
     "scripts": {
         "prepublishOnly": "tsc -p ./tsconfig.json && yarn test",
@@ -12,11 +12,11 @@
         "build": "tsc",
         "build.watch": "rollup --config  ./build/config/config.js --watch",
         "build.ui.watch": "rollup --config  ./build/config/ui.config.js --watch",
-        "compile": "hydrocarbon compile --unattended --parser glalr -u -o ./source/parser -e ./build/library/parser/env.js --type module ./source/grammar/ecmascript.hcg",
-        "compile.attended": "hydrocarbon compile -o ./source/parser -e ./source/parser/env.mjs -t mjs ./source/grammar/ecmascript.hcg",
-        "compile.test": "hydrocarbon compile --unattended --parser glalr -u -d -e ./build/library/parser/env.js --type module ./source/grammar/ecmascript.hcg",
-        "compile.mount": "hydrocarbon compile -d -e ./build/library/parser/env.js -m ./source/grammar/ecmascript.hcg  ",
-        "test.mount": "hydrocarbon mount -e ./build/library/parser/env.js ./build/library/parser/ecmascript.js --string 'function temp(temp){return  new env.fn.body(\"\",[$sym1], env, (env.host_lex.fence(lex), env.host_lex) ) }'"
+        "compile": "hydrocarbon compile --unattended --parser glalr -u -o ./source/parser -e ./build/library/parser/env.js --type module ./source/grammar/javascript.hcg",
+        "compile.attended": "hydrocarbon compile -o ./source/parser -e ./source/parser/env.mjs -t mjs ./source/grammar/javascript.hcg",
+        "compile.test": "hydrocarbon compile --unattended --parser glalr -u -d -e ./build/library/parser/env.js --type module ./source/grammar/javascript.hcg",
+        "compile.mount": "hydrocarbon compile -d -e ./build/library/parser/env.js -m ./source/grammar/javascript.hcg  ",
+        "test.mount": "hydrocarbon mount -e ./build/library/parser/env.js ./build/library/parser/javascript.js --string 'function temp(temp){return  new env.fn.body(\"\",[$sym1], env, (env.host_lex.fence(lex), env.host_lex) ) }'"
     },
     "repository": {
         "type": "git",

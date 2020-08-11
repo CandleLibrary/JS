@@ -1,21 +1,24 @@
-import { MinTreeNodeType, MinTreeNodeClass } from "../types/mintree_node_type.js";
-import { MinTreeNode } from "../types/mintree_node.js";
 import { ParserEnvironment } from "@candlefw/hydrocarbon/build/library/runtime";
 import { Lexer } from "@candlefw/wind";
 
-function ConvertArrowParameters(node: MinTreeNode) {
+import { JSNodeClass } from "../types/node_class_type.js";
+import { JSNodeTypeLU } from "../types/node_type_lu.js";
+import { JSNodeType } from "../types/node_type";
+import { JSNode } from "../types/node.js";
+
+function ConvertArrowParameters(node: JSNode) {
     for (const sub of node.nodes) {
 
         const type = sub.type;
 
-        if (type == MinTreeNodeType.SpreadExpression) {
-        } else if (type & MinTreeNodeClass.IDENTIFIER) {
-            sub.type = MinTreeNodeType.IdentifierBinding;
-        } else if (type == MinTreeNodeType.AssignmentExpression
-            && sub.nodes[0].type & MinTreeNodeClass.IDENTIFIER) {
-            sub.nodes[0].type = MinTreeNodeType.IdentifierBinding;
-        } else if (type == MinTreeNodeType.ObjectLiteral || type == MinTreeNodeType.ArrayLiteral) { } else
-            sub.pos.throw(`Unexpected ${MinTreeNodeType[sub.type]} in arrow function parameters`);
+        if (type == JSNodeType.SpreadExpression) {
+        } else if (type & JSNodeClass.IDENTIFIER) {
+            sub.type = JSNodeType.IdentifierBinding;
+        } else if (type == JSNodeType.AssignmentExpression
+            && sub.nodes[0].type & JSNodeClass.IDENTIFIER) {
+            sub.nodes[0].type = JSNodeType.IdentifierBinding;
+        } else if (type == JSNodeType.ObjectLiteral || type == JSNodeType.ArrayLiteral) { } else
+            sub.pos.throw(`Unexpected ${JSNodeTypeLU[sub.type]} in arrow function parameters`);
     }
 }
 type JSParserEnv = ParserEnvironment & {
@@ -28,16 +31,16 @@ type JSParserEnv = ParserEnvironment & {
     functions: {
         parseString: (a, b, lex: Lexer) => void,
         parseTemplate: (a, b, lex: Lexer) => void,
-        reinterpretArrowParameters: (symbol: any) => MinTreeNode;
-        reinterpretParenthesized: (symbol: any) => MinTreeNode;
-        buildJSAST: (node: MinTreeNode) => MinTreeNode;
+        reinterpretArrowParameters: (symbol: any) => JSNode;
+        reinterpretParenthesized: (symbol: any) => JSNode;
+        buildJSAST: (node: JSNode) => JSNode;
     };
 };
 export { JSParserEnv };
 const env = <JSParserEnv>{
     ASI: true,
-    typ: MinTreeNodeType,
-    cls: MinTreeNodeClass,
+    typ: JSNodeTypeLU,
+    cls: { PROPERTY_NAME: JSNodeClass.PROPERTY_NAME },
     functions: {
         parseTemplate: (a, b, lex: Lexer) => {
             const pk = lex.pk;
@@ -75,12 +78,12 @@ const env = <JSParserEnv>{
 
 
             const
-                node = <MinTreeNode>symbols[0],
+                node = <JSNode>symbols[0],
                 sub = node.nodes[0];
 
-            node.type = MinTreeNodeType.FormalParameters;
+            node.type = JSNodeType.FormalParameters;
 
-            if (sub && sub.type == MinTreeNodeType.ExpressionList)
+            if (sub && sub.type == JSNodeType.ExpressionList)
                 node.nodes = [...sub.nodes, ...node.nodes.slice(1)];
 
             ConvertArrowParameters(node);
@@ -91,17 +94,17 @@ const env = <JSParserEnv>{
         reinterpretParenthesized: (symbols) => {
 
             const
-                node = <MinTreeNode>symbols[0],
+                node = <JSNode>symbols[0],
                 sub = node.nodes[0];
 
             if (!sub)
                 throw {};
 
             if (node.nodes.length > 1)
-                node.nodes[1].pos.throw(`Unexpected ${MinTreeNodeType[node.nodes[1].type]}`);
+                node.nodes[1].pos.throw(`Unexpected ${JSNodeTypeLU[node.nodes[1].type]}`);
 
-            if (sub.type == MinTreeNodeType.Spread)
-                sub.pos.throw(`Unexpected ${MinTreeNodeType[sub.type]}`);
+            if (sub.type == JSNodeType.Spread)
+                sub.pos.throw(`Unexpected ${JSNodeTypeLU[sub.type]}`);
 
             return node;
         },

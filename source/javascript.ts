@@ -1,10 +1,12 @@
-import { MinTreeNodeDefinitions, createNodeDefinitions } from "./nodes/mintree_node_extensions.js";
-import { MinTreeNode, FullMintreeNode } from "./types/mintree_node.js";
-import { MinTreeNodeDefinition } from "./nodes/mintree_node_definition.js";
-import { renderCompressed, renderWithFormatting, renderWithSourceMap, renderWithFormattingAndSourceMap } from "./tools/render.js";
-import { MinTreeNodeType, MinTreeNodeClass } from "./types/mintree_node_type.js";
+import { createNodeDefinitions } from "./render/rules.js";
+import { JSNode, FullMintreeNode } from "./types/node.js";
+import { JSNodeDefinition } from "./types/node_definition.js";
+import { renderCompressed, renderWithFormatting, renderWithSourceMap, renderWithFormattingAndSourceMap } from "./render/render.js";
+import { JSNodeClass } from "./types/node_class_type.js";
+import { JSNodeTypeLU } from "./types/node_type_lu.js";
+import { JSNodeType } from "./types/node_type.js";
 import { ext } from "./tools/extend.js";
-import { expression_parser, ecmascript_parser, statement_parser } from "./parser/parser.js";
+import { expression_parser, javascript_parser, statement_parser } from "./parser/parse.js";
 import env, { JSParserEnv } from "./parser/env.js";
 
 
@@ -15,12 +17,9 @@ const global_object = (typeof global !== "undefined") ? global : window;
 
 if (global_object) {
     const cfw_js_data = {
-        type: {
-            MinTreeNodeClass,
-            MinTreeNodeType
-        },
+        type: { JSNodeTypeLU: JSNodeTypeLU },
         parse: {
-            script: ecmascript_parser,
+            script: javascript_parser,
             statement: statement_parser,
             expression: expression_parser,
         },
@@ -29,7 +28,6 @@ if (global_object) {
         render: {
             compressed: renderCompressed,
             withFormatting: renderWithFormatting,
-
             withSourceMap: renderWithSourceMap,
             withFormattingAndSourceMap: renderWithFormattingAndSourceMap,
             createNodeDefinitions
@@ -42,28 +40,29 @@ if (global_object) {
         //@ts-ignore
     } else Object.assign(global_object.cfw, { js: cfw_js_data });
 }
+
+export * from "./render/rules.js";
+export * from "./render/render.js";
 export {
+
+    //Pure Types
     JSParserEnv,
-    MinTreeNodeClass,
-    MinTreeNodeType,
-    MinTreeNodeDefinition,
-    MinTreeNodeDefinitions,
-    MinTreeNode,
+    JSNodeClass,
+    JSNodeType,
+    JSNodeDefinition,
+    JSNode,
     FullMintreeNode,
 
 
+    //Type Object
+    JSNodeTypeLU,
 
+    //Objects
     env as JSParserEnvironment,
-    ecmascript_parser as parser,
+    javascript_parser as parser,
     expression_parser as exp,
     statement_parser as stmt,
 
-    renderCompressed,
-    renderWithFormatting,
-    renderWithSourceMap,
-    renderWithFormattingAndSourceMap,
-
     ext,
-    extendAll,
-    createNodeDefinitions
+    extendAll
 };

@@ -1,23 +1,24 @@
-import { MinTreeNodeClass, getIdentifierName, MinTreeNodeType, MinTreeNodeDefinition, MinTreeNodeDefinitions, parser, exp, stmt, renderCompressed, ext } from "../build/library/ecma.js";
+import { JSNodeTypeLU, parser, exp, stmt, renderCompressed, ext } from "../build/library/javascript.js";
 import { traverse, bit_filter } from "@candlefw/conflagrate";
-import { MinTreeNodeRenderClass } from "../build/library/nodes/mintree_node_extensions.js";
 import utils from "util";
 "@candlefw/js test spec";
-
+const JSNodeType = JSNodeTypeLU;
 const r = (...str) => renderCompressed(parser(...str), null, []);
-const s = (...str) => renderCompressed(stmt(...str), null, []);
+let b = null;
+const s = (...str) => (b = stmt(...str), renderCompressed(b, null, []));
 const e = (...str) => renderCompressed(exp(...str), null, []);
 
 const id = (...str) => {
     const n = exp(...str);
 
     for (const { node } of traverse(n, "nodes")
-        .then(bit_filter("type", MinTreeNodeClass.IDENTIFIER))
+        .then(bit_filter("type", 1 << 15))
     )
         return node;
 
     return null;
 };
+
 
 {
     "Parsing and Rendering JS";
@@ -66,13 +67,10 @@ const id = (...str) => {
     {
         "Elision"; "#";
 
-        ((e("[,,1,,id]") == "[,,1,,id]"));
-
+        ((s("let [,,a,,id]=a;") == "let [,,a,,id]=a;"));
         ((e("[,,2,,1,...d,]") == "[,,2,,1,...d]"));
-
         ((e("[1,,1]") == "[1,,1]"));
-
-        ((e("[,,2,,1,...d,,]") == "[,,2,,1,...d,,]"));
+        ((e("[,,2,,1,...d,,,,,d]") == "[,,2,,1,...d,,,,,d]"));
     }
 }
 
@@ -82,409 +80,409 @@ const id = (...str) => {
     {
         "AdditiveExpression"; "#";
 
-        ((exp("1+2").type == MinTreeNodeType.AdditiveExpression));
+        ((exp("1+2").type == JSNodeType.AdditiveExpression));
 
-        ((exp("1-2").type == MinTreeNodeType.AdditiveExpression));
+        ((exp("1-2").type == JSNodeType.AdditiveExpression));
 
     }
 
     "Arguments";
-    ((exp("d(1)").nodes[1].type == MinTreeNodeType.Arguments));
+    ((exp("d(1)").nodes[1].type == JSNodeType.Arguments));
 
     "ArrayLiteral";
-    ((exp("[1,2,3]").type == MinTreeNodeType.ArrayLiteral));
+    ((exp("[1,2,3]").type == JSNodeType.ArrayLiteral));
 
     "ArrowFunction";
-    ((exp("()=>2").type == MinTreeNodeType.ArrowFunction));
+    ((exp("()=>2").type == JSNodeType.ArrowFunction));
 
     "AssignmentExpression";
-    ((exp("a=2").type == MinTreeNodeType.AssignmentExpression));
+    ((exp("a=2").type == JSNodeType.AssignmentExpression));
 
     "BlockStatement";
-    ((stmt("{}").type == MinTreeNodeType.BlockStatement));
+    ((stmt("{}").type == JSNodeType.BlockStatement));
 
     "AwaitExpression";
-    ((exp("await call()").type == MinTreeNodeType.AwaitExpression));
+    ((exp("await call()").type == JSNodeType.AwaitExpression));
 
     "BindingExpression";
-    ((stmt("var i=2").nodes[0].type == MinTreeNodeType.BindingExpression));
+    ((stmt("var i=2").nodes[0].type == JSNodeType.BindingExpression));
 
     {
         "BitwiseExpression"; "#";
-        ((exp("1 | 1").type == MinTreeNodeType.BitwiseExpression));
-        ((exp("1 & 1").type == MinTreeNodeType.BitwiseExpression));
-        ((exp("1 ^ 1").type == MinTreeNodeType.BitwiseExpression));
+        ((exp("1 | 1").type == JSNodeType.BitwiseExpression));
+        ((exp("1 & 1").type == JSNodeType.BitwiseExpression));
+        ((exp("1 ^ 1").type == JSNodeType.BitwiseExpression));
     }
 
     {
         "BooleanLiteral"; "#";
-        ((exp("true").type == MinTreeNodeType.BooleanLiteral));
-        ((exp("false").type == MinTreeNodeType.BooleanLiteral));
+        ((exp("true").type == JSNodeType.BooleanLiteral));
+        ((exp("false").type == JSNodeType.BooleanLiteral));
     }
 
     "BreakStatement";
-    ((stmt("break").type == MinTreeNodeType.BreakStatement));
+    ((stmt("break").type == JSNodeType.BreakStatement));
 
     "CallExpression";
-    ((exp("call()").type == MinTreeNodeType.CallExpression));
+    ((exp("call()").type == JSNodeType.CallExpression));
 
     "CaseBlock";
-    ((stmt("switch(1){}").nodes[1].type == MinTreeNodeType.CaseBlock));
+    ((stmt("switch(1){}").nodes[1].type == JSNodeType.CaseBlock));
 
     "CaseClause";
-    ((stmt("switch(1){case 2: 2; break;}").nodes[1].nodes[0].type == MinTreeNodeType.CaseClause));
+    ((stmt("switch(1){case 2: 2; break;}").nodes[1].nodes[0].type == JSNodeType.CaseClause));
 
     "DefaultClause";
-    ((stmt("switch(1){default: 2; break;}").nodes[1].nodes[0].type == MinTreeNodeType.DefaultClause));
+    ((stmt("switch(1){default: 2; break;}").nodes[1].nodes[0].type == JSNodeType.DefaultClause));
 
     "CatchClause";
-    ((stmt("try{}catch(e){}").nodes[1].type == MinTreeNodeType.CatchClause));
+    ((stmt("try{}catch(e){}").nodes[1].type == JSNodeType.CatchClause));
 
     "Class";
-    ((stmt("class id extends me{constructor(a,b){1;} method(a){} get get(){}}").type == MinTreeNodeType.Class));
+    ((stmt("class id extends me{constructor(a,b){1;} method(a){} get get(){}}").type == JSNodeType.Class));
 
     "ComputedProperty";
-    ((exp("({['test']:2})").nodes[0].nodes[0].nodes[0].type == MinTreeNodeType.ComputedProperty));
+    ((exp("({['test']:2})").nodes[0].nodes[0].nodes[0].type == JSNodeType.ComputedProperty));
 
     "ContinueStatement";
-    ((stmt("continue label;").type == MinTreeNodeType.ContinueStatement));
+    ((stmt("continue label;").type == JSNodeType.ContinueStatement));
 
     "ConditionalExpression";
-    ((exp("e ? 1 : 2").type == MinTreeNodeType.ConditionalExpression));
+    ((exp("e ? 1 : 2").type == JSNodeType.ConditionalExpression));
 
     "DebuggerStatement";
-    ((stmt("debugger;").type == MinTreeNodeType.DebuggerStatement));
+    ((stmt("debugger;").type == JSNodeType.DebuggerStatement));
 
     "DeleteExpression";
-    ((exp("delete me").type == MinTreeNodeType.DeleteExpression));
+    ((exp("delete me").type == JSNodeType.DeleteExpression));
 
     "DoStatement";
-    ((stmt("do{1;}while(2)").type == MinTreeNodeType.DoStatement));
+    ((stmt("do{1;}while(2)").type == JSNodeType.DoStatement));
 
     "Elision";
-    ((exp("[,,,]").nodes[0].type == MinTreeNodeType.Elision));
+    ((exp("[,,,]").nodes[0].type == JSNodeType.Elision));
 
     "EmptyStatement";
-    ((stmt(";").type == MinTreeNodeType.EmptyStatement));
+    ((stmt(";").type == JSNodeType.EmptyStatement));
 
     {
         "EqualityExpression"; "#";
 
-        ((exp("1==1").type == MinTreeNodeType.EqualityExpression));
-        ((exp("1===1").type == MinTreeNodeType.EqualityExpression));
-        ((exp("1!=1").type == MinTreeNodeType.EqualityExpression));
-        ((exp("1!==1").type == MinTreeNodeType.EqualityExpression));
+        ((exp("1==1").type == JSNodeType.EqualityExpression));
+        ((exp("1===1").type == JSNodeType.EqualityExpression));
+        ((exp("1!=1").type == JSNodeType.EqualityExpression));
+        ((exp("1!==1").type == JSNodeType.EqualityExpression));
     }
 
 
     "ExponentiationExpression";
-    ((exp("a**2").type == MinTreeNodeType.ExponentiationExpression));
+    ((exp("a**2").type == JSNodeType.ExponentiationExpression));
 
     "ExportClause";
-    ((stmt("export {a};").nodes[0].type == MinTreeNodeType.ExportClause));
+    ((stmt("export {a};").nodes[0].type == JSNodeType.ExportClause));
 
     "ExportDeclaration";
-    ((stmt("export {a} from 'module';").type == MinTreeNodeType.ExportDeclaration));
+    ((stmt("export {a} from 'module';").type == JSNodeType.ExportDeclaration));
 
     "ExpressionList";
-    ((exp("1,2,3,4;").type == MinTreeNodeType.ExpressionList));
+    ((exp("1,2,3,4;").type == JSNodeType.ExpressionList));
 
     "ExpressionStatement";
-    ((stmt("1;").type == MinTreeNodeType.ExpressionStatement));
+    ((stmt("1;").type == JSNodeType.ExpressionStatement));
 
     "FinallyClause";
-    ((stmt("try{}finally{}").nodes[2].type == MinTreeNodeType.FinallyClause));
+    ((stmt("try{}finally{}").nodes[2].type == JSNodeType.FinallyClause));
 
     "ForInStatement";
-    ((stmt("for(const i in d){}").type == MinTreeNodeType.ForInStatement));
+    ((stmt("for(const i in d){}").type == JSNodeType.ForInStatement));
 
     "ForOfStatement";
-    ((stmt("for(const u of a){}").type == MinTreeNodeType.ForOfStatement));
+    ((stmt("for(const u of a){}").type == JSNodeType.ForOfStatement));
 
 
     {
         "ForStatement"; "#";
 
-        ((stmt("for (var i = 0; i < 1; i++){}").type == MinTreeNodeType.ForStatement));
+        ((stmt("for (var i = 0; i < 1; i++){}").type == JSNodeType.ForStatement));
 
-        ((stmt("for (;;){}").type == MinTreeNodeType.ForStatement));
+        ((stmt("for (;;){}").type == JSNodeType.ForStatement));
 
-        ((stmt("for (let i = 1, b; i < b;){b++;}").type == MinTreeNodeType.ForStatement));
+        ((stmt("for (let i = 1, b; i < b;){b++;}").type == JSNodeType.ForStatement));
 
-        ((stmt("for(a;i < b;){b++;}").type == MinTreeNodeType.ForStatement));
+        ((stmt("for(a;i < b;){b++;}").type == JSNodeType.ForStatement));
     }
 
     "FormalParameters: a,b,c";
-    ((stmt("function d(a,b,c){}").nodes[1].type == MinTreeNodeType.FormalParameters));
+    ((stmt("function d(a,b,c){}").nodes[1].type == JSNodeType.FormalParameters));
 
     "FromClause";
-    ((stmt("import d from 'module';").nodes[1].type == MinTreeNodeType.FromClause));
+    ((stmt("import d from 'module';").nodes[1].type == JSNodeType.FromClause));
 
     "FunctionDeclaration";
-    ((stmt("async function * d (a,b,c) {const d = a; return d;}").type == MinTreeNodeType.FunctionDeclaration));
+    ((stmt("async function * d (a,b,c) {const d = a; return d;}").type == JSNodeType.FunctionDeclaration));
 
     "FunctionExpression";
-    ((exp("(async function * d (a,b,c) {const d = a; return d;})").nodes[0].type == MinTreeNodeType.FunctionExpression));
+    ((exp("(async function * d (a,b,c) {const d = a; return d;})").nodes[0].type == JSNodeType.FunctionExpression));
 
     "FunctionBody";
-    ((stmt("function d(){a}").nodes[2].type == MinTreeNodeType.FunctionBody));
+    ((stmt("function d(){a}").nodes[2].type == JSNodeType.FunctionBody));
 
     "GetterMethod";
-    ((exp("({get d(){a}})").nodes[0].nodes[0].type == MinTreeNodeType.GetterMethod));
+    ((exp("({get d(){a}})").nodes[0].nodes[0].type == JSNodeType.GetterMethod));
 
     "IdentifierDefault";
-    ((id("import a from 'test'").type == MinTreeNodeType.IdentifierDefault));
+    ((id("import a from 'test'").type == JSNodeType.IdentifierDefault));
 
     "IdentifierProperty";
-    ((exp("m.a").nodes[1].type == MinTreeNodeType.IdentifierProperty));
+    ((exp("m.a").nodes[1].type == JSNodeType.IdentifierProperty));
 
     "IdentifierModule";
-    ((id("import {a } from 'a'").type == MinTreeNodeType.IdentifierModule));
+    ((id("import {a } from 'a'").type == JSNodeType.IdentifierModule));
 
     {
         "IdentifierLabel"; "#";
 
-        ((id("continue label;").type == MinTreeNodeType.IdentifierLabel));
+        ((id("continue label;").type == JSNodeType.IdentifierLabel));
 
-        ((id("label : {}").type == MinTreeNodeType.IdentifierLabel));
+        ((id("label : {}").type == JSNodeType.IdentifierLabel));
 
-        ((id("break label;").type == MinTreeNodeType.IdentifierLabel));
+        ((id("break label;").type == JSNodeType.IdentifierLabel));
 
     }
 
     "IdentifierBinding";
-    ((id("var a = b;").type == MinTreeNodeType.IdentifierBinding));
+    ((id("var a = b;").type == JSNodeType.IdentifierBinding));
 
     "IdentifierReference";
-    ((id("id").type == MinTreeNodeType.IdentifierReference));
+    ((id("id").type == JSNodeType.IdentifierReference));
 
     "IfStatement";
-    ((stmt("if(true){}").type == MinTreeNodeType.IfStatement));
+    ((stmt("if(true){}").type == JSNodeType.IfStatement));
 
     "ImportClause";
-    ((stmt("import {a as d} from 'm'").nodes[0].type == MinTreeNodeType.ImportClause));
+    ((stmt("import {a as d} from 'm'").nodes[0].type == JSNodeType.ImportClause));
 
     "ImportDeclaration";
-    ((stmt("import {a as d} from 'm'").type == MinTreeNodeType.ImportDeclaration));
+    ((stmt("import {a as d} from 'm'").type == JSNodeType.ImportDeclaration));
 
     "InExpression";
-    ((exp("a in b").type == MinTreeNodeType.InExpression));
+    ((exp("a in b").type == JSNodeType.InExpression));
 
     "InstanceOfExpression";
-    ((exp("a instanceof b").type == MinTreeNodeType.InstanceOfExpression));
+    ((exp("a instanceof b").type == JSNodeType.InstanceOfExpression));
 
     "LabeledStatement";
-    ((stmt("label: {} ").type == MinTreeNodeType.LabeledStatement));
+    ((stmt("label: {} ").type == JSNodeType.LabeledStatement));
 
     {
         "LexicalBinding"; "#";
 
-        ((stmt("for(const d of a){}").nodes[0].type == MinTreeNodeType.LexicalBinding));
+        ((stmt("for(const d of a){}").nodes[0].type == JSNodeType.LexicalBinding));
 
-        ((stmt("for(let d in a){}").nodes[0].type == MinTreeNodeType.LexicalBinding));
+        ((stmt("for(let d in a){}").nodes[0].type == JSNodeType.LexicalBinding));
     }
 
     {
         "LexicalDeclaration"; "#";
 
-        ((stmt("let d = 0, i = [...d];").type == MinTreeNodeType.LexicalDeclaration));
+        ((stmt("let d = 0, i = [...d];").type == JSNodeType.LexicalDeclaration));
 
-        ((stmt("const d = 0, i = [...d];").type == MinTreeNodeType.LexicalDeclaration));
+        ((stmt("const d = 0, i = [...d];").type == JSNodeType.LexicalDeclaration));
     }
 
     {
         "LogicalExpression"; "#";
 
-        ((exp("a || b").type == MinTreeNodeType.LogicalExpression));
+        ((exp("a || b").type == JSNodeType.LogicalExpression));
 
-        ((exp("1 && 2").type == MinTreeNodeType.LogicalExpression));
+        ((exp("1 && 2").type == JSNodeType.LogicalExpression));
     }
 
     "MemberExpression";
-    ((exp("a.b['dd']").type == MinTreeNodeType.MemberExpression));
+    ((exp("a.b['dd']").type == JSNodeType.MemberExpression));
 
     {
         "Method"; "#";
 
-        ((exp("({d(){a;}})").nodes[0].nodes[0].type == MinTreeNodeType.Method));
+        ((exp("({d(){a;}})").nodes[0].nodes[0].type == JSNodeType.Method));
 
-        ((exp("({async d(){a;}})").nodes[0].nodes[0].type == MinTreeNodeType.Method));
+        ((exp("({async d(){a;}})").nodes[0].nodes[0].type == JSNodeType.Method));
 
-        ((exp("({async * d(){a;}})").nodes[0].nodes[0].type == MinTreeNodeType.Method));
+        ((exp("({async * d(){a;}})").nodes[0].nodes[0].type == JSNodeType.Method));
 
-        ((exp("({* d(){a;}})").nodes[0].nodes[0].type == MinTreeNodeType.Method));
+        ((exp("({* d(){a;}})").nodes[0].nodes[0].type == JSNodeType.Method));
     }
 
     {
         "MultiplicativeExpression"; "#";
 
-        ((exp("1/1").type == MinTreeNodeType.MultiplicativeExpression));
-        ((exp("1*1").type == MinTreeNodeType.MultiplicativeExpression));;
+        ((exp("1/1").type == JSNodeType.MultiplicativeExpression));
+        ((exp("1*1").type == JSNodeType.MultiplicativeExpression));;
     }
 
     "NameSpaceImport";
-    ((stmt("import * as d from 'm'").nodes[0].nodes[0].type == MinTreeNodeType.NameSpaceImport));
+    ((stmt("import * as d from 'm'").nodes[0].nodes[0].type == JSNodeType.NameSpaceImport));
 
     "NamedImports";
-    ((stmt("import {a as d} from 'm'").nodes[0].nodes[0].type == MinTreeNodeType.NamedImports));
+    ((stmt("import {a as d} from 'm'").nodes[0].nodes[0].type == JSNodeType.NamedImports));
 
     "NewExpression";
-    ((exp("new d").type == MinTreeNodeType.NewExpression));
+    ((exp("new d").type == JSNodeType.NewExpression));
 
     "NewInstanceExpression";
-    ((exp("new d()").type == MinTreeNodeType.NewInstanceExpression));
+    ((exp("new d()").type == JSNodeType.NewInstanceExpression));
 
     "NewTarget";
-    ((exp("new.target").type == MinTreeNodeType.NewTarget));
+    ((exp("new.target").type == JSNodeType.NewTarget));
 
     "NullLiteral";
-    ((exp("null").type == MinTreeNodeType.NullLiteral));
+    ((exp("null").type == JSNodeType.NullLiteral));
 
 
     {
         "NumericLiteral"; "#";
 
-        ((exp(1).type == MinTreeNodeType.NumericLiteral));
+        ((exp(1).type == JSNodeType.NumericLiteral));
 
-        ((exp("0o1234").type == MinTreeNodeType.NumericLiteral));
+        ((exp("0o1234").type == JSNodeType.NumericLiteral));
 
-        ((exp("-0x1").type == MinTreeNodeType.NumericLiteral));
+        ((exp("-0x1").type == JSNodeType.NumericLiteral));
 
-        ((exp("0X1").type == MinTreeNodeType.NumericLiteral));
+        ((exp("0X1").type == JSNodeType.NumericLiteral));
 
-        ((exp("0b11001").type == MinTreeNodeType.NumericLiteral));
+        ((exp("0b11001").type == JSNodeType.NumericLiteral));
 
-        ((exp("0B11001").type == MinTreeNodeType.NumericLiteral));
+        ((exp("0B11001").type == JSNodeType.NumericLiteral));
 
-        ((exp("-0.256").type == MinTreeNodeType.NumericLiteral));
+        ((exp("-0.256").type == JSNodeType.NumericLiteral));
 
-        ((exp("0.256").type == MinTreeNodeType.NumericLiteral));
+        ((exp("0.256").type == JSNodeType.NumericLiteral));
 
-        ((exp("256.25e123").type == MinTreeNodeType.NumericLiteral));
+        ((exp("256.25e123").type == JSNodeType.NumericLiteral));
     }
 
     "ObjectLiteral";
-    ((exp("({})").nodes[0].type == MinTreeNodeType.ObjectLiteral));
+    ((exp("({})").nodes[0].type == JSNodeType.ObjectLiteral));
 
     "Parameters";
-    ((exp("(a,b,c)=>{;};").nodes[0].type == MinTreeNodeType.FormalParameters));
+    ((exp("(a,b,c)=>{;};").nodes[0].type == JSNodeType.FormalParameters));
 
     "Parenthesized";
-    ((exp("(a)").type == MinTreeNodeType.Parenthesized));
+    ((exp("(a)").type == JSNodeType.Parenthesized));
 
     {
         "PostExpression"; "#";
-        ((exp("p++").type == MinTreeNodeType.PostExpression));
-        ((exp("p++").type == MinTreeNodeType.PostExpression));
+        ((exp("p++").type == JSNodeType.PostExpression));
+        ((exp("p++").type == JSNodeType.PostExpression));
     }
 
     {
         "PreExpression"; "#";
-        ((exp("++p").type == MinTreeNodeType.PreExpression));
-        ((exp("--p").type == MinTreeNodeType.PreExpression));
+        ((exp("++p").type == JSNodeType.PreExpression));
+        ((exp("--p").type == JSNodeType.PreExpression));
     }
 
     "PropertyBinding";
-    ((exp("({b:2})").nodes[0].nodes[0].type == MinTreeNodeType.PropertyBinding));
+    ((exp("({b:2})").nodes[0].nodes[0].type == JSNodeType.PropertyBinding));
 
     "RegexLiteral";
-    ((exp("/#\\d\\d/g").type == MinTreeNodeType.RegexLiteral));
+    ((exp("/#\\d\\d/g").type == JSNodeType.RegexLiteral));
 
     {
         "RelationalExpression"; "#";
 
-        ((exp("a<b").type == MinTreeNodeType.RelationalExpression));
+        ((exp("a<b").type == JSNodeType.RelationalExpression));
 
-        ((exp("a>b").type == MinTreeNodeType.RelationalExpression));
+        ((exp("a>b").type == JSNodeType.RelationalExpression));
 
-        ((exp("a<=b").type == MinTreeNodeType.RelationalExpression));
+        ((exp("a<=b").type == JSNodeType.RelationalExpression));
 
-        ((exp("a>=b").type == MinTreeNodeType.RelationalExpression));
+        ((exp("a>=b").type == JSNodeType.RelationalExpression));
     }
 
     "ReturnStatement";
-    ((stmt("return true;").type == MinTreeNodeType.ReturnStatement));
+    ((stmt("return true;").type == JSNodeType.ReturnStatement));
 
     "Script";
-    ((parser("var i = 0; i++; return 0;").type == MinTreeNodeType.Script));
+    ((parser("var i = 0; i++; return 0;").type == JSNodeType.Script));
 
     "Module";
-    ((parser("import a from 's'; var i = 0; i++; return 0;").type == MinTreeNodeType.Module));
+    ((parser("import a from 's'; var i = 0; i++; return 0;").type == JSNodeType.Module));
 
     "SetterMethod";
-    ((exp("({set a(a){test;}})").nodes[0].nodes[0].type == MinTreeNodeType.SetterMethod));
+    ((exp("({set a(a){test;}})").nodes[0].nodes[0].type == JSNodeType.SetterMethod));
 
     {
         "ShiftExpression"; "#";
 
-        ((exp("1<<b").type == MinTreeNodeType.ShiftExpression));
-        ((exp("1>>b").type == MinTreeNodeType.ShiftExpression));
-        ((exp("1>>>b").type == MinTreeNodeType.ShiftExpression));
+        ((exp("1<<b").type == JSNodeType.ShiftExpression));
+        ((exp("1>>b").type == JSNodeType.ShiftExpression));
+        ((exp("1>>>b").type == JSNodeType.ShiftExpression));
 
     }
 
     "Specifier";
-    ((stmt("import {a as b} from 'g'").nodes[0].nodes[0].nodes[0].type == MinTreeNodeType.Specifier));
+    ((stmt("import {a as b} from 'g'").nodes[0].nodes[0].nodes[0].type == JSNodeType.Specifier));
 
     "Spread";
-    ((exp("[...a]").nodes[0].type == MinTreeNodeType.Spread));
+    ((exp("[...a]").nodes[0].type == JSNodeType.Spread));
 
     "StringLiteral";
-    ((exp('"a"').type == MinTreeNodeType.StringLiteral));
+    ((exp('"a"').type == JSNodeType.StringLiteral));
 
     "SuperCall";
-    ((exp("super(a,b,c)").type == MinTreeNodeType.SuperCall));
+    ((exp("super(a,b,c)").type == JSNodeType.SuperCall));
 
     "SuperExpression";
-    ((exp("super.member").type == MinTreeNodeType.SuperExpression));
+    ((exp("super.member").type == JSNodeType.SuperExpression));
 
     "SwitchStatement";
-    ((stmt("switch(a){default:2;}").type == MinTreeNodeType.SwitchStatement));
+    ((stmt("switch(a){default:2;}").type == JSNodeType.SwitchStatement));
 
     "Template";
-    ((exp("\`This is a template\`").type == MinTreeNodeType.Template));
+    ((exp("\`This is a template\`").type == JSNodeType.Template));
 
     "TemplateHead";
-    ((exp("\`This ${is} a template\`").nodes[0].type == MinTreeNodeType.TemplateHead));
+    ((exp("\`This ${is} a template\`").nodes[0].type == JSNodeType.TemplateHead));
 
     "TemplateMiddle";
-    ((exp("\`This is \${0} \${0} a template\`").nodes[2].type == MinTreeNodeType.TemplateMiddle));
+    ((exp("\`This is \${0} \${0} a template\`").nodes[2].type == JSNodeType.TemplateMiddle));
 
     "TemplateTail";
-    ((exp("\`This is ${is} a template\`").nodes[2].type == MinTreeNodeType.TemplateTail));
+    ((exp("\`This is ${is} a template\`").nodes[2].type == JSNodeType.TemplateTail));
 
     "ThisLiteral";
-    ((exp("this").type == MinTreeNodeType.ThisLiteral));
+    ((exp("this").type == JSNodeType.ThisLiteral));
 
     "ThrowStatement";
-    ((stmt("throw new Error('I\\'ve been thrown!');").type == MinTreeNodeType.ThrowStatement));
+    ((stmt("throw new Error('I\\'ve been thrown!');").type == JSNodeType.ThrowStatement));
 
     "TryStatement";
-    ((stmt("try{1;}catch(e){1;}finally{1;}").type == MinTreeNodeType.TryStatement));
+    ((stmt("try{1;}catch(e){1;}finally{1;}").type == JSNodeType.TryStatement));
 
     "TypeofExpression";
-    ((exp("typeof a").type == MinTreeNodeType.TypeofExpression));
+    ((exp("typeof a").type == JSNodeType.TypeofExpression));
 
     "UnaryExpression";
-    ((exp("+1").type == MinTreeNodeType.UnaryExpression));
+    ((exp("+1").type == JSNodeType.UnaryExpression));
 
     "VariableDeclaration";
-    ((stmt("for(var i =0;;)1;").nodes[0].type == MinTreeNodeType.VariableDeclaration));
+    ((stmt("for(var i =0;;)1;").nodes[0].type == JSNodeType.VariableDeclaration));
 
     "VariableStatement";
-    ((stmt("var d = 2;").type == MinTreeNodeType.VariableStatement));
+    ((stmt("var d = 2;").type == JSNodeType.VariableStatement));
 
     "VoidExpression";
-    ((exp("void 2;").type == MinTreeNodeType.VoidExpression));
+    ((exp("void 2;").type == JSNodeType.VoidExpression));
 
     "WhileStatement";
-    ((stmt("while(2)1;").type == MinTreeNodeType.WhileStatement));
+    ((stmt("while(2)1;").type == JSNodeType.WhileStatement));
 
     "WithStatement";
-    ((stmt("with(1)2;").type == MinTreeNodeType.WithStatement));
+    ((stmt("with(1)2;").type == JSNodeType.WithStatement));
 
     "YieldExpression";
-    ((exp("yield 2").type == MinTreeNodeType.YieldExpression));
+    ((exp("yield 2").type == JSNodeType.YieldExpression));
 }
 
 {

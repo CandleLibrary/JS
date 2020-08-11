@@ -1,10 +1,10 @@
 import { extract, replace, traverse } from "@candlefw/conflagrate";
 
-import { MinTreeNodeDefinitions } from "../nodes/mintree_node_extensions.js";
-import { MinTreeNodeDefinition } from "../nodes/mintree_node_definition.js";
-import { MinTreeExtendedNode } from "../types/mintree_extended_node.js";
-import { MinTreeNode } from "../types/mintree_node.js";
-import { MinTreeNodeType } from "../types/mintree_node_type.js";
+import { JSNodeDefinitions } from "../render/rules.js";
+import { JSNodeDefinition } from "../types/node_definition.js";
+import { MinTreeExtendedNode } from "../types/extended_node.js";
+import { JSNode } from "../types/node.js";
+import { JSNodeTypeLU } from "../types/node_type_lu.js";
 
 class NodeExtender {
 
@@ -13,9 +13,9 @@ class NodeExtender {
         this.getters = getters;
     };
 
-    extend(node: MinTreeNode, parent: MinTreeNode): MinTreeExtendedNode {
+    extend(node: JSNode, parent: JSNode): MinTreeExtendedNode {
 
-        const object = { typename: MinTreeNodeType[node.type], parent };
+        const object = { typename: JSNodeTypeLU[node.type], parent };
 
         let index = 0;
 
@@ -41,7 +41,7 @@ class NodeExtender {
     }
 }
 
-function buildExtender(def: MinTreeNodeDefinition): NodeExtender {
+function buildExtender(def: JSNodeDefinition): NodeExtender {
     //extract the getters and assign to a new NodeExtender
     const getters = def.getters;
 
@@ -53,7 +53,7 @@ function buildExtender(def: MinTreeNodeDefinition): NodeExtender {
  * 
  *  @param node_definitions
  */
-function ExtenderBuilder(node_definitions: Array<MinTreeNodeDefinition>): Array<NodeExtender> {
+function ExtenderBuilder(node_definitions: Array<JSNodeDefinition>): Array<NodeExtender> {
 
     const extenders: Array<NodeExtender> = new Array(256);
 
@@ -71,12 +71,12 @@ function ExtenderBuilder(node_definitions: Array<MinTreeNodeDefinition>): Array<
 let Extenders: Array<NodeExtender> = null;
 
 /**
- * Takes a MinTreeNode node and returns an extended version with OO properties
+ * Takes a JSNode node and returns an extended version with OO properties
  * 
- * @param {MinTreeNode} node - A MinTreeNode to extend.
+ * @param {JSNode} node - A JSNode to extend.
  * @param {boolean} EXTEND_ENTIRE_TREE - If true, the entire tree of subnode extending from `node` will also be extended. 
  */
-export function ext(node: MinTreeNode, EXTEND_ENTIRE_TREE: boolean = false, parent = node, index = 0): MinTreeExtendedNode {
+export function ext(node: JSNode, EXTEND_ENTIRE_TREE: boolean = false, parent = node, index = 0): MinTreeExtendedNode {
 
     if (EXTEND_ENTIRE_TREE) {
 
@@ -85,12 +85,12 @@ export function ext(node: MinTreeNode, EXTEND_ENTIRE_TREE: boolean = false, pare
         traverse(node, "nodes").replace((node, parent, index) => {
 
             if (!Extenders)
-                Extenders = ExtenderBuilder(MinTreeNodeDefinitions);
+                Extenders = ExtenderBuilder(JSNodeDefinitions);
 
             const extender = Extenders[node.type >>> 23];
 
             if (!extender)
-                throw new Error(`Cannot find Node Extender for MinTree node type ${MinTreeNodeType[node.type]}`);
+                throw new Error(`Cannot find Node Extender for MinTree node type ${JSNodeTypeLU[node.type]}`);
 
             const replaced = extender.extend(node, parent);
 
@@ -108,10 +108,10 @@ export function ext(node: MinTreeNode, EXTEND_ENTIRE_TREE: boolean = false, pare
     } else {
 
         if (!node)
-            throw new Error(`Unknown node type passed to render method from ${MinTreeNodeType[parent.type]}.nodes[${index}]`);
+            throw new Error(`Unknown node type passed to render method from ${JSNodeTypeLU[parent.type]}.nodes[${index}]`);
 
         if (!Extenders)
-            Extenders = ExtenderBuilder(MinTreeNodeDefinitions);
+            Extenders = ExtenderBuilder(JSNodeDefinitions);
 
         const extender = Extenders[node.type >>> 23];
 

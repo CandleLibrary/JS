@@ -1,9 +1,9 @@
 import { Lexer } from "@candlefw/wind";
-import { MinTreeNodeType } from "./mintree_node_type.js";
+import { JSNodeType } from "./node_type";
 /**
  * A Node within a JS MinTree AST
  */
-export interface MinTreeNode {
+export interface JSNode {
 
     /**
      *  A **cfw.whind** Lexer that has been fenced to the 
@@ -16,25 +16,25 @@ export interface MinTreeNode {
     pos: Lexer;
 
     /**
-     * A number with information on the MinTreeNodeType and
-     *  MinTreeNodeClass of this particular node.
+     * A number with information on the JSNodeType and
+     *  JSNodeClass of this particular node.
      * 
-     * MinTreeNodeType membership can be determined with an equality expression, e.g:
+     * JSNodeType membership can be determined with an equality expression, e.g:
      * ```js
-     * node.type == MinTreeNodeType.*
+     * node.type == JSNodeType.*
      * ```
      * 
-     * MinTreeNodeClass membership can be determined using a bitwise AND expression, e.g:
+     * JSNodeClass membership can be determined using a bitwise AND expression, e.g:
      * ```js
-     * node.type & MinTreeNodeClass.*
+     * node.type & JSNodeClass.*
      * ```
      */
-    type: MinTreeNodeType;
+    type: JSNodeType;
 
     /**
-     * An array of MinTreeNodes.
+     * An array of JSNodes.
      */
-    nodes: Array<MinTreeNode>;
+    nodes: Array<JSNode>;
 
     /**
      * The raw value of the node's production.  
@@ -64,9 +64,9 @@ export interface MinTreeNode {
     count?: number;
 }
 
-export interface ExportDeclaration extends MinTreeNode {
+export interface ExportDeclaration extends JSNode {
     //@ts-ignore
 }
 
 
-export type FullMintreeNode = MinTreeNode | ExportDeclaration;
+export type FullMintreeNode = JSNode | ExportDeclaration;

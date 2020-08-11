@@ -1,5 +1,5 @@
-import { MinTreeNode } from "../types/mintree_node.js";
-import { MinTreeNodeType } from "../types/mintree_node_type.js";
+import { JSNode } from "../types/node.js";
+import { JSNodeType } from "../types/node_type";
 
 /**
  * Returns the root Identifier value when passed a
@@ -10,17 +10,17 @@ import { MinTreeNodeType } from "../types/mintree_node_type.js";
  * 
  * Returns an empty string otherwise.
  * 
- * @param {MinTreeNode} node - a MinTreeNode
+ * @param {JSNode} node - a JSNode
  */
-export function getIdentifierName(node: MinTreeNode): string {
+export function getIdentifierName(node: JSNode): string {
 
     switch (node.type) {
-        case MinTreeNodeType.IdentifierReference:
-        case MinTreeNodeType.IdentifierLabel:
-        case MinTreeNodeType.IdentifierBinding:
-        case MinTreeNodeType.Identifier:
+        case JSNodeType.IdentifierReference:
+        case JSNodeType.IdentifierLabel:
+        case JSNodeType.IdentifierBinding:
+        case JSNodeType.Identifier:
             return <string>node.value;
-        case MinTreeNodeType.MemberExpression:
+        case JSNodeType.MemberExpression:
             return getIdentifierName(node.nodes[0]);
     }
 

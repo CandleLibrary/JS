@@ -1,8 +1,8 @@
-import { MinTreeNode } from "./mintree_node.js";
+import { JSNode } from "./node.js";
 /**
  * Additional Type information for extended nodes.
  */
-export type MinTreeExtendedNode = MinTreeNode & {
+export type MinTreeExtendedNode = JSNode & {
     /**
      *
      */
