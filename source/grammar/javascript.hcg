@@ -357,7 +357,7 @@
 
     <> formal_parameters → function_rest_parameter                                                              ↦r { { type:env.typ.FormalParameters, nodes:[$sym1], pos } }
          │ formal_parameter_list ,?                                                                             ↦r { { type:env.typ.FormalParameters, nodes:$sym1, pos } }
-         │ formal_parameter_list , function_rest_parameter                                                      ↦r { $$sym1.push($$sym3), { type:env.typ.FormalParameters, nodes:$sym1, pos } }
+         │ formal_parameter_list , function_rest_parameter                                                      ↦r { { type:env.typ.FormalParameters, nodes:[...$sym1,$$sym3], pos } }
 
     <> formal_parameter_list → formal_parameter(+,)                                                                     
 
@@ -731,9 +731,9 @@
         │ property_name : binding_element                                                                       ↦r { { type:env.typ.PropertyBinding, nodes:[$sym1, $sym3],  pos  } }  
 
     <> binding_element → single_name_binding
-        │ binding_pattern initializer?                                                                           ↦r { { type:env.typ.BindingExpression, nodes: [$sym1, $sym2],  pos  } }
+        │ binding_pattern initializer?                                                                           ↦r { $$sym2 ? { type:env.typ.BindingExpression, nodes: [$sym1, $sym2],  pos  } : $sym1 }
 
-    <> single_name_binding → binding_identifier initializer?                                                     ↦r { { type:env.typ.BindingExpression, nodes: [$sym1, $sym2],  pos  } }
+    <> single_name_binding → binding_identifier initializer?                                                     ↦r { $$sym2 ? { type:env.typ.BindingExpression, nodes: [$sym1, $sym2],  pos  } : $sym1 }
 
     <> binding_rest_element → \... binding_identifier                                                            ↦r=>Spread
         │ \... binding_pattern                                                                                   ↦r=>Spread                                                                                              
@@ -743,11 +743,7 @@
 # https://www.ecma-international.org/ecma-262/10.0/index.html#prod-RegularExpressionLiteral
 ###############################################################################################################
 
-    <> regular_expression_literal → \/  regular_expression_characters(+") \/ regular_expression_flags?          ↦r { { type:env.typ.RegexLiteral, value:$sym2, flags:$sym4.value,  pos  } }
-
-    <> regular_expression_characters →  θany  | θws 
-        │ \\ θany                                                                                               ↦r { $sym1 + $sym2 } 
-                                                                                                         
+    <> regular_expression_literal → \/  string_data(+") \/ regular_expression_flags?          ↦r { { type:env.typ.RegexLiteral, value:$sym2, flags:$sym4.value,  pos  } }
 
     <> regular_expression_flags → identifier_name  
 

@@ -58,6 +58,28 @@ const env = <JSParserEnv>{
             lex.tl = pk.off - lex.off;
         },
 
+        parseRegex: (a, b, lex) => {
+            const FLAG_CACHE = lex.CHARACTERS_ONLY;
+
+            lex.CHARACTERS_ONLY = true;
+
+
+            const pk = lex.pk,
+                end = "/";
+
+            lex.next();
+
+            while (!pk.END && pk.tx != end) {
+                if (pk.tx == "\\")
+                    pk.next();
+                pk.next();
+            }
+
+            lex.tl = pk.off - lex.off;
+
+            lex.CHARACTERS_ONLY = FLAG_CACHE;
+        },
+
         parseString: (a, b, lex) => {
 
             const pk = lex.pk,
@@ -114,9 +136,10 @@ const env = <JSParserEnv>{
             return node;
         },
 
-        defaultError: (tk, env: JSParserEnv, output, lex, prv_lex, ss, lu) => {
+        frrh: (tk, env: JSParserEnv, output, lex: Lexer, prv_lex, ss, lu) => {
             //Comments
-            const t = lex.copy();
+            const start = lex.copy();
+
             if (lex.tx == "//" || lex.tx == "/*") {
                 if (lex.tx == "//") {
                     while (!lex.END && lex.ty !== lex.types.nl)
@@ -124,20 +147,35 @@ const env = <JSParserEnv>{
 
                     if (lex.END) {
                         lex.tl = 0;
-                        return 0;//lu({ tx: ";" });
+                        const t = lu(lex.next());
+                        return t;
                     }
-                } else
+                } else {
+                    const FLAG_CACHE = lex.CHARACTERS_ONLY;
+
+                    lex.CHARACTERS_ONLY = true;
+
                     if (lex.tx == "/*") {
+
                         //@ts-ignore
                         while (!lex.END && (lex.tx !== "*" || lex.pk.tx !== "/"))
                             lex.next();
                         lex.next(); //"*"
                     }
 
-                return lu(lex.next());
+                    lex.CHARACTERS_ONLY = FLAG_CACHE;
+
+                    return lu(lex.next());
+                }
             }
 
-            /*USED for Automatic Semicolon Insertion*/
+            return -1;
+
+        },
+
+        lrrh: (tk, env: JSParserEnv, output, lex, prv_lex, ss, lu) => {
+
+            /*Automatic Semicolon Insertion*/
             if (env.ASI && lex.tx !== ")" && !lex.END) {
 
                 let ENCOUNTERED_END_CHAR = (lex.tx == "}" || lex.END);
@@ -166,6 +204,7 @@ const env = <JSParserEnv>{
                 return lu(<Lexer>{ tx: ";" });
             }
 
+            return -1;
         }
     },
 

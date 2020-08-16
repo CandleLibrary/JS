@@ -1196,8 +1196,11 @@ const id = (...str) => {
         ((renderCompressed(stmt("const [a=d,...c] = d;")) == "const [a=d,...c]=d;"));
     }
 
-    "RegexLiteral";
-    ((renderCompressed(exp("/#\\d\\d/g")) == "/#\\d\\d/g"));
+    {
+        "RegexLiteral"; "#";
+        ((renderCompressed(exp("/#\\d\\d/g")) == "/#\\d\\d/g"));
+        ((renderCompressed(parser("/\\ /g == 2; a = 22")) == "/\\ /g==2;a=22;"));
+    }
 
     {
         "RelationalExpression"; "#";

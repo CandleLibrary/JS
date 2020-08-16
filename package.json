@@ -1,6 +1,6 @@
 {
     "name": "@candlefw/js",
-    "version": "0.2.1-dev",
+    "version": "0.2.2-dev",
     "description": "Javascript Parser",
     "main": "./build/library/javascript.js",
     "types": "./build/types/javascript.d.ts",
@@ -36,7 +36,7 @@
     "homepage": "https://github.com/candlefw/js#readme",
     "dependencies": {
         "@candlefw/conflagrate": "0.0.5-alpha",
-        "@candlefw/hydrocarbon": "^0.3.4-dev-1",
+        "@candlefw/hydrocarbon": "^0.4.0-dev",
         "@candlefw/url": "0.1.1",
         "@candlefw/wind": "0.4.1-dev"
     },

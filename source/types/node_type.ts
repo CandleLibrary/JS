@@ -667,7 +667,6 @@ export const enum JSNodeType {
      * - @property {string} value - The name of the identifier
      */
     IdentifierProperty = Identifier | JSNodeClass.IDENTIFIER | JSNodeClass.PROPERTY_NAME,
-
     /**
      * Identifier literal used as a module reference. This is either as the name of an exported
      * object, or the name of an imported object.
@@ -715,6 +714,8 @@ export const enum JSNodeType {
      * - @property {string} value - The name of the identifier
      */
     IdentifierReference = ((45 << 23) | JSNodeClass.VARIABLE | JSNodeClass.IDENTIFIER),
+
+    IdentifierReferenceProperty = IdentifierReference | JSNodeClass.PROPERTY_NAME,
 
 
     /**
