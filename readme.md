@@ -4,7 +4,7 @@
 
 <h3 align=center>JavaScript Parser</h3>
 
-<p align=center> <sub><b>v0.1.7-dev</b></sub> </p>
+<p align=center> <sub><b>v0.2.1-dev</b></sub> </p>
 
 cfw.JS is both a standalone **JavaScript** parser written in TypeScript, and a critical part of the CandleFW component system. It can be used independently within projects that require the capability to parse and generate a simple AST for JavaScript string inputs.
 

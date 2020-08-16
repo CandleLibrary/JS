@@ -1,6 +1,6 @@
 {
     "name": "@candlefw/js",
-    "version": "0.2.0-dev",
+    "version": "0.2.1-dev",
     "description": "Javascript Parser",
     "main": "./build/library/javascript.js",
     "types": "./build/types/javascript.d.ts",

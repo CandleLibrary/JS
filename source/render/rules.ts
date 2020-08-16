@@ -29,7 +29,7 @@ export function createNodeDefinitions(
     );
 }
 
-export const { format_rules } = buildFormatRules([{
+export const format_rules = buildFormatRules([{
     type: JSNodeType.LexicalDeclaration,
     format_rule: FormatRule.INDENT | FormatRule.OPTIONAL_SPACE | FormatRule.LIST_SPLIT * 2 | FormatRule.MIN_LIST_ELE_LIMIT * 15
 }, {
@@ -115,7 +115,7 @@ export const JSNodeDefinitions: Array<JSNodeDefinition> = createNodeDefinitions(
     {
         type: JSNodeType.BindingExpression,
         ext_name: ["property", "expression"],
-        template_pattern: "@1%=%@2",
+        template_pattern: "@...=",
     },
     {
         type: JSNodeType.BooleanLiteral,
@@ -475,7 +475,7 @@ export const JSNodeDefinitions: Array<JSNodeDefinition> = createNodeDefinitions(
     {
         type: JSNodeType.ReturnStatement,
         ext_name: ["expression"],
-        template_pattern: "return @1;",
+        template_pattern: "return @... ;",
     },
     {
         type: JSNodeType.Script,

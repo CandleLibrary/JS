@@ -981,7 +981,7 @@ const id = (...str) => {
     ((renderCompressed(stmt("do{1;}while(2)")) == "do {1;} while(2)"));
 
     "Elision";
-    ((renderCompressed(exp("[,,,]")) == "[,,,]"));
+    ((renderCompressed(exp("[,,,]")) == "[,,]"));
 
     "EmptyStatement";
     ((renderCompressed(stmt(";")) == ";"));
@@ -1179,6 +1179,22 @@ const id = (...str) => {
 
     "PropertyBinding";
     ((renderCompressed(exp("({b:2})")) == "({b:2})"));
+
+    {
+        "ObjectDestructuring"; "#";
+
+        ((renderCompressed(stmt("const {b:{test: {px, py = 2}, } } = d;")) == "const {b:{test:{px,py=2}}}=d;"));
+        ((renderCompressed(stmt("const {b , } = d;")) == "const {b}=d;"));
+        ((renderCompressed(stmt("const {b , ...d } = d;")) == "const {b,...d}=d;"));
+    }
+
+    {
+        "ArrayDestructuring"; "#";
+
+        ((renderCompressed(stmt("const [a,,,a,]= d;")) == "const [a,,,a]=d;"));
+        ((renderCompressed(stmt("const [a,,,a,...c] = d;")) == "const [a,,,a,...c]=d;"));
+        ((renderCompressed(stmt("const [a=d,...c] = d;")) == "const [a=d,...c]=d;"));
+    }
 
     "RegexLiteral";
     ((renderCompressed(exp("/#\\d\\d/g")) == "/#\\d\\d/g"));

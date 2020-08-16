@@ -704,24 +704,26 @@
 
     <> object_binding_pattern → { }                                                                             ↦r { { type: env.typ.ObjectBinding, nodes:[], pos } }
         │ { binding_rest_property }                                                                             ↦r { { type: env.typ.ObjectBinding, nodes:[$sym2], pos } }
-        │ { binding_property_list , binding_rest_property}                                                      ↦r { { type: env.typ.ObjectBinding, nodes:[...$sym2, $sym4], pos } }    
-        │ { binding_property_list ,? }                                                                          ↦r { { type: env.typ.ObjectBinding, nodes:[...$sym2], pos } }    
+        │ { binding_property_list  }                                                                            ↦r { { type: env.typ.ObjectBinding, nodes:[...$sym2], pos } }    
+        │ { binding_property_list , binding_rest_property? }                                                    ↦r { { type: env.typ.ObjectBinding, nodes:[...$sym2, $sym4], pos } }    
 
-    <> array_binding_pattern → \[ \]                                                                            ↦r { { type: env.typ.ArrayBinding, nodes:[], pos } }
-        │ \[ elision binding_rest_element \]                                                                    ↦r { { type: env.typ.ArrayBinding, nodes:[$sym2, $sym3], pos } }
-        │ \[ elision \]                                                                                         ↦r { { type: env.typ.ArrayBinding, nodes:[$sym2], pos } }    
-        │ \[ binding_rest_element \]                                                                            ↦r { { type: env.typ.ArrayBinding, nodes:[$sym2], pos } }    
+    <> array_binding_pattern → 
+        \[ elision? binding_rest_element? \]                                                                    ↦r { { type: env.typ.ArrayBinding, nodes:[$sym2, $sym3], pos } }
+        # │ \[ elision \]                                                                                         ↦r { { type: env.typ.ArrayBinding, nodes:[$sym2], pos } }    
+        # │ \[ binding_rest_element \]                                                                            ↦r { { type: env.typ.ArrayBinding, nodes:[$sym2], pos } }    
         │ \[ binding_element_list \]                                                                            ↦r { { type: env.typ.ArrayBinding, nodes:[...$sym2], pos } }    
-        │ \[ binding_element_list , \]                                                                          ↦r { { type: env.typ.ArrayBinding, nodes:[...$sym2], pos } }    
-        │ \[ binding_element_list , elision? \]                                                                 ↦r { { type: env.typ.ArrayBinding, nodes:[...$sym2, $sym4], pos } }    
-        │ \[ binding_element_list , elision? binding_rest_element \]                                            ↦r { { type: env.typ.ArrayBinding, nodes:[...$sym2, $sym4, $sym5], pos } }    
-        │ \[ binding_element_list , binding_rest_element \]                                                     ↦r { { type: env.typ.ArrayBinding, nodes:[...$sym2, $sym4], pos } }    
+        #│ \[ binding_element_list , \]                                                                          ↦r { { type: env.typ.ArrayBinding, nodes:[...$sym2], pos } }    
+        #│ \[ binding_element_list , elision? \]                                                                 ↦r { { type: env.typ.ArrayBinding, nodes:[...$sym2, $sym4], pos } }    
+        │ \[ binding_element_list , elision? binding_rest_element? \]                                            ↦r { { type: env.typ.ArrayBinding, nodes:[...$sym2, $sym4, $sym5], pos } }    
+        #│ \[ binding_element_list , binding_rest_element \]                                                     ↦r { { type: env.typ.ArrayBinding, nodes:[...$sym2, $sym4], pos } }    
 
-    <> binding_rest_property → ... binding_identifier                                                           ↦r=>Spread
+    <> binding_rest_property → \... binding_identifier                                                           ↦r=>Spread
 
-    <> binding_property_list → (binding_property (+,) )  
+    <> binding_property_list → binding_property                                                                 ↦r { [$$sym1] }
+        | binding_property_list \, binding_property                                                             ↦r { [...$$sym1, $sym3] }
     
-    <> binding_element_list → ( binding_elision_element(+,) )                                                   ↦r { ($$sym1).flat() }
+    <> binding_element_list → binding_elision_element                                                           
+        | binding_element_list \, binding_elision_element                                                       ↦r { [...$$sym1, ...$sym3] }
 
     <> binding_elision_element → elision? binding_element                                                       ↦r { [$sym1, $sym2] }                                                    
 
@@ -729,14 +731,12 @@
         │ property_name : binding_element                                                                       ↦r { { type:env.typ.PropertyBinding, nodes:[$sym1, $sym3],  pos  } }  
 
     <> binding_element → single_name_binding
-        │ binding_pattern initializer                                                                           ↦r { { type:env.typ.BindingExpression, nodes: [$sym1, $sym2],  pos  } }
-        │ binding_pattern
+        │ binding_pattern initializer?                                                                           ↦r { { type:env.typ.BindingExpression, nodes: [$sym1, $sym2],  pos  } }
 
-    <> single_name_binding → binding_identifier initializer                                                     ↦r { { type:env.typ.BindingExpression, nodes: [$sym1, $sym2],  pos  } }
-        │ binding_identifier
+    <> single_name_binding → binding_identifier initializer?                                                     ↦r { { type:env.typ.BindingExpression, nodes: [$sym1, $sym2],  pos  } }
 
-    <> binding_rest_element → ... binding_identifier                                                            ↦r=>Spread
-        │ ... binding_pattern                                                                                   ↦r=>Spread                                                                                              
+    <> binding_rest_element → \... binding_identifier                                                            ↦r=>Spread
+        │ \... binding_pattern                                                                                   ↦r=>Spread                                                                                              
 
 
 ###############################################################################################################
