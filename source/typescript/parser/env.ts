@@ -1,4 +1,4 @@
-import { ParserEnvironment } from "@candlefw/hydrocarbon/build/library/runtime";
+import { ParserEnvironment } from "@candlefw/hydrocarbon";
 import { Lexer } from "@candlefw/wind";
 
 import { JSNodeClass } from "../types/node_class_type.js";
@@ -28,12 +28,17 @@ type JSParserEnv = ParserEnvironment & {
      */
     typ: any;
     cls: any;
+    /**
+     * Array used to store comment Lexer's that 
+     * are encountered while parsing an input.
+     */
+    comments: Lexer[];
+
     functions: {
         parseString: (a, b, lex: Lexer) => void,
         parseTemplate: (a, b, lex: Lexer) => void,
         reinterpretArrowParameters: (symbol: any) => JSNode;
         reinterpretParenthesized: (symbol: any) => JSNode;
-        buildJSAST: (node: JSNode) => JSNode;
     };
 };
 export { JSParserEnv };
@@ -41,6 +46,7 @@ const env = <JSParserEnv>{
     ASI: true,
     typ: JSNodeTypeLU,
     cls: { PROPERTY_NAME: JSNodeClass.PROPERTY_NAME },
+    comments: [],
     functions: {
         parseTemplate: (a, b, lex: Lexer) => {
             const pk = lex.pk;
@@ -131,25 +137,32 @@ const env = <JSParserEnv>{
             return node;
         },
 
+        frrh: (tk, env: JSParserEnv, output, lex: Lexer, prv_lex, ss, lu, stack_pointer) => {
 
-        buildJSAST(node) {
-            return node;
-        },
-
-        frrh: (tk, env: JSParserEnv, output, lex: Lexer, prv_lex, ss, lu) => {
-            //Comments
             const start = lex.copy();
 
-            if (lex.tx == "//" || lex.tx == "/*") {
+            let t = -1;
+
+            /*shebang*/
+            if (lex.off == 0 && lex.tx == "#" && lex.pk.tx == "!") {
+                while (lex.ty != lex.types.new_line && !lex.END)
+                    lex.next();
+
+                t = lu(lex.next());
+            }
+            else if (lex.tx == "//" || lex.tx == "/*") {
+                /* Comments */
                 if (lex.tx == "//") {
                     while (!lex.END && lex.ty !== lex.types.nl)
                         lex.next();
 
-                    if (lex.END) {
-                        lex.tl = 0;
-                        const t = lu(lex.next());
-                        return t;
-                    }
+                    lex.tl = 0;
+
+                    start.fence(lex);
+
+                    env.comments.push(start);
+
+                    t = lu(lex.next());
                 } else {
                     const FLAG_CACHE = lex.CHARACTERS_ONLY;
 
@@ -163,17 +176,22 @@ const env = <JSParserEnv>{
                         lex.next(); //"*"
                     }
 
+                    t = lu(lex.next());
+
                     lex.CHARACTERS_ONLY = FLAG_CACHE;
 
-                    return lu(lex.next());
+                    start.fence(lex);
+
+                    env.comments.push(start);
                 }
             }
 
-            return -1;
+            return t;
 
         },
 
         lrrh: (tk, env: JSParserEnv, output, lex, prv_lex, ss, lu) => {
+
 
             /*Automatic Semicolon Insertion*/
             if (env.ASI && lex.tx !== ")" && !lex.END) {
@@ -192,13 +210,6 @@ const env = <JSParserEnv>{
                 }
             }
 
-            if (lex.ty == lex.types.sym && lex.tx.length > 1) {
-                //Try splitting up the symbol
-                lex.tl = 0;
-                lex.next(lex, false);
-                return lu(lex);
-            }
-
             if (lex.END) {
                 lex.tl = 0;
                 return lu(<Lexer>{ tx: ";" });
@@ -211,6 +222,7 @@ const env = <JSParserEnv>{
     options: {
         integrate: false,
         onstart: () => {
+            env.comments = [];
             env.ASI = true;
         }
     }

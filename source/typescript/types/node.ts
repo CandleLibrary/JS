@@ -69,4 +69,4 @@ export interface ExportDeclaration extends JSNode {
 }
 
 
-export type FullMintreeNode = JSNode | ExportDeclaration;
+export type FullJSNode = JSNode | ExportDeclaration;

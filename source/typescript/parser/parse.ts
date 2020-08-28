@@ -54,12 +54,12 @@ export function expression_parser(...expression: (any[] | string[] | Lexer[])) {
             | JSNodeClass.IDENTIFIER)
     ) return node;
 
-    throw new EvalError(`String [ ${expression.join("")} ] does not contain an expression.`);
+    throw new SyntaxError(`String [ ${expression.join("")} ] does not contain an expression.`);
 }
 /**
  * Parses an input string and returns the AST of the first JSNode identified as a MinTreeTypeClass STATEMENT
  * @param statement 
- * @throws Throws an EvalError if the string cannot be parsed into a statement AST.
+ * @throws Throws an SyntaxError if the string cannot be parsed into a statement AST.
  */
 export function statement_parser(...statement: any[] | string[] | Lexer[]) {
 
@@ -68,7 +68,5 @@ export function statement_parser(...statement: any[] | string[] | Lexer[]) {
     for (const { node } of traverse(ast, "nodes").bitFilter("type", JSNodeClass.STATEMENT))
         return node;
 
-    throw new EvalError(`String [ ${statement.join("")} ] does not contain a statement.`);
+    throw new SyntaxError(`String [ ${statement.join("")} ] does not contain a statement.`);
 }
-
-const t = { null: {} };

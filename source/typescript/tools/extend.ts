@@ -90,7 +90,7 @@ export function ext(node: JSNode, EXTEND_ENTIRE_TREE: boolean = false, parent = 
             const extender = Extenders[node.type >>> 23];
 
             if (!extender)
-                throw new Error(`Cannot find Node Extender for MinTree node type ${JSNodeTypeLU[node.type]}`);
+                throw new Error(`Cannot find Node Extender for JSNode type ${JSNodeTypeLU[node.type]}`);
 
             const replaced = extender.extend(node, parent);
 

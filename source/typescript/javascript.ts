@@ -1,5 +1,5 @@
 import { createNodeDefinitions } from "./render/rules.js";
-import { JSNode, FullMintreeNode } from "./types/node.js";
+import { JSNode, FullJSNode } from "./types/node.js";
 import { JSNodeDefinition } from "./types/node_definition.js";
 import { renderCompressed, renderWithFormatting, renderWithSourceMap, renderWithFormattingAndSourceMap } from "./render/render.js";
 import { JSNodeClass } from "./types/node_class_type.js";
@@ -8,7 +8,35 @@ import { JSNodeType } from "./types/node_type.js";
 import { ext } from "./tools/extend.js";
 import { expression_parser, javascript_parser, statement_parser } from "./parser/parse.js";
 import env, { JSParserEnv } from "./parser/env.js";
+import { Lexer } from "@candlefw/wind";
+import { traverse } from "@candlefw/conflagrate";
 
+function mergeComments<NodeType>(ast: NodeType & { nodes: NodeType[]; pos: Lexer; }, comments: Lexer[]) {
+
+    for (const comment of comments) {
+        let closest_node = null;
+
+        if (!closest_node || closest_node.pos.off < comment.off) {
+
+            for (const { node } of traverse(ast, "nodes")) {
+                if (node.pos) {
+                    if (node.pos.off < comment.off) continue;
+
+                    //Get the first node who
+                    closest_node = node;
+                    break;
+                }
+            }
+        }
+
+        if (closest_node) {
+            if (!closest_node.comments)
+                closest_node.comments = [comment];
+            else
+                closest_node.comments.push(comment);
+        }
+    }
+}
 
 const extendAll = node => ext(node, true);
 
@@ -51,7 +79,7 @@ export {
     JSNodeType,
     JSNodeDefinition,
     JSNode,
-    FullMintreeNode,
+    FullJSNode as FullMintreeNode,
 
 
     //Type Object

@@ -58,7 +58,7 @@ export const format_rules = buildFormatRules([{
     format_rule: FormatRule.INDENT | FormatRule.OPTIONAL_SPACE | FormatRule.LIST_SPLIT | FormatRule.MIN_LIST_ELE_LIMIT * 5
 }, {
     type: JSNodeType.FormalParameters,
-    format_rule: FormatRule.INDENT | FormatRule.OPTIONAL_SPACE | FormatRule.LIST_SPLIT | FormatRule.MIN_LIST_ELE_LIMIT * 5
+    format_rule: FormatRule.INDENT | FormatRule.OPTIONAL_SPACE | FormatRule.LIST_SPLIT | FormatRule.MIN_LIST_ELE_LIMIT * 14
 }, {
     type: JSNodeType.ExpressionList,
     format_rule: FormatRule.INDENT | FormatRule.OPTIONAL_SPACE | FormatRule.LIST_SPLIT | FormatRule.MIN_LIST_ELE_LIMIT * 14
@@ -87,7 +87,7 @@ export const JSNodeDefinitions: Array<JSNodeDefinition> = createNodeDefinitions(
     {
         type: JSNodeType.ArrowFunction,
         ext_name: ["arguments", "body"],
-        template_pattern: "@1%=>%@2",
+        template_pattern: "@(ASYNC,async )@1%=>%@2",
     },
 
     {
@@ -165,7 +165,7 @@ export const JSNodeDefinitions: Array<JSNodeDefinition> = createNodeDefinitions(
     {
         type: JSNodeType.ContinueStatement,
         ext_name: ["identifier"],
-        template_pattern: { default: "continue @1;", $not_1: "continue;" },
+        template_pattern: { default: "continue @1?;", $not_1: "continue;" },
     },
     {
         type: JSNodeType.ConditionalExpression,
@@ -394,7 +394,7 @@ export const JSNodeDefinitions: Array<JSNodeDefinition> = createNodeDefinitions(
 
     {
         type: JSNodeType.MultiplicativeExpression,
-        ext_name: ["left", "right"],
+        ext_name: ["left", "right"],/*  */
         template_pattern: "@1%@symbol%@2",
     },
     {
@@ -525,7 +525,7 @@ export const JSNodeDefinitions: Array<JSNodeDefinition> = createNodeDefinitions(
     {
         type: JSNodeType.SwitchStatement,
         ext_name: ["expression", "case_block"],
-        template_pattern: "switch(@1)\n@2",
+        template_pattern: "switch(^1@1^0)\n@2",
     },
     {
         type: JSNodeType.Template,

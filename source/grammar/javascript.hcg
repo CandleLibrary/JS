@@ -2,7 +2,7 @@
 
 @EXT js
 
-@SYMBOL  ... < > <= >= == != === !== ** ++ -- << >> >>> && || += -= *= %= /= **= <<= >>= >>>= &= |= ^= => // /* ${
+@SYMBOL  ... < > <= >= == != === !== ** ++ -- << >> >>> && || += -= *= %= /= **= <<= >>= >>>= &= |= ^= => // /* ${ ?. ? ??
 
 @IGNORE θws θnl
 
@@ -221,7 +221,7 @@
                 │ for_declaration
             ) τof expression \)↦{ env.ASI = true;} statement                                                    ↦r { { type: env.typ.ForOfStatement, nodes:[$$sym4, $$sym6, $$sym8], pos, AWAIT:!!$$sym2 } }
 
-    <> for_declaration → let_or_const for_binding                                                                ↦r { { type: env.typ.LexicalBinding, nodes:[$$sym2], symbol:$$sym1, pos } }
+    <> for_declaration → let_or_const for_binding                                                               ↦r { { type: env.typ.LexicalBinding, nodes:[$$sym2], symbol:$$sym1, pos } }
 
     <> for_binding → binding_identifier 
         │ binding_pattern 
@@ -230,7 +230,7 @@
 # https://www.ecma-international.org/ecma-262/10.0/index.html#sec-continue-statement
 ###############################################################################################################
 
-    <> continue_statement → τcontinue label_identifier? ;                                                       ↦r { { type: env.typ.ContinueStatement, nodes:[$$sym2], pos } }  
+    <> continue_statement → τcontinue (RED θnl) label_identifier? ;                                             ↦r { { type: env.typ.ContinueStatement, nodes:$$sym2 ? [$$sym2] : [], pos } }  
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/10.0/index.html#sec-break-statement
@@ -415,7 +415,7 @@
 
     <> arrow_function → τasync? arrow_parameters => concise_body                                                ↦r { { type:env.typ.ArrowFunction, ASYNC:!!$$sym1, nodes:[$$sym2,$$sym4], pos } }
 
-    <> arrow_parameters → binding_identifier                                                                        
+    <> arrow_parameters → identifier_reference                                                                  ↦r { $sym1.type = env.typ.IdentifierBinding, $sym1 }    
         │ cover_parenthesized_expression_and_arrow_parameter_list                                               ↦r ^reinterpretArrowParameters
 
     <> concise_body → (EXC { ) assignment_expression 
@@ -480,7 +480,8 @@
 ###############################################################################################################
 
     <> left_hand_side_expression → new_expression       
-        │ call_expression                               
+        │ call_expression         
+        | optional_expression                      
 
     <> new_expression → member_expression 
         │ τnew new_expression                                                                                   ↦r { { type: env.typ.NewExpression, nodes:[$$sym2], pos } }
@@ -497,23 +498,52 @@
         │ τsuper \[ expression \]                                                                               ↦r { { type: env.typ.SuperExpression, nodes:[$$sym3], pos, COMPUTED:true } }
 
     <> meta_property → new_target
+        | import_meta
+    
+    ##
+    # 2020 https://www.ecma-international.org/ecma-262/#prod-ImportMeta
+    ##
+    <> import_meta > τimport . τmeta                                                                            ↦r { { type: env.typ.ImportMeta, pos } }
 
     <> new_target → τnew . τtarget                                                                              ↦r { { type: env.typ.NewTarget, pos } }
 
     <> call_expression → call_expression . identifier_name                                                      ↦r { ($sym3.type |= env.cls.PROPERTY_NAME,{ type: env.typ.MemberExpression, nodes:[$$sym1, $$sym3], pos, COMPUTED:false } )}
         │ super_call
-        │ call_expression arguments                                                                             ↦r { { type: env.typ.CallExpression, nodes:[$$sym1, $$sym2], pos, TEMPLATE:true } }
+        │ import_call
+        │ call_expression arguments                                                                             ↦r { { type: env.typ.CallExpression, nodes:[$$sym1, $$sym2], pos, TEMPLATE:false } }
         │ call_expression \[ expression \]                                                                      ↦r { { type: env.typ.MemberExpression, nodes:[$$sym1, $$sym3], pos, COMPUTED:true } }
         │ cover_call_expression_and_async_arrow_head                                                            
         │ call_expression template_literal                                                                      ↦r { { type: env.typ.CallExpression, nodes:[$$sym1, $$sym3], pos, TEMPLATE:true } }
 
     <> super_call → τsuper arguments                                                                            ↦r { { type: env.typ.SuperCall, nodes:[$$sym2], pos } }
+    
+    ##
+    # 2020 https://www.ecma-international.org/ecma-262/#prod-ImportCall
+    ##
+    <> import_call → τimport \( assignment_expression \)                                                         ↦r { { type: env.typ.ImportCall, nodes:[$$sym3], pos } }
 
-    <> arguments → \( \)                                                                                        ↦r { { type: env.typ.Arguments, nodes:[], pos } }
-        │ \( argument_list? ,? \)                                                                                ↦r { { type: env.typ.Arguments, nodes:$$sym2, pos } }
+    <> arguments →  \( argument_list? ,? \)                                                                      ↦r { { type: env.typ.Arguments, nodes:$$sym2 || [], pos } }
 
     <> argument_list → (assignment_expression │ ... assignment_expression ↦r=>Spread  )(+,)
+
+###############################################################################################################
+# 2020 https://www.ecma-international.org/ecma-262/#prod-OptionalExpression
+###############################################################################################################
                                
+    <> optional_expression > member_expression optional_chain                                                   ↦r { { type: env.typ.MemberExpression, nodes:[$$sym1, $$sym2], pos, COMPUTED:false, OPTIONAL:true } }
+        │ call_expression optional_chain                                                                        ↦r { { type: env.typ.CallExpression, nodes:[$$sym1, $$sym2], pos, TEMPLATE:false, OPTIONAL:true } }
+        │ optional_expression optional_chain                                                                    ↦r { { type: env.typ.MemberExpression, nodes:[$$sym1, $$sym3], pos, COMPUTED:false, OPTIONAL:true } }
+
+    <> optional_chain > \?. arguments
+        | \?. [ expression ]
+        | \?. identifier_name
+        | \?. template_literal
+        | optional_chain arguments                                                                              ↦r { { type: env.typ.CallExpression, nodes:[$$sym1, $$sym2], pos, TEMPLATE:false } }
+        | optional_chain [ expression ]                                                                         ↦r { { type: env.typ.MemberExpression, nodes:[$$sym1, $$sym3], pos, COMPUTED:true } }
+        | optional_chain \. identifier_name                                                                     ↦r { ($sym3.type |= env.cls.PROPERTY_NAME, { type: env.typ.MemberExpression, nodes:[$$sym1, $$sym3], pos, COMPUTED:false }) }
+        | optional_chain template_literal                                                                       ↦r { { type: env.typ.CallExpression, nodes:[$$sym1, $$sym2], pos, TEMPLATE:true } }
+        
+
 
 
 ###############################################################################################################
@@ -549,11 +579,11 @@
         │ yield_expression
         │ arrow_function
         │ left_hand_side_expression = assignment_expression                                                     ↦r { { type: env.typ.AssignmentExpression, symbol:"=",  nodes:[$sym1,$sym3], pos } }
-        │ left_hand_side_expression assignement_operator assignment_expression                                  ↦r { { type: env.typ.AssignmentExpression, symbol:$sym2,  nodes:[$sym1,$sym3], pos } }
+        │ left_hand_side_expression assignment_operator assignment_expression                                  ↦r { { type: env.typ.AssignmentExpression, symbol:$sym2,  nodes:[$sym1,$sym3], pos } }
         
         #│ async_arrow_function
 
-    <> assignement_operator → *=                                                        
+    <> assignment_operator → *=                                                        
         │ /=                                                                        
         │ %=                                                                        
         │ +=                                                                        
@@ -578,16 +608,20 @@
 ###############################################################################################################
     
     <> short_circuit_expression → logical_or_expression
-
-## https://tc39.es/ecma262/#prod-CoalesceExpression Latest
-# TODO │ coalesce_expression
-# TODO  <> coalesce_expression → (coalesce_expression │ bitwise_or_expression) ??  bitwise_or_expression        ↦r { { type: env.typ.CoalesceExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
+    #    │ coalesce_expression
+    
 
     <> logical_or_expression → logical_and_expression 
         │ logical_or_expression \|| logical_and_expression                                                       ↦r { { type: env.typ.LogicalExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
 
     <> logical_and_expression → bitwise_or_expression 
         │ logical_and_expression && bitwise_or_expression                                                       ↦r { { type: env.typ.LogicalExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
+
+    ##
+    # 2020 https://www.ecma-international.org/ecma-262/#prod-CoalesceExpression
+    ##
+
+    <> coalesce_expression → ( coalesce_expression │ bitwise_or_expression  ) \?? bitwise_or_expression            
 
 
 
@@ -605,7 +639,6 @@
     <> bitwise_and_expression → equality_expression 
         │ bitwise_and_expression & equality_expression                                                          ↦r { { type: env.typ.BitwiseExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
 
-##########################################################################################call_expression
     <> equality_expression → relational_expression 
         │ equality_expression == relational_expression                                                          ↦r { { type: env.typ.EqualityExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
         │ equality_expression != relational_expression                                                          ↦r { { type: env.typ.EqualityExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
@@ -743,7 +776,7 @@
 # https://www.ecma-international.org/ecma-262/10.0/index.html#prod-RegularExpressionLiteral
 ###############################################################################################################
 
-    <> regular_expression_literal → \/  string_data(+") \/ regular_expression_flags?          ↦r { { type:env.typ.RegexLiteral, value:$sym2, flags:$sym4.value,  pos  } }
+    <> regular_expression_literal → ↦^parseRegex \/ \/                                                          ↦r { { type:env.typ.RegexLiteral, value:$sym1, flags:$sym3.value,  pos  } }
 
     <> regular_expression_flags → identifier_name  
 
