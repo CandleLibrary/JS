@@ -69,7 +69,6 @@ const env = <JSParserEnv>{
 
             lex.CHARACTERS_ONLY = true;
 
-
             const pk = lex.pk,
                 end = "/";
 

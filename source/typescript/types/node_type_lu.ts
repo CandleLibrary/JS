@@ -108,4 +108,7 @@ export enum JSNodeTypeLU {
     WhileStatement = JSNodeType.WhileStatement,
     WithStatement = JSNodeType.WithStatement,
     YieldExpression = JSNodeType.YieldExpression,
+    OptionalMemberExpression = JSNodeType.OptionalMemberExpression,
+    OptionalChain = JSNodeType.OptionalChain,
+    CoalesceExpression = JSNodeType.CoalesceExpression,
 }

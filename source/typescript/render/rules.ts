@@ -67,6 +67,22 @@ export const format_rules = buildFormatRules([{
 
 export const JSNodeDefinitions: Array<JSNodeDefinition> = createNodeDefinitions([],
     {
+        type: JSNodeType.OptionalMemberExpression,
+        ext_name: [],
+        template_pattern: "@1\\?.@2",
+    },
+    {
+        type: JSNodeType.OptionalChain,
+        ext_name: [],
+        template_pattern: "@1",
+    },
+
+    {
+        type: JSNodeType.CoalesceExpression,
+        ext_name: [],
+        template_pattern: "@1%\\?%\\?%@2",
+    },
+    {
         type: JSNodeType.AdditiveExpression,
         ext_name: ["left", "right"],
         template_pattern: "@1%@symbol%@2"

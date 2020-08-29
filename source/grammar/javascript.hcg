@@ -2,7 +2,7 @@
 
 @EXT js
 
-@SYMBOL  ... < > <= >= == != === !== ** ++ -- << >> >>> && || += -= *= %= /= **= <<= >>= >>>= &= |= ^= => // /* ${ ?. ? ??
+@SYMBOL  ... < > <= >= == != === !== ** ++ -- << >> >>> && || += -= *= %= /= **= <<= >>= >>>= &= |= ^= => // /* ${ ?. ??
 
 @IGNORE θws θnl
 
@@ -370,7 +370,7 @@
     <> function_statement_list → statement_list?
 
 ###############################################################################################################
-#https://www.ecma-international.org/ecma-262/10.0/index.html#prod-GeneratorExpression
+# https://www.ecma-international.org/ecma-262/10.0/index.html#prod-GeneratorExpression
 ###############################################################################################################
 
     # <> async_function_declaration → τasync τfunction binding_identifier? \( formal_parameters? \) { async_function_body? }     
@@ -382,7 +382,7 @@
     # <> async_function_body → function_body
 
 ###############################################################################################################
-#https://www.ecma-international.org/ecma-262/10.0/index.html#prod-AsyncGeneratorExpression
+# https://www.ecma-international.org/ecma-262/10.0/index.html#prod-AsyncGeneratorExpression
 ###############################################################################################################
 
     # <> async_generator_method → τasync \* property_name \( unique_formal_parameters? \) { async_generator_body? }               
@@ -394,7 +394,7 @@
     # <> async_generator_body → function_body
 
 ###############################################################################################################
-#https://www.ecma-international.org/ecma-262/10.0/index.html#prod-GeneratorExpression
+# https://www.ecma-international.org/ecma-262/10.0/index.html#prod-GeneratorExpression
 ###############################################################################################################
 
     # <> generator_method → \* property_name  \( unique_formal_parameters? \) { generator_body }                                  
@@ -405,7 +405,7 @@
 
     # <> generator_body → function_body
 
-    <> yield_expression → τyield (RED θnl)                                                                      ↦r { { type: env.typ.YieldExpression, nodes:[], pos } }
+    <> yield_expression → (RED θnl) τyield                                                                      ↦r { { type: env.typ.YieldExpression, nodes:[], pos } }
         │ τyield \*? assignment_expression                                                                      ↦r { { type: env.typ.YieldExpression, nodes:[$$sym3], pos, GENERATOR:!!$$sym2 } }
 
 
@@ -530,14 +530,14 @@
 # 2020 https://www.ecma-international.org/ecma-262/#prod-OptionalExpression
 ###############################################################################################################
                                
-    <> optional_expression > member_expression optional_chain                                                   ↦r { { type: env.typ.MemberExpression, nodes:[$$sym1, $$sym2], pos, COMPUTED:false, OPTIONAL:true } }
-        │ call_expression optional_chain                                                                        ↦r { { type: env.typ.CallExpression, nodes:[$$sym1, $$sym2], pos, TEMPLATE:false, OPTIONAL:true } }
-        │ optional_expression optional_chain                                                                    ↦r { { type: env.typ.MemberExpression, nodes:[$$sym1, $$sym3], pos, COMPUTED:false, OPTIONAL:true } }
+    <> optional_expression > member_expression optional_chain                                                   ↦r { { type: env.typ.OptionalMemberExpression, nodes:[$$sym1, $$sym2], pos, COMPUTED:false } }
+        │ call_expression optional_chain                                                                        ↦r { { type: env.typ.OptionalMemberExpression, nodes:[$$sym1, $$sym2], pos, COMPUTED:false } }
+        │ optional_expression optional_chain                                                                    ↦r { { type: env.typ.OptionalMemberExpression, nodes:[$$sym1, $$sym2], pos, COMPUTED:false } }
 
-    <> optional_chain > \?. arguments
-        | \?. [ expression ]
-        | \?. identifier_name
-        | \?. template_literal
+    <> optional_chain > \?. arguments                                                                           #↦r { { type: env.typ.OptionalChain, nodes:[$$sym2], pos } }
+        | \?. [ expression ]                                                                                    #↦r { { type: env.typ.OptionalChain, nodes:[$$sym2], pos } }
+        | \?. identifier_name                                                                                   #↦r { { type: env.typ.OptionalChain, nodes:[$$sym2], pos } }
+        | \?. template_literal                                                                                  #↦r { { type: env.typ.OptionalChain, nodes:[$$sym2], pos } }
         | optional_chain arguments                                                                              ↦r { { type: env.typ.CallExpression, nodes:[$$sym1, $$sym2], pos, TEMPLATE:false } }
         | optional_chain [ expression ]                                                                         ↦r { { type: env.typ.MemberExpression, nodes:[$$sym1, $$sym3], pos, COMPUTED:true } }
         | optional_chain \. identifier_name                                                                     ↦r { ($sym3.type |= env.cls.PROPERTY_NAME, { type: env.typ.MemberExpression, nodes:[$$sym1, $$sym3], pos, COMPUTED:false }) }
@@ -579,7 +579,7 @@
         │ yield_expression
         │ arrow_function
         │ left_hand_side_expression = assignment_expression                                                     ↦r { { type: env.typ.AssignmentExpression, symbol:"=",  nodes:[$sym1,$sym3], pos } }
-        │ left_hand_side_expression assignment_operator assignment_expression                                  ↦r { { type: env.typ.AssignmentExpression, symbol:$sym2,  nodes:[$sym1,$sym3], pos } }
+        │ left_hand_side_expression assignment_operator assignment_expression                                   ↦r { { type: env.typ.AssignmentExpression, symbol:$sym2,  nodes:[$sym1,$sym3], pos } }
         
         #│ async_arrow_function
 
@@ -601,18 +601,18 @@
 ###############################################################################################################
 
     <> conditional_expression → short_circuit_expression
-        │ short_circuit_expression \? assignment_expression : assignment_expression                                ↦r { { type: env.typ.ConditionalExpression, nodes:[$$sym1, $$sym3, $$sym5], pos } }
+        │ short_circuit_expression \? assignment_expression : assignment_expression                            ↦r { { type: env.typ.ConditionalExpression, nodes:[$$sym1, $$sym3, $$sym5], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/10.0/index.html#sec-binary-logical-operators
 ###############################################################################################################
     
     <> short_circuit_expression → logical_or_expression
-    #    │ coalesce_expression
+        │ coalesce_expression
     
 
     <> logical_or_expression → logical_and_expression 
-        │ logical_or_expression \|| logical_and_expression                                                       ↦r { { type: env.typ.LogicalExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
+        │ logical_or_expression \|| logical_and_expression                                                      ↦r { { type: env.typ.LogicalExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
 
     <> logical_and_expression → bitwise_or_expression 
         │ logical_and_expression && bitwise_or_expression                                                       ↦r { { type: env.typ.LogicalExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
@@ -621,7 +621,9 @@
     # 2020 https://www.ecma-international.org/ecma-262/#prod-CoalesceExpression
     ##
 
-    <> coalesce_expression → ( coalesce_expression │ bitwise_or_expression  ) \?? bitwise_or_expression            
+    <> coalesce_expression →  coalesce_expression_head \?? bitwise_or_expression                                ↦r { { type: env.typ.CoalesceExpression, nodes:[$$sym1, $$sym3], pos } }
+
+    <> coalesce_expression_head > ( coalesce_expression │ bitwise_or_expression  )          
 
 
 
@@ -651,7 +653,7 @@
 
     <> relational_expression → shift_expression 
         │ relational_expression < shift_expression                                                              ↦r { { type: env.typ.RelationalExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
-        │ relational_expression \>  shift_expression                                                             ↦r { { type: env.typ.RelationalExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
+        │ relational_expression \>  shift_expression                                                            ↦r { { type: env.typ.RelationalExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
         │ relational_expression <= shift_expression                                                             ↦r { { type: env.typ.RelationalExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
         │ relational_expression >= shift_expression                                                             ↦r { { type: env.typ.RelationalExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
         │ relational_expression τinstanceof shift_expression                                                    ↦r { { type: env.typ.InstanceOfExpression,  nodes:[$$sym1, $$sym3], pos } }
@@ -776,7 +778,7 @@
 # https://www.ecma-international.org/ecma-262/10.0/index.html#prod-RegularExpressionLiteral
 ###############################################################################################################
 
-    <> regular_expression_literal → ↦^parseRegex \/ \/                                                          ↦r { { type:env.typ.RegexLiteral, value:$sym1, flags:$sym3.value,  pos  } }
+    <> regular_expression_literal → ↦^parseRegex \/ \/ def::js_identifier?                                      ↦r { { type:env.typ.RegexLiteral, value:$sym1, flags:$sym3,  pos  } }
 
     <> regular_expression_flags → identifier_name  
 
@@ -932,8 +934,7 @@
         │ τtrue 
         │ τfalse                                                                                                               
 
-    <> future_reserved_word → 
-        │ τimplements 
+    <> future_reserved_word → τimplements 
         │ τpackage 
         │ τprotected 
         │ τinterface

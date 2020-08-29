@@ -1573,5 +1573,11 @@ export const enum JSNodeType {
      * Extended member is:
      * 1. **`expression`**
      */
-    ArrayBinding = (102 << 23)
+    ArrayBinding = (102 << 23),
+
+    OptionalMemberExpression =  (103 << 23) | JSNodeClass.EXPRESSION , 
+
+    OptionalChain =  (104<< 23),
+
+    CoalesceExpression =  (105 << 23)| JSNodeClass.EXPRESSION 
 }

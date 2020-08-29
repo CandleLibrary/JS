@@ -1,10 +1,14 @@
 import { JSNodeTypeLU, parser, exp, stmt, renderCompressed, ext } from "../build/library/javascript.js";
 import { traverse, bit_filter } from "@candlefw/conflagrate";
-import utils from "util";
+
 "@candlefw/js test spec";
+
 const JSNodeType = JSNodeTypeLU;
+
 const r = (...str) => renderCompressed(parser(...str), null, []);
+
 let b = null;
+
 const s = (...str) => (b = stmt(...str), renderCompressed(b, null, []));
 const e = (...str) => renderCompressed(exp(...str), null, []);
 
@@ -75,7 +79,7 @@ const id = (...str) => {
 }
 
 {
-    "MinTreeType Assertions"; "#";
+    "JSNodeType Assertions"; "#";
 
     {
         "AdditiveExpression"; "#";
@@ -94,6 +98,9 @@ const id = (...str) => {
 
     "ArrowFunction";
     ((exp("()=>2").type == JSNodeType.ArrowFunction));
+
+    "AsyncArrowFunction";
+    ((exp("async ()=>2").type == JSNodeType.ArrowFunction));
 
     "AssignmentExpression";
     ((exp("a=2").type == JSNodeType.AssignmentExpression));
@@ -916,6 +923,9 @@ const id = (...str) => {
     "ArrowFunction";
     ((renderCompressed(exp("()=>2")) == "()=>2"));
 
+    "AsyncArrowFunction";
+    ((renderCompressed(exp("async ()=>2")) == "async ()=>2"));
+
     "AssignmentExpression";
     ((renderCompressed(exp("a=2")) == "a=2"));
 
@@ -961,6 +971,9 @@ const id = (...str) => {
 
     "Class";
     ((renderCompressed(stmt("class id extends me{constructor(a,b){1;} method(a){} get get(){}}")) == "class id extends me{constructor(a,b){1;}method(a){}get get(){}}"));
+
+    "CoalesceExpression";
+    ((renderCompressed(exp("a??b")) == "a??b"));
 
     "ComputedProperty";
     ((renderCompressed(exp("({['test']:2})")) == "({['test']:2})"));
@@ -1158,6 +1171,9 @@ const id = (...str) => {
 
     "ObjectLiteral";
     ((renderCompressed(exp("({})")) == "({})"));
+
+    "OptionalChaining";
+    ((renderCompressed(exp("a?.b['c']?.d.e?.f()?.g()?.h?.j.k()")) == "a?.b['c']?.d.e?.f()?.g()?.h?.j.k()"));
 
     "Parameters";
     ((renderCompressed(exp("(a,b,c)=>{;};")) == "(a,b,c)=>{;}"));
