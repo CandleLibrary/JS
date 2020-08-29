@@ -1,7 +1,7 @@
 import { Lexer } from "@candlefw/wind";
 import { JSNodeType } from "./node_type";
 /**
- * A Node within a JS MinTree AST
+ * A Node within a JSNode AST
  */
 export interface JSNode {
 
@@ -29,7 +29,7 @@ export interface JSNode {
      * node.type & JSNodeClass.*
      * ```
      */
-    type: JSNodeType;
+    type: JSNodeType | number;
 
     /**
      * An array of JSNodes.
