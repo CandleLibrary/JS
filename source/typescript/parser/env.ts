@@ -41,7 +41,9 @@ type JSParserEnv = ParserEnvironment & {
         reinterpretParenthesized: (symbol: any) => JSNode;
     };
 };
+
 export { JSParserEnv };
+
 const env = <JSParserEnv>{
     ASI: true,
     typ: JSNodeTypeLU,
@@ -220,7 +222,7 @@ const env = <JSParserEnv>{
 
     options: {
         integrate: false,
-        onstart: () => {
+        onstart: (env: JSParserEnv) => {
             env.comments = [];
             env.ASI = true;
         }
