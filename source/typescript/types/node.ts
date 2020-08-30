@@ -44,14 +44,6 @@ export interface JSNode {
     value?: string | number;
 
     /**
-     * Set to true if the node is a MemberExpression with a computed
-     * member accessor e.g. `object[computed_property]` 
-     * 
-     * Present on MemberExpression nodes.
-     */
-    COMPUTED?: boolean;
-
-    /**
      * The operating symbol in a binary expression.
      * 
      * Available on binary expression nodes
@@ -62,6 +54,25 @@ export interface JSNode {
      * Number of commas in an Elision node.
      */
     count?: number;
+
+    /**
+     * 
+     */
+    comments?: Lexer[],
+
+
+
+    /**
+     * Set to true if the node is a MemberExpression with a computed
+     * member accessor e.g. `object[computed_property]` 
+     * 
+     * Present on MemberExpression nodes.
+     */
+    COMPUTED?: boolean;
+
+    STATIC?: boolean;
+    ASYNC?: boolean;
+    GENERATOR?: boolean;
 }
 
 export interface ExportDeclaration extends JSNode {
