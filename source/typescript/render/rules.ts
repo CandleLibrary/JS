@@ -516,7 +516,10 @@ export const JSNodeDefinitions: Array<JSNodeDefinition> = createNodeDefinitions(
     {
         type: JSNodeType.Specifier,
         ext_name: ["original", "transformed"],
-        template_pattern: "@1 as @2",
+        template_pattern: {
+            default: "@1 as @2",
+            $node_2: "@1"
+        },
     },
     {
         type: JSNodeType.SpreadExpression,

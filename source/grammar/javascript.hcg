@@ -8,7 +8,7 @@
 
 @ERROR /* //
 
-@IMPORT ../../node_modules/@candlefw/hydrocarbon/source/grammars/misc/default-productions.hcg as def 
+@IMPORT default-productions as def 
 
 ###############################################################################################################
 #### Repeated Functions
@@ -70,7 +70,7 @@
 
     <> from_clause → τfrom module_specifier                                                                     ↦r { { type:env.typ.FromClause, nodes:[$sym2], pos } }
 
-    <> import_specifier → imported_binding                                                                      
+    <> import_specifier → imported_binding                                                                      ↦r { { type:env.typ.Specifier, nodes:[$sym1], pos } }
         │ identifier τas imported_binding                                                                       ↦r { { type:env.typ.Specifier, nodes:[$sym1, $sym3], pos } }
 
     <> module_specifier → string_literal                                                                        
@@ -97,7 +97,7 @@
 
     <> export_clause → { export_specifier(*,) ,? }                                                              ↦r { { type:env.typ.ExportClause, nodes:$$sym2||[], pos } }
 
-    <> export_specifier →  identifier                                                                           
+    <> export_specifier →  identifier                                                                           ↦r { { type:env.typ.Specifier, nodes:[$sym1], pos } }
         │ identifier τas identifier                                                                             ↦r { { type:env.typ.Specifier, nodes:[$sym1, $sym3], pos } }
 
 ###############################################################################################################
