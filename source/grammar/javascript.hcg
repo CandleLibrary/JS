@@ -885,7 +885,7 @@
 
     <> numeric_literal → -? number                                                                               ↦r { { type: env.typ.NumericLiteral, value:$sym2.original_val, computed_value:$sym2.val, value_data:$sym1, pos, NEGATIVE:!!$$sym1 } }
     
-    <> bigint →  -? θnum τn                                                                                     ↦r { { type: env.typ.BigIntLiteral, value:$sym2, valpos, NEGATIVE:!!$$sym1 } }
+    <> bigint →  -? θnum τn                                                                                     ↦r { { type: env.typ.BigIntLiteral, value:$sym2, pos, NEGATIVE:!!$$sym1 } }
 
     <> number → def::float 
         │ def::octal 
