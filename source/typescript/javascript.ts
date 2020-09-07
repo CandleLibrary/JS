@@ -1,3 +1,6 @@
+import { Lexer } from "@candlefw/wind";
+import { traverse } from "@candlefw/conflagrate";
+
 import { createNodeDefinitions } from "./render/rules.js";
 import { JSNode, FullJSNode } from "./types/node.js";
 import { JSNodeDefinition } from "./types/node_definition.js";
@@ -8,8 +11,7 @@ import { JSNodeType } from "./types/node_type.js";
 import { ext } from "./tools/extend.js";
 import { expression_parser, javascript_parser, statement_parser } from "./parser/parse.js";
 import env, { JSParserEnv } from "./parser/env.js";
-import { Lexer } from "@candlefw/wind";
-import { traverse } from "@candlefw/conflagrate";
+import { getIdentifierName } from "./tools/get_identifier_name.js";
 
 function mergeComments<NodeType>(ast: NodeType & { nodes: NodeType[]; pos: Lexer; }, comments: Lexer[]) {
 
@@ -68,6 +70,9 @@ if (global_object) {
         //@ts-ignore
     } else Object.assign(global_object.cfw, { js: cfw_js_data });
 }
+const tools = {
+    getIdentifierName: getIdentifierName
+};
 
 export * from "./render/rules.js";
 export * from "./render/render.js";
@@ -92,5 +97,7 @@ export {
     statement_parser as stmt,
 
     ext,
-    extendAll
+    extendAll,
+
+    tools
 };
