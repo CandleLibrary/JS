@@ -7,7 +7,7 @@
     "type": "module",
     "scripts": {
         "prepublishOnly": "tsc -p ./tsconfig.json && yarn test",
-        "test": "cfw.test ./test/candlefw.js.spec.js",
+        "test": "cfw.test -i ./test/...",
         "test.watch": "cfw.test -w ./test/candlefw.js.spec.js",
         "build": "tsc",
         "build.watch": "rollup --config  ./build/config/config.js --watch",
@@ -35,19 +35,13 @@
     },
     "homepage": "https://github.com/candlefw/js#readme",
     "dependencies": {
-        "@candlefw/conflagrate": "0.0.5-alpha",
-        "@candlefw/hydrocarbon": "^0.4.0-dev",
-        "@candlefw/url": "0.1.1",
-        "@candlefw/wind": "0.4.1-dev"
+        "@candlefw/conflagrate": "*",
+        "@candlefw/hydrocarbon": "*",
+        "@candlefw/url": "*",
+        "@candlefw/wind": "*"
     },
     "devDependencies": {
-        "@candlefw/test": "latest",
-        "rollup": "2.0.6",
-        "rollup-plugin-commonjs": "latest",
-        "rollup-plugin-gzip": "2.3.0",
-        "rollup-plugin-node-resolve": "latest",
-        "rollup-plugin-resolve": "latest",
-        "rollup-plugin-terser": "5.3.0"
+        "@candlefw/test": "*"
     },
     "jshintConfig": {
         "esversion": 6,
