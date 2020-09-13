@@ -157,13 +157,14 @@ const env = <JSParserEnv>{
                     while (!lex.END && lex.ty !== lex.types.nl)
                         lex.next();
 
-                    lex.tl = 0;
+                    //  lex.tl = 0;
+                    //  lex.line--;
 
                     start.fence(lex);
 
                     env.comments.push(start);
 
-                    t = lu(lex.next());
+                    t = lu(lex);
                 } else {
                     const FLAG_CACHE = lex.CHARACTERS_ONLY;
 
@@ -177,13 +178,13 @@ const env = <JSParserEnv>{
                         lex.next(); //"*"
                     }
 
-                    t = lu(lex.next());
-
-                    lex.CHARACTERS_ONLY = FLAG_CACHE;
-
                     start.fence(lex);
 
                     env.comments.push(start);
+
+                    lex.CHARACTERS_ONLY = FLAG_CACHE;
+
+                    t = lu(lex.next());
                 }
             }
 
