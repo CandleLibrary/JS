@@ -451,11 +451,14 @@
 
     <> class_heritage → τextends left_hand_side_expression                          
 
-    <> class_body → class_element(+)
+    <> class_body → class_element                                                                               ↦r { [$sym1 ] } 
+        | class_body class_element                                                                              ↦r { $sym1.concat($sym2) } 
+        | class_body ;                                                                                          ↦r { $sym1 }
+        | ;                                                                                                     ↦r { [] }
 
     <> class_element → method_definition 
         │ τstatic method_definition                                                                             ↦r { ( $sym2.STATIC = true, $sym2) }
-        │ ;
+        
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/10.0/index.html#prod-MethodDefinition
