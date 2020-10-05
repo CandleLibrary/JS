@@ -31,7 +31,7 @@ export function createNodeDefinitions(
 
 export const format_rules = buildFormatRules([{
     type: JSNodeType.LexicalDeclaration,
-    format_rule: FormatRule.INDENT | FormatRule.OPTIONAL_SPACE | FormatRule.LIST_SPLIT * 2 | FormatRule.MIN_LIST_ELE_LIMIT * 15
+    format_rule: FormatRule.INDENT | FormatRule.OPTIONAL_SPACE | FormatRule.LIST_SPLIT * 1 | FormatRule.MIN_LIST_ELE_LIMIT * 15
 }, {
     type: JSNodeType.AssignmentExpression,
     format_rule: FormatRule.OPTIONAL_SPACE
@@ -43,7 +43,13 @@ export const format_rules = buildFormatRules([{
     format_rule: FormatRule.OPTIONAL_SPACE
 }, {
     type: JSNodeType.Script,
-    format_rule: FormatRule.INDENT | FormatRule.OPTIONAL_SPACE | FormatRule.LIST_SPLIT * 2 | FormatRule.MIN_LIST_ELE_LIMIT
+    format_rule: FormatRule.INDENT | FormatRule.OPTIONAL_SPACE | FormatRule.LIST_SPLIT * 2 | FormatRule.MIN_LIST_ELE_LIMIT * 5
+}, {
+    type: JSNodeType.Class,
+    format_rule: FormatRule.INDENT | FormatRule.OPTIONAL_SPACE | FormatRule.LIST_SPLIT * 2 | FormatRule.MIN_LIST_ELE_LIMIT * 5
+}, {
+    type: JSNodeType.Module,
+    format_rule: FormatRule.INDENT | FormatRule.OPTIONAL_SPACE | FormatRule.LIST_SPLIT * 1 | FormatRule.MIN_LIST_ELE_LIMIT * 5
 }, {
     type: JSNodeType.BlockStatement,
     format_rule: FormatRule.INDENT | FormatRule.OPTIONAL_SPACE | FormatRule.LIST_SPLIT * 2 | FormatRule.MIN_LIST_ELE_LIMIT * 5
@@ -141,7 +147,7 @@ export const JSNodeDefinitions: Array<JSNodeDefinition> = createNodeDefinitions(
     {
         type: JSNodeType.BreakStatement,
         ext_name: [],
-        template_pattern: "break;",
+        template_pattern: { default: "break @1?;", $not_1: "break;" },
     },
     {
         type: JSNodeType.CallExpression,
@@ -171,7 +177,10 @@ export const JSNodeDefinitions: Array<JSNodeDefinition> = createNodeDefinitions(
     {
         type: JSNodeType.Class,
         ext_name: ["name", "heritage", "body"],
-        template_pattern: { default: "class @1 extends @2{^1@...%^0}", $not_2: "class @1{ ^1@...% ^0}" }
+        template_pattern: {
+            default: "class @1 extends @2{^1@...%^0}",
+            $not_2: "class @1{^1@...%^0}"
+        }
     },
     {
         type: JSNodeType.ComputedProperty,
@@ -286,7 +295,8 @@ export const JSNodeDefinitions: Array<JSNodeDefinition> = createNodeDefinitions(
         ext_name: ["name", "parameters", "body"],
         template_pattern: {
             default: "@(ASYNC,async )function%@(GENERATOR,*) @1?@2{@3?}",
-            $not_2: "@(ASYNC,async )function@(GENERATOR,*) @1?(){@3?}"
+            $not_2: "@(ASYNC,async )function%@(GENERATOR,*) @1?%\(\){@3?}",
+            $not_1not_2: "@(ASYNC,async )function%@(GENERATOR,*)%\(\){@3?}",
         }
     },
     {
@@ -294,7 +304,8 @@ export const JSNodeDefinitions: Array<JSNodeDefinition> = createNodeDefinitions(
         ext_name: ["name", "parameters", "body"],
         template_pattern: {
             default: "@(ASYNC,async )function%@(GENERATOR,*) @1?@2{@3?}",
-            $not_2: "@(ASYNC,async )function%@(GENERATOR,*) @1?(){@3?}"
+            $not_2: "@(ASYNC,async )function%@(GENERATOR,*) @1?%\(\){@3?}",
+            $not_1not_2: "@(ASYNC,async )function%@(GENERATOR,*)%\(\){@3?}",
         }
     },
     {
@@ -305,7 +316,7 @@ export const JSNodeDefinitions: Array<JSNodeDefinition> = createNodeDefinitions(
     {
         type: JSNodeType.GetterMethod,
         ext_name: ["name", "body"],
-        template_pattern: "get @1(){@2?}",
+        template_pattern: "get @1\(%\){@2?}",
     },
     {
         type: JSNodeType.Identifier,
@@ -405,6 +416,7 @@ export const JSNodeDefinitions: Array<JSNodeDefinition> = createNodeDefinitions(
         template_pattern: {
             default: "@(ASYNC,async )%@(GENERATOR,*)@1%@2?{^1@3?^0}",
             $not_2: "@(ASYNC,async )%@(GENERATOR,*)@1%(){^1@3?^0}",
+            $not_2not_3: "@(ASYNC,async )%@(GENERATOR,*)@1%(){^1@3?^0}",
         },
     },
 
@@ -416,7 +428,7 @@ export const JSNodeDefinitions: Array<JSNodeDefinition> = createNodeDefinitions(
     {
         type: JSNodeType.NameSpaceImport,
         ext_name: [],
-        template_pattern: "* as @1",
+        template_pattern: "*%as @1",
     },
     {
         type: JSNodeType.NamedImports,
@@ -431,7 +443,7 @@ export const JSNodeDefinitions: Array<JSNodeDefinition> = createNodeDefinitions(
     {
         type: JSNodeType.NewInstanceExpression,
         ext_name: [],
-        template_pattern: "new @1@2",
+        template_pattern: "new @1%@2",
     },
     {
         type: JSNodeType.NewTarget,
@@ -451,12 +463,12 @@ export const JSNodeDefinitions: Array<JSNodeDefinition> = createNodeDefinitions(
     {
         type: JSNodeType.ObjectLiteral,
         ext_name: [],
-        template_pattern: "{^1@...,^0}",
+        template_pattern: "{%^1@...,^0%}",
     },
     {
         type: JSNodeType.Parameters,
         ext_name: [],
-        template_pattern: "(^1@...,^0)",
+        template_pattern: "(%^1@...,^0%)",
     },
     {
         type: JSNodeType.Parenthesized,
@@ -491,12 +503,12 @@ export const JSNodeDefinitions: Array<JSNodeDefinition> = createNodeDefinitions(
     {
         type: JSNodeType.ReturnStatement,
         ext_name: ["expression"],
-        template_pattern: "return @... ;",
+        template_pattern: "return @...%;",
     },
     {
         type: JSNodeType.Script,
         ext_name: [],
-        template_pattern: "@...%",
+        template_pattern: "^1@...%^0",
     },
     {
         type: JSNodeType.Module,
@@ -619,7 +631,7 @@ export const JSNodeDefinitions: Array<JSNodeDefinition> = createNodeDefinitions(
     {
         type: JSNodeType.YieldExpression,
         ext_name: ["expression"],
-        template_pattern: "yield @1",
+        template_pattern: "yield@(GENERATOR,*) @1",
     },
     {
         type: JSNodeType.ObjectBinding,
