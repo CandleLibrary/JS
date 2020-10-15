@@ -57,6 +57,15 @@ export const format_rules = buildFormatRules([{
     type: JSNodeType.FunctionBody,
     format_rule: FormatRule.INDENT | FormatRule.OPTIONAL_SPACE | FormatRule.LIST_SPLIT * 2 | FormatRule.MIN_LIST_ELE_LIMIT * 5
 }, {
+    type: JSNodeType.CaseBlock,
+    format_rule: FormatRule.INDENT | FormatRule.OPTIONAL_SPACE | FormatRule.LIST_SPLIT * 2 | FormatRule.MIN_LIST_ELE_LIMIT * 5
+}, {
+    type: JSNodeType.CaseClause,
+    format_rule: FormatRule.INDENT | FormatRule.OPTIONAL_SPACE | FormatRule.LIST_SPLIT * 2 | FormatRule.MIN_LIST_ELE_LIMIT * 5
+}, {
+    type: JSNodeType.DefaultClause,
+    format_rule: FormatRule.INDENT | FormatRule.OPTIONAL_SPACE | FormatRule.LIST_SPLIT * 2 | FormatRule.MIN_LIST_ELE_LIMIT * 5
+}, {
     type: JSNodeType.ObjectLiteral,
     format_rule: FormatRule.INDENT | FormatRule.OPTIONAL_SPACE | FormatRule.LIST_SPLIT * 2 | FormatRule.MIN_LIST_ELE_LIMIT * 5
 }, {
@@ -162,12 +171,12 @@ export const JSNodeDefinitions: Array<JSNodeDefinition> = createNodeDefinitions(
     {
         type: JSNodeType.CaseClause,
         ext_name: ["statements"],
-        template_pattern: "case @1%:%^1@...%",
+        template_pattern: "case @1%:%^1@...%^0",
     },
     {
         type: JSNodeType.DefaultClause,
         ext_name: ["statements"],
-        template_pattern: "default%:%^1@...%",
+        template_pattern: "default%:%^1@...%^0",
     },
     {
         type: JSNodeType.CatchClause,
