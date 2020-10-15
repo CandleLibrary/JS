@@ -50,6 +50,25 @@ const env = <JSParserEnv>{
     cls: { PROPERTY_NAME: JSNodeClass.PROPERTY_NAME },
     comments: [],
     functions: {
+        parseIdentifier: (a, b, lex: Lexer) => {
+            // lex.next();
+            // console.log("AAAAAAA", lex.tx);
+            const IWScache = lex.IWS;
+
+            lex.IWS = false;
+
+            const pk = lex.copy();
+
+            while (pk.ty == lex.types.id || pk.tx == "_" || pk.tx == "$") {
+                pk.next();
+            }
+
+            lex.tl = pk.off - lex.off;
+
+            lex.IWS = IWScache;
+
+            // console.log(`[${lex.tx}]`);
+        },
         parseTemplate: (a, b, lex: Lexer) => {
             const pk = lex.pk;
 
