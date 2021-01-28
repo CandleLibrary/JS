@@ -1,4 +1,5 @@
 import { JSNodeType } from "./node_type";
+import { JSNodeClass } from "./node_class_type";
 
 
 export enum JSNodeTypeLU {
@@ -113,4 +114,23 @@ export enum JSNodeTypeLU {
     OptionalMemberExpression = JSNodeType.OptionalMemberExpression,
     OptionalChain = JSNodeType.OptionalChain,
     CoalesceExpression = JSNodeType.CoalesceExpression,
+    C_EXPRESSION = JSNodeClass.EXPRESSION,
+    C_STATEMENT = JSNodeClass.STATEMENT,
+    C_LIST = JSNodeClass.LIST,
+    C_FUNCTION = JSNodeClass.FUNCTION,
+    C_MODULE = JSNodeClass.MODULE,
+    C_LITERAL = JSNodeClass.LITERAL,
+    C_BINARY_EXPRESSION = JSNodeClass.BINARY_EXPRESSION,
+    C_UNARY_EXPRESSION = JSNodeClass.UNARY_EXPRESSION,
+    C_TERNARY_EXPRESSION = JSNodeClass.TERNARY_EXPRESSION,
+    C_CLASS = JSNodeClass.CLASS,
+    C_VARIABLE = JSNodeClass.VARIABLE,
+    C_PROPERTY_NAME = JSNodeClass.PROPERTY_NAME,
+    C_METHOD = JSNodeClass.METHOD,
+    C_TEMPLATE = JSNodeClass.TEMPLATE,
+    C_IDENTIFIER = JSNodeClass.IDENTIFIER,
+    C_ASSIGNMENT = JSNodeClass.ASSIGNMENT,
+    C_DECLARATION = JSNodeClass.DECLARATION,
+    C_HOISTABLE_DECLARATION = JSNodeClass.HOISTABLE_DECLARATION,
 }
+
