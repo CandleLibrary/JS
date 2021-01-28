@@ -95,7 +95,12 @@ export const enum JSNodeClass {
     /**
      * Any node that assigns a value to variable or object member.
      */
-    CLOSURE = 1 << 17
+    DECLARATION = 1 << 1,
+
+    /**
+     * Any node that is hoisted when declared
+     */
+    HOISTABLE_DECLARATION = 1 << 18
 }
 
 

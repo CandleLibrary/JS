@@ -20,6 +20,8 @@ export enum JSNodeTypeLU {
     CaseClause = JSNodeType.CaseClause,
     CatchClause = JSNodeType.CatchClause,
     Class = JSNodeType.Class,
+    ClassDeclaration = JSNodeType.ClassDeclaration,
+    ClassExpression = JSNodeType.ClassExpression,
     ComputedProperty = JSNodeType.ComputedProperty,
     ConditionalExpression = JSNodeType.ConditionalExpression,
     ContinueStatement = JSNodeType.ContinueStatement,

@@ -252,7 +252,23 @@ export const enum JSNodeType {
      * 3. **`body`**
      *
      */
-    Class = (16 << 23) | JSNodeClass.CLASS | JSNodeClass.STATEMENT,
+    Class = (16 << 23) | JSNodeClass.CLASS | JSNodeClass.STATEMENT | JSNodeClass.DECLARATION | JSNodeClass.HOISTABLE_DECLARATION,
+    ClassDeclaration = (16 << 23) | JSNodeClass.CLASS | JSNodeClass.STATEMENT | JSNodeClass.DECLARATION | JSNodeClass.HOISTABLE_DECLARATION,
+
+    /**
+     * Class declaration of the form:
+     *
+     * >```
+     * > class identifier? class_heritage? { class_body? }
+     * >```
+     *
+     * Extended members are:
+     * 1. **`name`**
+     * 2. **`heritage`**
+     * 3. **`body`**
+     *
+     */
+    ClassExpression = (16 << 23) | JSNodeClass.CLASS | JSNodeClass.EXPRESSION | JSNodeClass.DECLARATION,
 
 
     /**
@@ -442,7 +458,7 @@ export const enum JSNodeType {
      *
      * TODO Optional Notes
      */
-    ExportDeclaration = (29 << 23) | JSNodeClass.STATEMENT | JSNodeClass.MODULE,
+    ExportDeclaration = (29 << 23) | JSNodeClass.STATEMENT | JSNodeClass.MODULE | JSNodeClass.DECLARATION,
 
 
     /**
@@ -592,7 +608,7 @@ export const enum JSNodeType {
      * - @property {boolean} ASYNC - True if the parse encountered the `async` keyword.
      * - @property {boolean} GENERATOR - True if the parse encountered the symbol `*`.
      */
-    FunctionDeclaration = (39 << 23) | JSNodeClass.FUNCTION | JSNodeClass.STATEMENT,
+    FunctionDeclaration = (39 << 23) | JSNodeClass.FUNCTION | JSNodeClass.STATEMENT | JSNodeClass.DECLARATION,
 
     /**
      * A function expression of the form:
@@ -611,7 +627,7 @@ export const enum JSNodeType {
      * - @property {boolean} ASYNC - True if the parse encountered the `async` keyword.
      * - @property {boolean} GENERATOR - True if the parse encountered the symbol `*`.
      */
-    FunctionExpression = (40 << 23) | JSNodeClass.FUNCTION | JSNodeClass.EXPRESSION,
+    FunctionExpression = (39 << 23) | JSNodeClass.FUNCTION | JSNodeClass.EXPRESSION | JSNodeClass.DECLARATION,
 
     /**
      * A method declaration of the form:
@@ -794,7 +810,7 @@ export const enum JSNodeType {
      * 1. **`from`**
      *
      */
-    ImportDeclaration = (50 << 23) | JSNodeClass.STATEMENT | JSNodeClass.MODULE,
+    ImportDeclaration = (50 << 23) | JSNodeClass.STATEMENT | JSNodeClass.MODULE | JSNodeClass.DECLARATION,
 
 
     /**
@@ -868,7 +884,7 @@ export const enum JSNodeType {
      *
      *
      */
-    LexicalDeclaration = (55 << 23) | JSNodeClass.STATEMENT,
+    LexicalDeclaration = (55 << 23) | JSNodeClass.STATEMENT | JSNodeClass.DECLARATION,
 
 
 
@@ -1477,7 +1493,7 @@ export const enum JSNodeType {
      * This node does not have extended members.
      *
      */
-    VariableStatement = (95 << 23) | JSNodeClass.STATEMENT | JSNodeClass.LIST,
+    VariableStatement = (95 << 23) | JSNodeClass.LIST | JSNodeClass.DECLARATION | JSNodeClass.STATEMENT | JSNodeClass.HOISTABLE_DECLARATION,
 
 
     /**
@@ -1492,7 +1508,7 @@ export const enum JSNodeType {
      * This node is only found as a subnode of `ForStatements`.
      *
      */
-    VariableDeclaration = (96 << 23) | JSNodeClass.LIST,
+    VariableDeclaration = (96 << 23) | JSNodeClass.LIST | JSNodeClass.DECLARATION | JSNodeClass.STATEMENT | JSNodeClass.HOISTABLE_DECLARATION,
 
 
     /**
@@ -1575,9 +1591,9 @@ export const enum JSNodeType {
      */
     ArrayBinding = (102 << 23),
 
-    OptionalMemberExpression =  (103 << 23) | JSNodeClass.EXPRESSION , 
+    OptionalMemberExpression = (103 << 23) | JSNodeClass.EXPRESSION,
 
-    OptionalChain =  (104<< 23),
+    OptionalChain = (104 << 23),
 
-    CoalesceExpression =  (105 << 23)| JSNodeClass.EXPRESSION 
+    CoalesceExpression = (105 << 23) | JSNodeClass.EXPRESSION
 }
