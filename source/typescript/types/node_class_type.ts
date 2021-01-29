@@ -92,10 +92,11 @@ export const enum JSNodeClass {
      */
     ASSIGNMENT = 1 << 16,
 
+
     /**
      * Any node that assigns a value to variable or object member.
      */
-    DECLARATION = 1 << 1,
+    DECLARATION = 1 << 17,
 
     /**
      * Any node that is hoisted when declared

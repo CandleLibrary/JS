@@ -1,83 +1,59 @@
-import { Lexer } from "@candlefw/wind";
+import { JSIdentifierBinding } from "./JSIdentifierRoot";
+import { JSModule } from "./JSModule";
+import { JSScript } from "./JSScript";
+import { JSClauseNode, JSStatementNode } from "./JSStatement";
 import { JSNodeType } from "./node_type";
+
+export interface BaseJSNode {
+    type: JSNodeType;
+    nodes?: BaseJSNode[];
+}
+
+export interface JSExpression extends BaseJSNode { }
+
+export interface JSDeclaration extends JSStatementNode { }
 /**
- * A Node within a JSNode AST
+ * A function declaration of the form:
+ *
+ * >```
+ * > async? function  \*? identifier? \( parameters? \) { body? }
+ * >```
+ *
+ * Extended members are:
+ * 1. **name**
+ * 1. **parameters**
+ * 1. **body**
+ *
+ * This node has the regular properties
+ *
+ * - @property {boolean} ASYNC - True if the parse encountered the `async` keyword.
+ * - @property {boolean} GENERATOR - True if the parse encountered the symbol `*`.
  */
-export interface JSNode {
+export interface JSFunctionDeclaration extends JSDeclaration {
+    type: JSNodeType.FunctionDeclaration;
 
-    /**
-     *  A **cfw.whind** Lexer that has been fenced to the 
-     *  to the starting point of the node's production
-     *  within the parsed string.  
-     * 
-     * Calling `node.pos.slice()` will return a string
-     * with the exact text the node covers. 
-     */
-    pos: Lexer;
+    ASYNC: boolean;
 
-    /**
-     * A number with information on the JSNodeType and
-     *  JSNodeClass of this particular node.
-     * 
-     * JSNodeType membership can be determined with an equality expression, e.g:
-     * ```js
-     * node.type == JSNodeType.*
-     * ```
-     * 
-     * JSNodeClass membership can be determined using a bitwise AND expression, e.g:
-     * ```js
-     * node.type & JSNodeClass.*
-     * ```
-     */
-    type: JSNodeType | number;
+    GENERATOR: boolean;
 
-    /**
-     * An array of JSNodes.
-     */
-    nodes: Array<JSNode>;
-
-    /**
-     * The raw value of the node's production.  
-     * 
-     * Present on Literal nodes such as NumericLiteral and StringLiteral
-     */
-    value?: string | number;
-
-    /**
-     * The operating symbol in a binary expression.
-     * 
-     * Available on binary expression nodes
-     */
-    symbol?: string;
-
-    /**
-     * Number of commas in an Elision node.
-     */
-    count?: number;
-
-    /**
-     * 
-     */
-    comments?: Lexer[],
-
-
-
-    /**
-     * Set to true if the node is a MemberExpression with a computed
-     * member accessor e.g. `object[computed_property]` 
-     * 
-     * Present on MemberExpression nodes.
-     */
-    COMPUTED?: boolean;
-
-    STATIC?: boolean;
-    ASYNC?: boolean;
-    GENERATOR?: boolean;
+    nodes: [JSIdentifierBinding, JSFormalParameters, JSFunctionBody];
 }
 
-export interface ExportDeclaration extends JSNode {
-    //@ts-ignore
+export interface JSFormalParameters extends JSClauseNode {
+    type: JSNodeType.FormalParameters;
+}
+
+export interface JSFunctionBody extends JSClauseNode {
+    type: JSNodeType.FunctionBody;
+}
+
+export interface JSArguments extends JSExpression {
+    type: JSNodeType.Arguments;
+    nodes: JSExpression[];
 }
 
 
-export type FullJSNode = JSNode | ExportDeclaration;
+
+export type JSNode = BaseJSNode | JSStatementNode | JSModule | JSScript;
+
+export type FullJSNode = JSNode;
