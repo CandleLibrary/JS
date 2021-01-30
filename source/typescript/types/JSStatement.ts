@@ -1,6 +1,8 @@
+import { JSClauseBase, JSStatementBase } from "./JSBase";
 import { JSIdentifierBinding, JSIdentifierLabel } from "./JSIdentifier";
+import { JSExpressionClass, JSRightHandExpressionClass } from "./JSNodeClasses";
+import { JSBindingExpression } from "./JSOperator";
 import { JSNodeType } from "./node_type";
-import { JSClauseBase, JSExpressionBase, JSStatementBase } from "./JSBase";
 
 
 
@@ -17,8 +19,7 @@ import { JSClauseBase, JSExpressionBase, JSStatementBase } from "./JSBase";
  */
 export interface JSBlockStatement extends JSStatementBase {
     type: JSNodeType.BlockStatement;
-
-    node: JSStatementBase[];
+    nodes: JSStatementClass[];
 }
 /**
  * A statement of the form
@@ -34,7 +35,7 @@ export interface JSBlockStatement extends JSStatementBase {
 
 export interface JSExpressionStatement extends JSStatementBase {
     type: JSNodeType.ExpressionStatement;
-    node: [JSExpressionBase];
+    nodes: [JSExpressionClass];
 }
 /**
  * Statement of the form
@@ -48,7 +49,7 @@ export interface JSExpressionStatement extends JSStatementBase {
  */
 export interface JSDebuggerStatement extends JSStatementBase {
     type: JSNodeType.DebuggerStatement;
-    node: never;
+    nodes: never;
 }
 /**
  * Statement of the form
@@ -63,7 +64,7 @@ export interface JSDebuggerStatement extends JSStatementBase {
 
 export interface JSEmptyStatement extends JSStatementBase {
     type: JSNodeType.EmptyStatement;
-    node: never;
+    nodes: never;
 }
 /**
  * Statement of the form:
@@ -80,24 +81,9 @@ export interface JSEmptyStatement extends JSStatementBase {
 
 export interface JSDoStatement extends JSStatementBase {
     type: JSNodeType.DoStatement;
-    node: [JSStatementBase, JSExpressionBase];
+    nodes: [JSStatementClass, JSRightHandExpressionClass];
 }
-/**
- * Statement of the form:
- *
- * >```
- * > do statement  while ( expression );
- * >```
- *
- * Extended members are:
- * 1. **`statement`**
- * 1. **`expression`**
- */
 
-export interface JSDoStatement extends JSStatementBase {
-    type: JSNodeType.DoStatement;
-    node: [JSStatementBase, JSExpressionBase];
-}
 /**
  * TODO Description
  *
@@ -116,7 +102,7 @@ export interface JSForInStatement extends JSStatementBase {
 
     type: JSNodeType.ForInStatement;
 
-    node: [JSVariableDeclaration | JSLexicalBinding | JSExpressionBase, JSExpressionBase, JSStatementBase];
+    nodes: [JSVariableDeclaration | JSLexicalBinding | JSRightHandExpressionClass, JSRightHandExpressionClass, JSStatementClass];
 }
 /**
  * TODO Description
@@ -135,7 +121,7 @@ export interface JSForOfStatement extends JSStatementBase {
 
     type: JSNodeType.ForOfStatement;
 
-    node: [JSVariableDeclaration | JSLexicalBinding | JSExpressionBase, JSExpressionBase, JSStatementBase];
+    nodes: [JSVariableDeclaration | JSLexicalBinding | JSRightHandExpressionClass, JSRightHandExpressionClass, JSStatementClass];
 }
 /**
  * TODO Description
@@ -154,7 +140,7 @@ export interface JSForStatement extends JSStatementBase {
 
     type: JSNodeType.ForStatement;
 
-    node: [JSExpressionBase | null, JSExpressionBase | null, JSExpressionBase | null, JSStatementBase];
+    nodes: [JSExpressionClass | JSVariableStatement | JSLexicalBinding | null, JSExpressionClass | null, JSRightHandExpressionClass | null, JSStatementClass];
 }
 /**
  * Declaration of the form
@@ -172,7 +158,7 @@ export interface JSVariableDeclaration extends JSStatementBase {
 
     type: JSNodeType.VariableDeclaration;
 
-    node: (JSIdentifierBinding | JSIdentifierBinding)[];
+    nodes: (JSBindingExpression | JSIdentifierBinding)[];
 }
 /**
  * Statement of the form
@@ -188,7 +174,7 @@ export interface JSVariableStatement extends JSClauseBase {
 
     type: JSNodeType.VariableStatement;
 
-    node: (JSIdentifierBinding | JSIdentifierBinding)[];
+    nodes: (JSBindingExpression | JSIdentifierBinding)[];
 }
 /**
  * Statement of the form:
@@ -207,7 +193,9 @@ export interface JSLabeledStatement extends JSStatementBase {
 
     type: JSNodeType.LabeledStatement;
 
-    node: [JSStatementBase];
+    value: string;
+
+    nodes: [JSIdentifierLabel, JSStatementClass];
 }
 /**
  * Lexical Scoped variable declaration statement beginning with `let` or `const`.
@@ -225,7 +213,7 @@ export interface JSLexicalDeclaration extends JSStatementBase {
 
     type: JSNodeType.LexicalDeclaration;
 
-    node: (JSIdentifierBinding | JSIdentifierBinding)[];
+    nodes: (JSIdentifierBinding | JSBindingExpression)[];
 }
 /**
  * Lexical declaration used in the initialization field of `for` statements.
@@ -241,7 +229,7 @@ export interface JSLexicalBinding extends JSClauseBase {
 
     type: JSNodeType.LexicalBinding;
 
-    node: (JSIdentifierBinding | JSIdentifierBinding)[];
+    nodes: (JSIdentifierBinding | JSBindingExpression)[];
 }
 /**
  * TODO Description
@@ -260,7 +248,7 @@ export interface JSIfStatement extends JSStatementBase {
 
     type: JSNodeType.IfStatement;
 
-    node: [JSExpressionBase, JSStatementBase, JSIfStatement?];
+    nodes: [JSRightHandExpressionClass, JSStatementClass, JSIfStatement?];
 }
 /**
  * Statement loop of the form
@@ -279,7 +267,7 @@ export interface JSWhileStatement extends JSStatementBase {
 
     type: JSNodeType.WhileStatement;
 
-    node: [JSExpressionBase, JSStatementBase];
+    nodes: [JSRightHandExpressionClass, JSStatementClass];
 }
 /**
  * Statement of the form
@@ -298,7 +286,7 @@ export interface JSWithStatement extends JSStatementBase {
 
     type: JSNodeType.WithStatement;
 
-    node: [JSExpressionBase, JSStatementBase];
+    nodes: [JSExpressionClass, JSStatementClass];
 }
 /**
 * Statement of the form:
@@ -316,7 +304,7 @@ export interface JSReturnStatement extends JSStatementBase {
 
     type: JSNodeType.ReturnStatement;
 
-    node: [JSExpressionBase?];
+    nodes: [JSRightHandExpressionClass?];
 }
 
 export interface JSBreakStatement extends JSStatementBase {
@@ -354,7 +342,7 @@ export interface JSContinueStatement extends JSStatementBase {
 
 export interface JSThrowStatement extends JSStatementBase {
     type: JSNodeType.ThrowStatement;
-    nodes: [JSExpressionBase?];
+    nodes: [JSRightHandExpressionClass?];
 }
 /**
  * TODO Description
@@ -371,7 +359,7 @@ export interface JSThrowStatement extends JSStatementBase {
 
 export interface JSTryStatement extends JSStatementBase {
     type: JSNodeType.TryStatement;
-    nodes: [JSStatementBase, null | JSCatchClause, null | JSFinallyClause];
+    nodes: [JSStatementClass, null | JSCatchClause, null | JSFinallyClause];
 }
 
 /**
@@ -411,7 +399,7 @@ export interface JSSwitchStatement extends JSStatementBase {
 
     type: JSNodeType.SwitchStatement;
 
-    node: [JSExpressionBase, JSCaseBlock];
+    nodes: [JSRightHandExpressionClass, JSCaseBlock];
 }
 /**
  * Block expression of the form:
@@ -431,7 +419,7 @@ export interface JSCaseBlock extends JSClauseBase {
 
     type: JSNodeType.CaseBlock;
 
-    node: (JSCaseClause | JSDefaultClause)[];
+    nodes: (JSCaseClause | JSDefaultClause)[];
 }
 /**
  * Switch clause of the form:
@@ -449,7 +437,7 @@ export interface JSCaseClause extends JSClauseBase {
 
     type: JSNodeType.CaseClause;
 
-    node: JSStatementBase[];
+    nodes: JSStatementClass[];
 }
 /**
  * Switch clause of the form:
@@ -468,7 +456,7 @@ export interface JSDefaultClause extends JSClauseBase {
 
     type: JSNodeType.DefaultClause;
 
-    node: JSStatementBase[];
+    nodes: JSStatementClass[];
 }
 
 export type JSStatementClass =

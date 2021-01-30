@@ -1,118 +1,5 @@
 import { JSNodeType } from "./node_type";
 
-type NodeID =
-    JSNodeType.Module
-    | JSNodeType.AdditiveExpression
-    | JSNodeType.Arguments
-    | JSNodeType.ArrayLiteral
-    | JSNodeType.ArrowFunction
-    | JSNodeType.AssignmentExpression
-    | JSNodeType.AwaitExpression
-    | JSNodeType.BindingExpression
-    | JSNodeType.BitwiseExpression
-    | JSNodeType.BlockStatement
-    | JSNodeType.BooleanLiteral
-    | JSNodeType.BreakStatement
-    | JSNodeType.CallExpression
-    | JSNodeType.CaseBlock
-    | JSNodeType.CaseClause
-    | JSNodeType.CatchClause
-    | JSNodeType.Class
-    | JSNodeType.ClassDeclaration
-    | JSNodeType.ClassExpression
-    | JSNodeType.ComputedProperty
-    | JSNodeType.ContinueStatement
-    | JSNodeType.ConditionalExpression
-    | JSNodeType.DebuggerStatement
-    | JSNodeType.DefaultClause
-    | JSNodeType.DeleteExpression
-    | JSNodeType.DoStatement
-    | JSNodeType.Elision
-    | JSNodeType.EmptyStatement
-    | JSNodeType.EqualityExpression
-    | JSNodeType.ExponentiationExpression
-    | JSNodeType.ExportClause
-    | JSNodeType.ExportDeclaration
-    | JSNodeType.ExpressionList
-    | JSNodeType.ExpressionStatement
-    | JSNodeType.FinallyClause
-    | JSNodeType.ForInStatement
-    | JSNodeType.ForOfStatement
-    | JSNodeType.ForStatement
-    | JSNodeType.FormalParameters
-    | JSNodeType.FromClause
-    | JSNodeType.FunctionBody
-    | JSNodeType.FunctionDeclaration
-    | JSNodeType.FunctionExpression
-    | JSNodeType.GetterMethod
-    | JSNodeType.Identifier
-    | JSNodeType.IdentifierName
-    | JSNodeType.IdentifierProperty
-    | JSNodeType.IdentifierDefault
-    | JSNodeType.IdentifierModule
-    | JSNodeType.IdentifierReference
-    | JSNodeType.IdentifierReferenceProperty
-    | JSNodeType.IdentifierBinding
-    | JSNodeType.IdentifierLabel
-    | JSNodeType.IfStatement
-    | JSNodeType.ImportClause
-    | JSNodeType.ImportDeclaration
-    | JSNodeType.InExpression
-    | JSNodeType.InstanceOfExpression
-    | JSNodeType.LabeledStatement
-    | JSNodeType.LexicalBinding
-    | JSNodeType.LexicalDeclaration
-    | JSNodeType.LogicalExpression
-    | JSNodeType.MemberExpression
-    | JSNodeType.Method
-    | JSNodeType.MultiplicativeExpression
-    | JSNodeType.NameSpaceImport
-    | JSNodeType.NamedImports
-    | JSNodeType.NewExpression
-    | JSNodeType.NewInstanceExpression
-    | JSNodeType.NewTarget
-    | JSNodeType.NullLiteral
-    | JSNodeType.NumericLiteral
-    | JSNodeType.BigIntLiteral
-    | JSNodeType.ObjectLiteral
-    | JSNodeType.Parenthesized
-    | JSNodeType.PostExpression
-    | JSNodeType.PreExpression
-    | JSNodeType.PropertyBinding
-    | JSNodeType.RegexLiteral
-    | JSNodeType.RelationalExpression
-    | JSNodeType.ReturnStatement
-    | JSNodeType.Script
-    | JSNodeType.SetterMethod
-    | JSNodeType.ShiftExpression
-    | JSNodeType.Specifier
-    | JSNodeType.SpreadExpression
-    | JSNodeType.Spread
-    | JSNodeType.StringLiteral
-    | JSNodeType.SuperCall
-    | JSNodeType.SuperExpression
-    | JSNodeType.SwitchStatement
-    | JSNodeType.Template
-    | JSNodeType.TemplateHead
-    | JSNodeType.TemplateMiddle
-    | JSNodeType.TemplateTail
-    | JSNodeType.ThisLiteral
-    | JSNodeType.ThrowStatement
-    | JSNodeType.TryStatement
-    | JSNodeType.TypeofExpression
-    | JSNodeType.UnaryExpression
-    | JSNodeType.VariableStatement
-    | JSNodeType.VariableDeclaration
-    | JSNodeType.VoidExpression
-    | JSNodeType.WhileStatement
-    | JSNodeType.WithStatement
-    | JSNodeType.YieldExpression
-    | JSNodeType.ObjectBinding
-    | JSNodeType.ArrayBinding
-    | JSNodeType.OptionalMemberExpression
-    | JSNodeType.OptionalChain
-    | JSNodeType.CoalesceExpression;
-
 export interface JSNodeBase {
     /**
      * An numeric identifier that encodes the
@@ -146,7 +33,7 @@ export interface JSNodeBase {
      *
      *
      */
-    type: JSNodeType;
+    type: number;
 
     /**
      * Children nodes

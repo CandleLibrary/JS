@@ -8,7 +8,7 @@ import {
 } from "@candlefw/conflagrate";
 
 import { format_rules, renderers } from "./rules.js";
-import { JSNode } from "../types/node.js";
+import { JSNode } from "../types/JSNode.js";
 import { JSNodeType } from "../javascript.js";
 
 export const FormatFunction: CustomFormatFunction<JSNode> = (val, prop_name, node) => {

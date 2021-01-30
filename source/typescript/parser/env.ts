@@ -4,7 +4,7 @@ import { Lexer } from "@candlefw/wind";
 import { JSNodeClass } from "../types/node_class_type.js";
 import { JSNodeTypeLU } from "../types/node_type_lu.js";
 import { JSNodeType } from "../types/node_type";
-import { JSNode } from "../types/node.js";
+import { JSNode } from "../types/JSNode.js";
 
 function ConvertArrowParameters(node: JSNode) {
     for (const sub of node.nodes) {

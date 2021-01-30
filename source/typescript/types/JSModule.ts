@@ -1,8 +1,11 @@
-import { JSModuleBase } from "./JSBase";
-import { JSIdentifier } from "./JSIdentifier";
+import { JSExpressionBase, JSModuleBase } from "./JSBase";
+import { JSIdentifier, JSIdentifierDefault, JSIdentifierModule, JSIdentifierName } from "./JSIdentifier";
 import { JSStringLiteral } from "./JSPrimitive";
-import { JSStatementClass } from "./JSStatement";
+import { JSLexicalDeclaration, JSStatementClass, JSVariableStatement } from "./JSStatement";
 import { JSNodeType } from "./node_type";
+import { JSHoistableDeclarationClass, JSRightHandExpressionClass } from "./JSNodeClasses";
+import { JSClassDeclaration } from "./JSClass";
+import { JSFunctionDeclaration } from "./JSFunction";
 
 
 
@@ -12,7 +15,7 @@ import { JSNodeType } from "./node_type";
 export interface JSModule extends JSModuleBase {
     type: JSNodeType.Module;
     source?: string;
-    nodes: (JSStatementClass | JSImportDeclaration)[];
+    nodes: (JSStatementClass | JSImportDeclaration | JSExportDeclaration)[];
 }
 
 
@@ -32,6 +35,8 @@ export interface JSModule extends JSModuleBase {
  */
 export interface JSImportDeclaration extends JSModuleBase {
     type: JSNodeType.ImportDeclaration;
+
+    nodes: [JSImportClause, JSFromClause] | [null, JSModuleSpecifier];
 }
 
 
@@ -54,6 +59,12 @@ export interface JSImportDeclaration extends JSModuleBase {
  */
 export interface JSExportDeclaration extends JSModuleBase {
     type: JSNodeType.ExportDeclaration;
+
+    DEFAULT: boolean;
+
+    nodes: [JSExportClause, JSFromClause?]
+    | [null, JSFromClause]
+    | [(JSClassDeclaration | JSVariableStatement | JSLexicalDeclaration | JSFunctionDeclaration | JSHoistableDeclarationClass | JSRightHandExpressionClass)];
 }
 
 /**
@@ -72,6 +83,8 @@ export interface JSExportDeclaration extends JSModuleBase {
  */
 export interface JSImportClause extends JSModuleBase {
     type: JSNodeType.ImportClause;
+
+    nodes: [(JSIdentifierDefault | JSNameSpaceImport | JSNamedImports)];
 }
 /**
  * Collection of export specifiers of the form:
@@ -86,13 +99,9 @@ export interface JSImportClause extends JSModuleBase {
  */
 export interface JSExportClause extends JSModuleBase {
     type: JSNodeType.ExportClause;
+
+    nodes: JSModuleSpecifier[];
 }
-
-
-export interface JSImportClause extends JSModuleBase {
-    type: JSNodeType.ImportClause;
-}
-
 
 
 /**
@@ -126,7 +135,7 @@ export interface JSFromClause extends JSModuleBase {
  */
 export interface JSNameSpaceImport extends JSModuleBase {
     type: JSNodeType.NameSpaceImport;
-    nodes: [JSStringLiteral];
+    nodes: [JSIdentifierModule];
 }
 
 
@@ -141,7 +150,7 @@ export interface JSNameSpaceImport extends JSModuleBase {
  */
 export interface JSNamedImports extends JSModuleBase {
     type: JSNodeType.NamedImports;
-    nodes: [JSStringLiteral];
+    nodes: JSModuleSpecifier[];
 }
 
 /**
@@ -159,9 +168,14 @@ export interface JSNamedImports extends JSModuleBase {
 */
 export interface JSModuleSpecifier extends JSModuleBase {
     type: JSNodeType.Specifier;
-    nodes: [JSIdentifier, JSIdentifier?];
+    nodes: [JSIdentifier, JSIdentifierModule?];
 }
 
+
+export interface JSImportMeta extends JSExpressionBase {
+    type: JSNodeType.ImportMeta;
+    nodes: [JSIdentifierName] | [JSRightHandExpressionClass];
+}
 export type JSModuleClass = JSModule
     | JSImportDeclaration
     | JSExportDeclaration
@@ -171,4 +185,5 @@ export type JSModuleClass = JSModule
     | JSFromClause
     | JSNameSpaceImport
     | JSNamedImports
+    | JSImportMeta
     | JSModuleSpecifier;

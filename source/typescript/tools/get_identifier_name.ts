@@ -1,4 +1,4 @@
-import { JSNode } from "../types/node.js";
+import { JSNode } from "../types/JSNode.js";
 import { JSNodeType } from "../types/node_type";
 
 /**

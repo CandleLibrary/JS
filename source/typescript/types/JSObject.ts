@@ -1,7 +1,7 @@
-import { JSIdentifierBinding, JSIdentifierProperty } from "./JSIdentifier";
-import { JSBindingExpression, JSSpread } from "./JSOperator";
-import { JSAssignmentExpressionClass } from "./JSNodeClasses";
 import { JSExpressionBase, JSOperatorBase, JSPrimitiveBase } from "./JSBase";
+import { JSIdentifierProperty } from "./JSIdentifier";
+import { JSRightHandExpressionClass } from "./JSNodeClasses";
+import { JSBindingExpression, JSSpread } from "./JSOperator";
 import { JSNodeType } from "./node_type";
 
 export type JSBindingRestElement = JSSpread;
@@ -20,7 +20,7 @@ export type JSBindingRestElement = JSSpread;
 export interface JSObjectLiteral extends JSExpressionBase {
     type: JSNodeType.ObjectLiteral;
 
-    nodes: (JSBindingProperty)[];
+    nodes: (JSBindingProperty | JSIdentifierProperty | JSBindingRestElement)[];
 }
 
 /**
@@ -38,7 +38,7 @@ export interface JSObjectLiteral extends JSExpressionBase {
 export interface JSArrayLiteral extends JSExpressionBase {
     type: JSNodeType.ArrayLiteral;
 
-    nodes: (JSExpressionBase | JSElision | JSSpread)[];
+    nodes: (JSRightHandExpressionClass | JSElision | JSSpread)[];
 }
 
 
@@ -86,7 +86,7 @@ export interface JSArrayBinding extends JSExpressionBase {
 export interface JSElision extends JSPrimitiveBase {
     type: JSNodeType.Elision;
     count: number;
-
+    nodes: never;
 }
 
 
@@ -108,7 +108,7 @@ export interface JSElision extends JSPrimitiveBase {
 export interface JSBindingProperty extends JSOperatorBase {
     type: JSNodeType.PropertyBinding;
 
-    nodes: [JSIdentifierProperty, (JSIdentifierBinding | JSBindingExpression)];
+    nodes: [(JSIdentifierProperty | JSComputedProperty), JSRightHandExpressionClass];
 }
 
 /**
@@ -124,7 +124,7 @@ export interface JSBindingProperty extends JSOperatorBase {
  */
 export interface JSComputedProperty extends JSOperatorBase {
     type: JSNodeType.ComputedProperty;
-    nodes: [JSAssignmentExpressionClass];
+    nodes: [JSRightHandExpressionClass];
 }
 
 export type JSObjectClass =

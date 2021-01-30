@@ -3,7 +3,7 @@ import { extract, replace, traverse } from "@candlefw/conflagrate";
 import { JSNodeDefinitions } from "../render/rules.js";
 import { JSNodeDefinition } from "../types/node_definition.js";
 import { MinTreeExtendedNode } from "../types/extended_node.js";
-import { JSNode } from "../types/node.js";
+import { JSNode } from "../types/JSNode.js";
 import { JSNodeTypeLU } from "../types/node_type_lu.js";
 
 class NodeExtender {

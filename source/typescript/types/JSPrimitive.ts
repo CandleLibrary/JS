@@ -1,5 +1,5 @@
-import { JSNodeType } from "./node_type";
 import { JSPrimitiveBase } from "./JSBase";
+import { JSNodeType } from "./node_type";
 
 
 /**
@@ -105,7 +105,6 @@ export interface JSThisLiteral extends JSPrimitiveBase {
  * ```
  *
  */
-
 export interface JSNullLiteral extends JSPrimitiveBase {
     type: JSNodeType.NullLiteral;
     value: never;
@@ -126,6 +125,7 @@ export interface JSNullLiteral extends JSPrimitiveBase {
 export interface JSRegexLiteral extends JSPrimitiveBase {
     type: JSNodeType.RegexLiteral;
     value: string;
+    flags: string;
 }
 
 

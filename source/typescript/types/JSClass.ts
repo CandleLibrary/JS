@@ -1,14 +1,14 @@
+import { JSDeclarationBase, JSExpressionBase } from "./JSBase";
 import { JSGetterMethod, JSMethod, JSSetterMethod } from "./JSFunction";
 import { JSIdentifierBinding } from "./JSIdentifier";
-import { JSLeftHandSideExpressionClass } from "./JSNodeClasses";
+import { JSLeftHandBindingClass } from "./JSNodeClasses";
 import { JSNodeType } from "./node_type";
-import { JSClauseBase, JSDeclarationBase, JSExpressionBase } from "./JSBase";
 
 /**
  * Class declaration of the form:
  *
- * >```
- * > class identifier? class_heritage? { class_body? }
+ * >```typescript
+ * > class JSIdentifierBinding? [extends JSClassHeritage]? { (JSGetterMethod | JSSetterMethod | JSClassMethod)[]? }
  * >```
  *
  * Extended members are:
@@ -33,9 +33,13 @@ export interface JSClassExpression extends JSExpressionBase {
     nodes: (JSGetterMethod | JSSetterMethod | JSClassMethod)[];
 }
 
-export type JSClassHeritage = JSLeftHandSideExpressionClass;
+export type JSClassHeritage = JSLeftHandBindingClass;
 
 export interface JSClassMethod extends JSMethod {
+
+    /**
+     * If true the method has `static` modifier
+     */
     STATIC?: boolean;
 }
 

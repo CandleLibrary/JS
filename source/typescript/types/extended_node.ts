@@ -1,4 +1,4 @@
-import { JSNode } from "./node.js";
+import { JSNode } from "./JSNode.js";
 /**
  * Additional Type information for extended nodes.
  */

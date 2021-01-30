@@ -1,8 +1,7 @@
 import { lrParse } from "@candlefw/hydrocarbon/build/library/runtime.js";
 import { Lexer } from "@candlefw/wind";
-import { traverse, bit_filter } from "@candlefw/conflagrate";
-
-import { JSNode } from "../types/node";
+import { traverse } from "@candlefw/conflagrate";
+import { JSNode } from "../types/JSNode";
 import javascript_parser_data from "./javascript.js";
 import { JSNodeClass } from "../types/node_class_type.js";
 import env from "./env.js";

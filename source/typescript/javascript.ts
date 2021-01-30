@@ -2,7 +2,7 @@ import { Lexer } from "@candlefw/wind";
 import { traverse } from "@candlefw/conflagrate";
 
 import { createNodeDefinitions } from "./render/rules.js";
-import { JSNode, FullJSNode } from "./types/node.js";
+import { JSNode, FullJSNode } from "./types/JSNode.js";
 import { JSNodeDefinition } from "./types/node_definition.js";
 import { renderCompressed, renderWithFormatting, renderWithSourceMap, renderWithFormattingAndSourceMap } from "./render/render.js";
 import { JSNodeClass } from "./types/node_class_type.js";
@@ -86,7 +86,6 @@ export {
     JSNode,
     FullJSNode as FullMintreeNode,
 
-
     //Type Object
     JSNodeTypeLU,
 
@@ -101,3 +100,13 @@ export {
 
     tools
 };
+
+export * from "./types/JSFunction.js";
+export * from "./types/JSIdentifier.js";
+export * from "./types/JSModule.js";
+export * from "./types/JSObject.js";
+export * from "./types/JSOperator.js";
+export * from "./types/JSPrimitive.js";
+export * from "./types/JSScript.js";
+export * from "./types/JSStatement.js";
+export * from "./types/JSTemplate.js";

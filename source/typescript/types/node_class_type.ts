@@ -91,8 +91,6 @@ export const enum JSNodeClass {
      * Any node that assigns a value to variable or object member.
      */
     ASSIGNMENT = 1 << 16,
-
-
     /**
      * Any node that assigns a value to variable or object member.
      */

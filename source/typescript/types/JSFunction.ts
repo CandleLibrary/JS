@@ -1,8 +1,10 @@
-import { JSIdentifierBinding, JSIdentifierReference } from "./JSIdentifier";
-import { JSBindingExpression } from "./JSOperator";
-import { JSNodeType } from "./node_type";
 import { JSClauseBase, JSDeclarationBase, JSExpressionBase } from "./JSBase";
+import { JSIdentifierBinding, JSIdentifierReference } from "./JSIdentifier";
+import { JSRightHandExpressionClass } from "./JSNodeClasses";
+import { JSBindingRestElement } from "./JSObject";
+import { JSBindingExpression } from "./JSOperator";
 import { JSBlockStatement, JSStatementClass } from "./JSStatement";
+import { JSNodeType } from "./node_type";
 
 //** JSFunctionDeclaration ----------------------------------------------------------------------------------------
 /**
@@ -189,7 +191,7 @@ export interface JSSetterMethod extends JSClauseBase {
 export interface JSFormalParameters extends JSClauseBase {
     type: JSNodeType.FormalParameters;
 
-    nodes: (JSBindingExpression | JSIdentifierBinding)[];
+    nodes: (JSBindingExpression | JSIdentifierBinding | JSBindingRestElement)[] | [JSBindingRestElement];
 }
 
 
@@ -228,7 +230,7 @@ export interface JSFunctionBody extends JSClauseBase {
  */
 export interface JSArguments extends JSExpressionBase {
     type: JSNodeType.Arguments;
-    nodes: JSExpressionBase[];
+    nodes: JSRightHandExpressionClass[];
 }
 
 export type JSFunctionClass = JSFunctionDeclaration
