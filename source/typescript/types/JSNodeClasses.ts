@@ -1,10 +1,10 @@
 import { JSNodeType } from "../javascript";
-import { JSIdentifier, JSIdentifierBinding } from "./JSIdentifierRoot";
+import { JSIdentifier, JSIdentifierBinding } from "./JSIdentifier";
 import {
     JSAdditiveExpression, JSAssignmentExpression, JSBitwiseExpression, JSCallExpression, JSCoalesceExpression, JSConditionalExpression, JSDeleteExpression, JSEqualityExpression, JSExponentiationExpression, JSInExpression, JSInstanceOfExpression,
     JSLogicalExpression, JSMemberExpression, JSMultiplicativeExpression, JSNewExpression, JSPostExpression, JSPreExpression, JSRelationalExpression, JSShiftExpression, JSTypeofExpression, JSUnaryExpression, JSVoidExpression, JSYieldExpression
-} from "./JSOperatorNode";
-import { JSExpression } from "./node";
+} from "./JSOperator";
+import { JSExpressionBase } from "./JSBase";
 
 export type JSAssignmentExpressionClass =
     JSConditionalExpression | JSYieldExpression | JSLogicalExpression |
@@ -34,7 +34,7 @@ export type JSLeftHandSideExpressionClass = JSMemberExpression | JSIdentifier | 
  * 1. **`expression`**
  *
  */
-interface JSParenthesized extends JSExpression {
+interface JSParenthesized extends JSExpressionBase {
     type: JSNodeType.Parenthesized;
-    nodes: [JSExpression];
+    nodes: [JSExpressionBase];
 }

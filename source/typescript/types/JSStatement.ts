@@ -1,12 +1,9 @@
-import { JSIdentifierBinding, JSIdentifierLabel } from "./JSIdentifierRoot";
+import { JSIdentifierBinding, JSIdentifierLabel } from "./JSIdentifier";
 import { JSNodeType } from "./node_type";
-import { BaseJSNode, JSExpression } from "./node";
+import { JSClauseBase, JSExpressionBase, JSStatementBase } from "./JSBase";
 
 
-export interface JSStatementNode extends BaseJSNode {
-}
-export interface JSClauseNode extends BaseJSNode {
-}
+
 /**
  * Statement of the form
  *
@@ -18,10 +15,10 @@ export interface JSClauseNode extends BaseJSNode {
  * 1. **`statement_list`**
  *
  */
-export interface JSBlockStatement extends JSStatementNode {
+export interface JSBlockStatement extends JSStatementBase {
     type: JSNodeType.BlockStatement;
 
-    node: JSStatementNode[];
+    node: JSStatementBase[];
 }
 /**
  * A statement of the form
@@ -35,9 +32,9 @@ export interface JSBlockStatement extends JSStatementNode {
  * 1. **`expression`**
  */
 
-export interface JSExpressionStatement extends JSStatementNode {
+export interface JSExpressionStatement extends JSStatementBase {
     type: JSNodeType.ExpressionStatement;
-    node: [JSExpression];
+    node: [JSExpressionBase];
 }
 /**
  * Statement of the form
@@ -49,7 +46,7 @@ export interface JSExpressionStatement extends JSStatementNode {
  * This node has no extended members;
  *
  */
-export interface JSDebuggerStatement extends JSStatementNode {
+export interface JSDebuggerStatement extends JSStatementBase {
     type: JSNodeType.DebuggerStatement;
     node: never;
 }
@@ -64,7 +61,7 @@ export interface JSDebuggerStatement extends JSStatementNode {
  *
  */
 
-export interface JSEmptyStatement extends JSStatementNode {
+export interface JSEmptyStatement extends JSStatementBase {
     type: JSNodeType.EmptyStatement;
     node: never;
 }
@@ -81,9 +78,9 @@ export interface JSEmptyStatement extends JSStatementNode {
  */
 
 
-export interface JSDoStatement extends JSStatementNode {
+export interface JSDoStatement extends JSStatementBase {
     type: JSNodeType.DoStatement;
-    node: [JSStatementNode, JSExpression];
+    node: [JSStatementBase, JSExpressionBase];
 }
 /**
  * Statement of the form:
@@ -97,9 +94,9 @@ export interface JSDoStatement extends JSStatementNode {
  * 1. **`expression`**
  */
 
-export interface JSDoStatement extends JSStatementNode {
+export interface JSDoStatement extends JSStatementBase {
     type: JSNodeType.DoStatement;
-    node: [JSStatementNode, JSExpression];
+    node: [JSStatementBase, JSExpressionBase];
 }
 /**
  * TODO Description
@@ -115,11 +112,11 @@ export interface JSDoStatement extends JSStatementNode {
  */
 
 
-export interface JSForInStatement extends JSStatementNode {
+export interface JSForInStatement extends JSStatementBase {
 
     type: JSNodeType.ForInStatement;
 
-    node: [JSVariableDeclaration | JSLexicalBinding | JSExpression, JSExpression, JSStatementNode];
+    node: [JSVariableDeclaration | JSLexicalBinding | JSExpressionBase, JSExpressionBase, JSStatementBase];
 }
 /**
  * TODO Description
@@ -134,11 +131,11 @@ export interface JSForInStatement extends JSStatementNode {
  * TODO Optional Notes
  */
 
-export interface JSForOfStatement extends JSStatementNode {
+export interface JSForOfStatement extends JSStatementBase {
 
     type: JSNodeType.ForOfStatement;
 
-    node: [JSVariableDeclaration | JSLexicalBinding | JSExpression, JSExpression, JSStatementNode];
+    node: [JSVariableDeclaration | JSLexicalBinding | JSExpressionBase, JSExpressionBase, JSStatementBase];
 }
 /**
  * TODO Description
@@ -153,11 +150,11 @@ export interface JSForOfStatement extends JSStatementNode {
  * TODO Optional Notes
  */
 
-export interface JSForStatement extends JSStatementNode {
+export interface JSForStatement extends JSStatementBase {
 
     type: JSNodeType.ForStatement;
 
-    node: [JSExpression | null, JSExpression | null, JSExpression | null, JSStatementNode];
+    node: [JSExpressionBase | null, JSExpressionBase | null, JSExpressionBase | null, JSStatementBase];
 }
 /**
  * Declaration of the form
@@ -166,13 +163,12 @@ export interface JSForStatement extends JSStatementNode {
  * > var binding (, binding)*
  * >```
  *
- * This node does not have extended members.
  *
  * This node is only found as a subnode of `ForStatements`.
  *
  */
 
-export interface JSVariableDeclaration extends JSStatementNode {
+export interface JSVariableDeclaration extends JSStatementBase {
 
     type: JSNodeType.VariableDeclaration;
 
@@ -185,11 +181,10 @@ export interface JSVariableDeclaration extends JSStatementNode {
  * > var binding [, binding]* ;
  * >```
  *
- * This node does not have extended members.
  *
  */
 
-export interface JSVariableStatement extends JSClauseNode {
+export interface JSVariableStatement extends JSClauseBase {
 
     type: JSNodeType.VariableStatement;
 
@@ -208,11 +203,11 @@ export interface JSVariableStatement extends JSClauseNode {
  *
  */
 
-export interface JSLabeledStatement extends JSStatementNode {
+export interface JSLabeledStatement extends JSStatementBase {
 
     type: JSNodeType.LabeledStatement;
 
-    node: [JSStatementNode];
+    node: [JSStatementBase];
 }
 /**
  * Lexical Scoped variable declaration statement beginning with `let` or `const`.
@@ -226,7 +221,7 @@ export interface JSLabeledStatement extends JSStatementNode {
  *
  */
 
-export interface JSLexicalDeclaration extends JSStatementNode {
+export interface JSLexicalDeclaration extends JSStatementBase {
 
     type: JSNodeType.LexicalDeclaration;
 
@@ -242,7 +237,7 @@ export interface JSLexicalDeclaration extends JSStatementNode {
  *
  * Found only as a subnode of `ForStatements`
  */
-export interface JSLexicalBinding extends JSClauseNode {
+export interface JSLexicalBinding extends JSClauseBase {
 
     type: JSNodeType.LexicalBinding;
 
@@ -261,11 +256,11 @@ export interface JSLexicalBinding extends JSClauseNode {
  * TODO Optional Notes
  */
 
-export interface JSIfStatement extends JSStatementNode {
+export interface JSIfStatement extends JSStatementBase {
 
     type: JSNodeType.IfStatement;
 
-    node: [JSExpression, JSStatementNode, JSIfStatement?];
+    node: [JSExpressionBase, JSStatementBase, JSIfStatement?];
 }
 /**
  * Statement loop of the form
@@ -280,11 +275,11 @@ export interface JSIfStatement extends JSStatementNode {
  *
  */
 
-export interface JSWhileStatement extends JSStatementNode {
+export interface JSWhileStatement extends JSStatementBase {
 
     type: JSNodeType.WhileStatement;
 
-    node: [JSExpression, JSStatementNode];
+    node: [JSExpressionBase, JSStatementBase];
 }
 /**
  * Statement of the form
@@ -299,11 +294,11 @@ export interface JSWhileStatement extends JSStatementNode {
  *
  */
 
-export interface JSWithStatement extends JSStatementNode {
+export interface JSWithStatement extends JSStatementBase {
 
     type: JSNodeType.WithStatement;
 
-    node: [JSExpression, JSStatementNode];
+    node: [JSExpressionBase, JSStatementBase];
 }
 /**
 * Statement of the form:
@@ -317,15 +312,15 @@ export interface JSWithStatement extends JSStatementNode {
 *
 */
 
-export interface JSReturnStatement extends JSStatementNode {
+export interface JSReturnStatement extends JSStatementBase {
 
     type: JSNodeType.ReturnStatement;
 
-    node: [JSExpression?];
+    node: [JSExpressionBase?];
 }
 
-export interface JSBreakStatement extends JSStatementNode {
-    node: JSNodeType.BreakStatement;
+export interface JSBreakStatement extends JSStatementBase {
+    type: JSNodeType.BreakStatement;
     nodes: [JSIdentifierLabel?];
 }
 /**
@@ -339,27 +334,11 @@ export interface JSBreakStatement extends JSStatementNode {
  * 1. **`identifier`**
  */
 
-export interface JSContinueStatement extends JSStatementNode {
-    node: JSNodeType.ContinueStatement;
+export interface JSContinueStatement extends JSStatementBase {
+    type: JSNodeType.ContinueStatement;
     nodes: [JSIdentifierLabel?];
 }
-/**
- * Statement of the form:
- *
- * >```
- * > break identifier? ;
- * >```
- *
- * Extended member is:
- * 1. **`identifier`**
- *
- */
 
-
-export interface JSBreakStatement extends JSStatementNode {
-    node: JSNodeType.BreakStatement;
-    nodes: [JSIdentifierLabel?];
-}
 /**
 * Statement of the form:
 *
@@ -373,9 +352,9 @@ export interface JSBreakStatement extends JSStatementNode {
 */
 
 
-export interface JSThrowStatement extends JSStatementNode {
-    node: JSNodeType.ThrowStatement;
-    nodes: [JSExpression?];
+export interface JSThrowStatement extends JSStatementBase {
+    type: JSNodeType.ThrowStatement;
+    nodes: [JSExpressionBase?];
 }
 /**
  * TODO Description
@@ -390,18 +369,30 @@ export interface JSThrowStatement extends JSStatementNode {
  * TODO Optional Notes
  */
 
-export interface JSTryStatement extends JSStatementNode {
-    node: JSNodeType.TryStatement;
-    nodes: [JSStatementNode, null | JSCatchClause, null | JSFinallyClause];
+export interface JSTryStatement extends JSStatementBase {
+    type: JSNodeType.TryStatement;
+    nodes: [JSStatementBase, null | JSCatchClause, null | JSFinallyClause];
 }
 
-export interface JSCatchClause extends JSClauseNode {
-    node: JSNodeType.CatchClause;
+/**
+ * Try-Catch clause of the form:
+ *
+ * >```
+ * > catch ( identifier ) block
+ * >```
+ *
+ * Extended members are:
+ * 1. **`identifier`**
+ * 2. **`statement`**
+ *
+ */
+export interface JSCatchClause extends JSClauseBase {
+    type: JSNodeType.CatchClause;
     nodes: [JSBlockStatement];
 }
 
-export interface JSFinallyClause extends JSClauseNode {
-    node: JSNodeType.FinallyClause;
+export interface JSFinallyClause extends JSClauseBase {
+    type: JSNodeType.FinallyClause;
     nodes: [JSBlockStatement];
 }
 /**
@@ -416,11 +407,11 @@ export interface JSFinallyClause extends JSClauseNode {
  * 2. **`block`**
  *
  */
-export interface JSSwitchStatement extends JSStatementNode {
+export interface JSSwitchStatement extends JSStatementBase {
 
     type: JSNodeType.SwitchStatement;
 
-    node: [JSExpression, JSCaseBlock];
+    node: [JSExpressionBase, JSCaseBlock];
 }
 /**
  * Block expression of the form:
@@ -436,7 +427,7 @@ export interface JSSwitchStatement extends JSStatementNode {
  * JSNodeClass Flags:
  * - BLOCK
  */
-export interface JSCaseBlock extends JSClauseNode {
+export interface JSCaseBlock extends JSClauseBase {
 
     type: JSNodeType.CaseBlock;
 
@@ -454,11 +445,11 @@ export interface JSCaseBlock extends JSClauseNode {
  * 2. **`statements`**
  *
  */
-export interface JSCaseClause extends JSClauseNode {
+export interface JSCaseClause extends JSClauseBase {
 
     type: JSNodeType.CaseClause;
 
-    node: JSStatementNode[];
+    node: JSStatementBase[];
 }
 /**
  * Switch clause of the form:
@@ -473,9 +464,39 @@ export interface JSCaseClause extends JSClauseNode {
  *
  */
 
-export interface JSDefaultClause extends JSClauseNode {
+export interface JSDefaultClause extends JSClauseBase {
 
     type: JSNodeType.DefaultClause;
 
-    node: JSStatementNode[];
+    node: JSStatementBase[];
 }
+
+export type JSStatementClass =
+    JSBlockStatement
+    | JSExpressionStatement
+    | JSDebuggerStatement
+    | JSEmptyStatement
+    | JSDoStatement
+    | JSDoStatement
+    | JSForInStatement
+    | JSForOfStatement
+    | JSForStatement
+    | JSVariableDeclaration
+    | JSVariableStatement
+    | JSLabeledStatement
+    | JSLexicalDeclaration
+    | JSLexicalBinding
+    | JSIfStatement
+    | JSWhileStatement
+    | JSWithStatement
+    | JSReturnStatement
+    | JSBreakStatement
+    | JSContinueStatement
+    | JSThrowStatement
+    | JSTryStatement
+    | JSCatchClause
+    | JSFinallyClause
+    | JSSwitchStatement
+    | JSCaseBlock
+    | JSCaseClause
+    | JSDefaultClause;

@@ -1,59 +1,36 @@
-import { JSIdentifierBinding } from "./JSIdentifierRoot";
-import { JSModule } from "./JSModule";
+import { traverse } from "@candlefw/conflagrate";
+import { JSBaseClass, JSNodeBase } from "./JSBase";
+import { JSClassClass } from "./JSClass";
+import { JSFunctionClass } from "./JSFunction";
+import { JSIdentifierClass } from "./JSIdentifier";
+import { JSModuleClass } from "./JSModule";
+import { JSObjectClass } from "./JSObject";
+import { JSOperatorClass } from "./JSOperator";
+import { JSPrimitiveClass } from "./JSPrimitive";
 import { JSScript } from "./JSScript";
-import { JSClauseNode, JSStatementNode } from "./JSStatement";
+import { JSStatementClass } from "./JSStatement";
+import { JSTemplateClass } from "./JSTemplate";
 import { JSNodeType } from "./node_type";
 
-export interface BaseJSNode {
-    type: JSNodeType;
-    nodes?: BaseJSNode[];
-}
-
-export interface JSExpression extends BaseJSNode { }
-
-export interface JSDeclaration extends JSStatementNode { }
-/**
- * A function declaration of the form:
- *
- * >```
- * > async? function  \*? identifier? \( parameters? \) { body? }
- * >```
- *
- * Extended members are:
- * 1. **name**
- * 1. **parameters**
- * 1. **body**
- *
- * This node has the regular properties
- *
- * - @property {boolean} ASYNC - True if the parse encountered the `async` keyword.
- * - @property {boolean} GENERATOR - True if the parse encountered the symbol `*`.
- */
-export interface JSFunctionDeclaration extends JSDeclaration {
-    type: JSNodeType.FunctionDeclaration;
-
-    ASYNC: boolean;
-
-    GENERATOR: boolean;
-
-    nodes: [JSIdentifierBinding, JSFormalParameters, JSFunctionBody];
-}
-
-export interface JSFormalParameters extends JSClauseNode {
-    type: JSNodeType.FormalParameters;
-}
-
-export interface JSFunctionBody extends JSClauseNode {
-    type: JSNodeType.FunctionBody;
-}
-
-export interface JSArguments extends JSExpression {
-    type: JSNodeType.Arguments;
-    nodes: JSExpression[];
-}
-
-
-
-export type JSNode = BaseJSNode | JSStatementNode | JSModule | JSScript;
+export type JSNode =
+    JSClassClass
+    | JSFunctionClass
+    | JSIdentifierClass
+    | JSModuleClass
+    | JSObjectClass
+    | JSOperatorClass
+    | JSPrimitiveClass
+    | JSScript
+    | JSStatementClass
+    | JSTemplateClass
+    | JSObjectClass;
 
 export type FullJSNode = JSNode;
+
+
+const any: JSNode = null;
+
+for (const { node } of traverse(any, "nodes")) {
+    if (node.type == JSNodeType.FunctionExpression) {
+    }
+}

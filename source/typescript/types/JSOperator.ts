@@ -1,13 +1,9 @@
-import { JSIdentifier, JSIdentifierBinding, JSIdentifierReference } from "./JSIdentifierRoot";
+import { JSArguments } from "./JSFunction";
+import { JSIdentifier, JSIdentifierBinding, JSIdentifierName, JSIdentifierReference } from "./JSIdentifier";
+import { JSExpressionBase, JSOperatorBase } from "./JSBase";
 import { JSNodeType } from "./node_type";
-import { JSExpression, JSArguments } from "./node";
 
-/**
- * Unary, Binary, and Ternary operators
- */
-export interface JSOperatorNode extends JSExpression {
-    symbol: string;
-}
+
 /**
  * An expression of the form
  *
@@ -28,10 +24,10 @@ export interface JSOperatorNode extends JSExpression {
  * - `LexicalDeclaration`
  * - `FormalParameters`
  */
-export interface JSBindingExpression extends JSOperatorNode {
+export interface JSBindingExpression extends JSOperatorBase {
     type: JSNodeType.BindingExpression;
 
-    nodes: [JSIdentifierBinding, JSExpression];
+    nodes: [JSIdentifierBinding, JSExpressionBase];
 }
 
 /**
@@ -45,12 +41,12 @@ export interface JSBindingExpression extends JSOperatorNode {
  * 1. **`identifier`**
  * 2. **`expression`**
  */
-export interface JSAssignmentExpression extends JSOperatorNode {
+export interface JSAssignmentExpression extends JSOperatorBase {
     type: JSNodeType.AssignmentExpression;
 
     symbol: "=" | "/=" | "%=" | "+=" | "-=" | "/=" | "%=" | "*=" | "**=" | "|=" | "&=" | "^=" | "<<=" | ">>=" | ">>>=";
 
-    nodes: [JSIdentifierBinding, JSExpression];
+    nodes: [JSIdentifierBinding, JSExpressionBase];
 }
 /**
  * A binary expression of one of the forms
@@ -67,10 +63,10 @@ export interface JSAssignmentExpression extends JSOperatorNode {
  *
  */
 
-export interface JSBitwiseExpression extends JSOperatorNode {
+export interface JSBitwiseExpression extends JSOperatorBase {
     type: JSNodeType.BitwiseExpression;
     operator: "|" | "&" | "^";
-    nodes: [JSExpression, JSExpression];
+    nodes: [JSExpressionBase, JSExpressionBase];
 }
 /**
  * A binary expression of one of the forms:
@@ -88,10 +84,10 @@ export interface JSBitwiseExpression extends JSOperatorNode {
  *
  */
 
-export interface JSEqualityExpression extends JSOperatorNode {
+export interface JSEqualityExpression extends JSOperatorBase {
     type: JSNodeType.EqualityExpression;
     operator: "==" | "!=" | "===" | "!==";
-    nodes: [JSExpression, JSExpression];
+    nodes: [JSExpressionBase, JSExpressionBase];
 }
 /**
 * A binary operator of the form
@@ -106,10 +102,10 @@ export interface JSEqualityExpression extends JSOperatorNode {
 *
 */
 
-export interface JSExponentiationExpression extends JSOperatorNode {
+export interface JSExponentiationExpression extends JSOperatorBase {
     type: JSNodeType.ExponentiationExpression;
     operator: "**";
-    nodes: [JSExpression, JSExpression];
+    nodes: [JSExpressionBase, JSExpressionBase];
 }
 /**
  * A binary expression of one of the forms
@@ -124,10 +120,10 @@ export interface JSExponentiationExpression extends JSOperatorNode {
  * 2. **`right`**
  *
  */
-export interface JSLogicalExpression extends JSOperatorNode {
+export interface JSLogicalExpression extends JSOperatorBase {
     type: JSNodeType.LogicalExpression;
     operator: "||" | "&&";
-    nodes: [JSExpression, JSExpression];
+    nodes: [JSExpressionBase, JSExpressionBase];
 }
 /**
  * Binary expression of one of the forms:
@@ -143,10 +139,10 @@ export interface JSLogicalExpression extends JSOperatorNode {
  *
  */
 
-export interface JSMultiplicativeExpression extends JSOperatorNode {
+export interface JSMultiplicativeExpression extends JSOperatorBase {
     type: JSNodeType.MultiplicativeExpression;
     operator: "*" | "/" | "%";
-    nodes: [JSExpression, JSExpression];
+    nodes: [JSExpressionBase, JSExpressionBase];
 }
 /**
  * Expression of one of the forms:
@@ -162,10 +158,10 @@ export interface JSMultiplicativeExpression extends JSOperatorNode {
  *
  */
 
-export interface JSPostExpression extends JSOperatorNode {
+export interface JSPostExpression extends JSOperatorBase {
     type: JSNodeType.PostExpression;
     operator: "++" | "--";
-    nodes: [JSExpression];
+    nodes: [JSExpressionBase];
 }
 /**
  * Expression of one of the forms:
@@ -181,10 +177,10 @@ export interface JSPostExpression extends JSOperatorNode {
  *
  */
 
-export interface JSPreExpression extends JSOperatorNode {
+export interface JSPreExpression extends JSOperatorBase {
     type: JSNodeType.PreExpression;
     operator: "++" | "--";
-    nodes: [JSExpression];
+    nodes: [JSExpressionBase];
 }
 /**
  * Expression of the form
@@ -199,10 +195,10 @@ export interface JSPreExpression extends JSOperatorNode {
  */
 
 
-export interface JSDeleteExpression extends JSOperatorNode {
+export interface JSDeleteExpression extends JSOperatorBase {
     type: JSNodeType.DeleteExpression;
     operator: never;
-    nodes: [JSExpression];
+    nodes: [JSExpressionBase];
 }
 /**
  * A binary expression of the form:
@@ -217,10 +213,10 @@ export interface JSDeleteExpression extends JSOperatorNode {
  *
  */
 
-export interface JSInstanceOfExpression extends JSOperatorNode {
+export interface JSInstanceOfExpression extends JSOperatorBase {
     type: JSNodeType.InstanceOfExpression;
     operator: never;
-    nodes: [JSExpression, JSExpression];
+    nodes: [JSExpressionBase, JSExpressionBase];
 }
 /**
  * A binary expression of one of the forms:
@@ -238,10 +234,10 @@ export interface JSInstanceOfExpression extends JSOperatorNode {
  *
  */
 
-export interface JSRelationalExpression extends JSOperatorNode {
+export interface JSRelationalExpression extends JSOperatorBase {
     type: JSNodeType.RelationalExpression;
     operator: "<" | ">" | "<=" | ">=";
-    nodes: [JSExpression, JSExpression];
+    nodes: [JSExpressionBase, JSExpressionBase];
 }
 /**
  * A binary expression of one of the forms:
@@ -260,10 +256,10 @@ export interface JSRelationalExpression extends JSOperatorNode {
  *
  */
 
-export interface JSShiftExpression extends JSOperatorNode {
+export interface JSShiftExpression extends JSOperatorBase {
     type: JSNodeType.ShiftExpression;
     operator: "<<" | ">>" | ">>>";
-    nodes: [JSExpression, JSExpression];
+    nodes: [JSExpressionBase, JSExpressionBase];
 }
 /**
  * Character sequence of the form
@@ -277,10 +273,10 @@ export interface JSShiftExpression extends JSOperatorNode {
  *
  */
 
-export interface JSSpread extends JSOperatorNode {
+export interface JSSpread extends JSOperatorBase {
     type: JSNodeType.Spread;
     operator: "...";
-    nodes: [JSExpression];
+    nodes: [JSExpressionBase];
 }
 /**
  * Expression of the form:
@@ -293,10 +289,10 @@ export interface JSSpread extends JSOperatorNode {
  * 1. **`expression`**
  *
  */
-export interface JSTypeofExpression extends JSOperatorNode {
+export interface JSTypeofExpression extends JSOperatorBase {
     type: JSNodeType.TypeofExpression;
     operator: never;
-    nodes: [JSExpression];
+    nodes: [JSExpressionBase];
 }
 /**
  * Expression of one of the forms:
@@ -313,10 +309,10 @@ export interface JSTypeofExpression extends JSOperatorNode {
  *
  */
 
-export interface JSUnaryExpression extends JSOperatorNode {
+export interface JSUnaryExpression extends JSOperatorBase {
     type: JSNodeType.UnaryExpression;
     operator: "!" | "+" | "~" | "-";
-    nodes: [JSExpression];
+    nodes: [JSExpressionBase];
 }
 /**
  * Expression of the form
@@ -330,10 +326,10 @@ export interface JSUnaryExpression extends JSOperatorNode {
  *
  */
 
-export interface JSVoidExpression extends JSOperatorNode {
+export interface JSVoidExpression extends JSOperatorBase {
     type: JSNodeType.VoidExpression;
     operator: "!" | "+" | "~" | "-";
-    nodes: [JSExpression];
+    nodes: [JSExpressionBase];
 }
 
 /**
@@ -348,10 +344,10 @@ export interface JSVoidExpression extends JSOperatorNode {
  *
  * TODO Optional Notes
  */
-export interface JSInExpression extends JSOperatorNode {
+export interface JSInExpression extends JSOperatorBase {
     type: JSNodeType.InExpression;
     operator: never;
-    nodes: [JSExpression, JSExpression];
+    nodes: [JSExpressionBase, JSExpressionBase];
 }
 
 /**
@@ -365,15 +361,15 @@ export interface JSInExpression extends JSOperatorNode {
  * 1. **`expression`**
  */
 
-export interface JSYieldExpression extends JSOperatorNode {
+export interface JSYieldExpression extends JSOperatorBase {
     type: JSNodeType.YieldExpression;
     operator: never;
-    nodes: [JSExpression];
+    nodes: [JSExpressionBase];
 }
-export interface JSCoalesceExpression extends JSOperatorNode {
+export interface JSCoalesceExpression extends JSOperatorBase {
     type: JSNodeType.CoalesceExpression;
     operator: "??";
-    nodes: [JSExpression, JSExpression];
+    nodes: [JSExpressionBase, JSExpressionBase];
 }
 
 
@@ -390,10 +386,10 @@ export interface JSCoalesceExpression extends JSOperatorNode {
  * 2. **`right`**
  *
  */
-export interface JSAdditiveExpression extends JSOperatorNode {
+export interface JSAdditiveExpression extends JSOperatorBase {
     type: JSNodeType.AdditiveExpression;
     operator: "+" | "-";
-    nodes: [JSExpression, JSExpression];
+    nodes: [JSExpressionBase, JSExpressionBase];
 }
 
 
@@ -407,12 +403,10 @@ export interface JSAdditiveExpression extends JSOperatorNode {
  * Extended member is:
  * 1. **`expression`**
  */
-
-
-export interface JSAwaitExpression extends JSOperatorNode {
+export interface JSAwaitExpression extends JSOperatorBase {
     type: JSNodeType.AwaitExpression;
-    operator: "+" | "-";
-    nodes: [JSExpression, JSExpression];
+    operator: never;
+    nodes: [JSExpressionBase, JSExpressionBase];
 }
 
 
@@ -429,10 +423,10 @@ export interface JSAwaitExpression extends JSOperatorNode {
  * 1. **`fail_expression`**
  *
  */
-export interface JSConditionalExpression extends JSOperatorNode {
+export interface JSConditionalExpression extends JSOperatorBase {
     type: JSNodeType.ConditionalExpression;
     operator: never;
-    nodes: [JSExpression, JSExpression, JSExpression];
+    nodes: [JSExpressionBase, JSExpressionBase, JSExpressionBase];
 }
 
 
@@ -447,17 +441,36 @@ export interface JSConditionalExpression extends JSOperatorNode {
  * 1. **`identifier`**
  * 1. **`arguments`**
  */
-
-export interface JSCallExpression extends JSOperatorNode {
+export interface JSCallExpression extends JSOperatorBase {
     type: JSNodeType.CallExpression;
     operator: never;
     TEMPLATE: boolean;
-    nodes: [JSIdentifierReference | JSMemberExpression, ...JSExpression[]];
+    nodes: [JSIdentifierReference | JSMemberExpression, ...JSExpressionBase[]];
 }
-export interface JSMemberExpression extends JSOperatorNode {
+
+
+
+/**
+ * Expression of the form:
+ *
+ * >```javascript
+ * > super arguments
+ * >```
+ *
+ * Extended member is:
+ * 1. **`arguments`**
+ *
+ */
+export interface JSSuperCall extends JSOperatorBase {
+    type: JSNodeType.SuperCall;
+    operator: never;
+    nodes: [JSArguments];
+}
+
+export interface JSMemberExpression extends JSOperatorBase {
     type: JSNodeType.MemberExpression;
     COMPUTED: boolean;
-    nodes: [JSMemberExpression | JSIdentifier, JSExpression];
+    nodes: [JSMemberExpression | JSIdentifier, JSExpressionBase];
 }
 /**
  * Expression of the form:
@@ -470,9 +483,9 @@ export interface JSMemberExpression extends JSOperatorNode {
  * 1. **`expression`**
  *
  */
-export interface JSNewExpression extends JSOperatorNode {
+export interface JSNewExpression extends JSOperatorBase {
     type: JSNodeType.NewExpression;
-    nodes: [JSExpression];
+    nodes: [JSExpressionBase];
 }
 /**
  * Expression of the form:
@@ -485,11 +498,11 @@ export interface JSNewExpression extends JSOperatorNode {
  * 1. **`identifier`**
  *
  */
-export interface JSNewInstanceExpression extends JSOperatorNode {
+export interface JSNewInstanceExpression extends JSOperatorBase {
 
     type: JSNodeType.NewInstanceExpression;
 
-    nodes: [JSExpression, JSArguments];
+    nodes: [JSExpressionBase, JSArguments];
 }
 /**
  * An object member access expression using the forms
@@ -509,13 +522,81 @@ export interface JSNewInstanceExpression extends JSOperatorNode {
  * If original parsed expression was in the latter form then the property `COMPUTED` will be set to true.
  *
  */
-export interface JSOptionalMemberExpression extends JSOperatorNode {
+export interface JSOptionalMemberExpression extends JSOperatorBase {
     type: JSNodeType.OptionalMemberExpression;
     COMPUTED: boolean;
-    nodes: [JSExpression, JSExpression];
+    nodes: [JSExpressionBase, JSExpressionBase];
 }
 
-export interface JSOptionalChain extends JSOperatorNode {
+export interface JSOptionalChain extends JSOperatorBase {
     type: JSNodeType.OptionalChain;
-    nodes: [JSExpression];
+    nodes: [JSExpressionBase];
 }
+
+/**
+ * An object member access expression using the forms
+ *
+ * >```
+ * >super .  identifier
+ * >```
+ * >or
+ * >```
+ * >super [ expression ]
+ * >```
+ *
+ * If original parsed expression was in the latter form then the property `COMPUTED` will be set to true.
+ *
+ * Extended member is:
+ * 1. 'member'
+ */
+export interface JSSuperExpression extends JSExpressionBase {
+    type: JSNodeType.SuperExpression;
+    nodes: [JSIdentifierName];
+}
+
+/**
+ * Expression of the form
+ *
+ * >```
+ * >  expression [, expression]*
+ * >```
+ *
+ * This node does not have any extended members.
+ *
+ */
+export interface JSExpressionList extends JSExpressionBase {
+    type: JSNodeType.ExpressionList;
+    nodes: JSExpressionBase[];
+}
+
+export type JSOperatorClass = JSBindingExpression
+    | JSAssignmentExpression
+    | JSBitwiseExpression
+    | JSEqualityExpression
+    | JSExponentiationExpression
+    | JSLogicalExpression
+    | JSMultiplicativeExpression
+    | JSPostExpression
+    | JSPreExpression
+    | JSDeleteExpression
+    | JSInstanceOfExpression
+    | JSRelationalExpression
+    | JSShiftExpression
+    | JSSpread
+    | JSTypeofExpression
+    | JSUnaryExpression
+    | JSVoidExpression
+    | JSInExpression
+    | JSYieldExpression
+    | JSCoalesceExpression
+    | JSAdditiveExpression
+    | JSAwaitExpression
+    | JSConditionalExpression
+    | JSCallExpression
+    | JSMemberExpression
+    | JSNewExpression
+    | JSNewInstanceExpression
+    | JSOptionalMemberExpression
+    | JSOptionalChain
+    | JSExpressionList
+    | JSSuperExpression;

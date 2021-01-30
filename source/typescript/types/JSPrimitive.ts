@@ -1,15 +1,7 @@
 import { JSNodeType } from "./node_type";
-import { JSExpression } from "./node";
+import { JSPrimitiveBase } from "./JSBase";
 
-/**
- * Nodes that do not have any children. Represent core
- * indivisible values such as Null, Boolean, Number, and BigInt
- */
 
-export interface JSPrimitiveNode extends JSExpression {
-    value?: string | number | boolean;
-    nodes: never;
-}
 /**
  * A literal number
  *
@@ -17,13 +9,12 @@ export interface JSPrimitiveNode extends JSExpression {
  *  number
  * ```
  *
- * This node does not have extended members.
  *
  * This node has the regular properties:
  * - @property {string} value - The original parsed value;
  * - @property {number} computed_value - The value of original parsed value transformed into a float;
  */
-export interface JSNumericLiteral extends JSPrimitiveNode {
+export interface JSNumericLiteral extends JSPrimitiveBase {
     type: JSNodeType.NumericLiteral;
     /**
      * The string form of the number as original parsed
@@ -46,7 +37,7 @@ export interface JSNumericLiteral extends JSPrimitiveNode {
  * ```
  */
 
-export interface JSBigIntLiteral extends JSPrimitiveNode {
+export interface JSBigIntLiteral extends JSPrimitiveBase {
     type: JSNodeType.BigIntLiteral;
     value: string;
     nodes: never;
@@ -67,7 +58,7 @@ export interface JSBigIntLiteral extends JSPrimitiveNode {
 * @property {string} quote_type - A string with a value of either `"` or `'`
 */
 
-export interface JSStringLiteral extends JSPrimitiveNode {
+export interface JSStringLiteral extends JSPrimitiveBase {
     type: JSNodeType.StringLiteral;
     quote_type: "\"" | "\'";
     value: string;
@@ -87,7 +78,7 @@ export interface JSStringLiteral extends JSPrimitiveNode {
  */
 
 
-export interface JSBooleanLiteral extends JSPrimitiveNode {
+export interface JSBooleanLiteral extends JSPrimitiveBase {
     type: JSNodeType.BooleanLiteral;
     value: boolean;
     nodes: never;
@@ -99,10 +90,9 @@ export interface JSBooleanLiteral extends JSPrimitiveNode {
  * > this
  * >```
  *
- * This node does not have extended members.
  */
 
-export interface JSThisLiteral extends JSPrimitiveNode {
+export interface JSThisLiteral extends JSPrimitiveBase {
     type: JSNodeType.ThisLiteral;
     value: never;
     nodes: never;
@@ -114,10 +104,9 @@ export interface JSThisLiteral extends JSPrimitiveNode {
  *  null
  * ```
  *
- * This node does not have extended members.
  */
 
-export interface JSNullLiteral extends JSPrimitiveNode {
+export interface JSNullLiteral extends JSPrimitiveBase {
     type: JSNodeType.NullLiteral;
     value: never;
 }
@@ -134,7 +123,31 @@ export interface JSNullLiteral extends JSPrimitiveNode {
  *
  */
 
-export interface JSRegexLiteral extends JSPrimitiveNode {
+export interface JSRegexLiteral extends JSPrimitiveBase {
     type: JSNodeType.RegexLiteral;
     value: string;
 }
+
+
+/**
+ * Expression of the form:
+ *
+ * >```js
+ * > new . target
+ * >```
+ *
+ *
+ */
+export interface JSNewTarget extends JSPrimitiveBase {
+    type: JSNodeType.NewTarget;
+}
+
+export type JSPrimitiveClass =
+    JSNumericLiteral
+    | JSBigIntLiteral
+    | JSStringLiteral
+    | JSBooleanLiteral
+    | JSThisLiteral
+    | JSNullLiteral
+    | JSRegexLiteral
+    | JSNewTarget;

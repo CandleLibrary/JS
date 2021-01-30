@@ -1,12 +1,6 @@
+import { JSIdentifierBase } from "./JSBase";
 import { JSNodeType } from "./node_type";
-import { JSExpression } from "./node";
 
-
-export interface JSIdentifierRoot extends JSExpression {
-    type: JSNodeType;
-    nodes: never;
-    value: string;
-}
 
 /**
  * Identifier literal used as a reference, of the form:
@@ -15,13 +9,12 @@ export interface JSIdentifierRoot extends JSExpression {
  * > identifier
  * >```
  *
- * This node does not have extended members.
  *
  * This node has the regular property:
  *
  * - @property {string} value - The name of the identifier
  */
-export interface JSIdentifier extends JSIdentifierRoot {
+export interface JSIdentifier extends JSIdentifierBase {
     type: JSNodeType.Identifier;
 
 }
@@ -29,7 +22,7 @@ export interface JSIdentifier extends JSIdentifierRoot {
  * See `Identifier`
  */
 
-export interface JSIdentifierName extends JSIdentifierRoot {
+export interface JSIdentifierName extends JSIdentifierBase {
     type: JSNodeType.IdentifierName;
 
 }
@@ -40,13 +33,12 @@ export interface JSIdentifierName extends JSIdentifierRoot {
  * > identifier
  * >```
  *
- * This node does not have extended members.
  *
  * This node has the regular property:
  *
  * - @property {string} value - The name of the identifier
  */
-export interface JSIdentifierBinding extends JSIdentifierRoot {
+export interface JSIdentifierBinding extends JSIdentifierBase {
     type: JSNodeType.IdentifierBinding;
 
 }
@@ -57,14 +49,13 @@ export interface JSIdentifierBinding extends JSIdentifierRoot {
  * > identifier
  * >```
  *
- * This node does not have extended members.
  *
  * This node has the regular property:
  *
  * - @property {string} value - The name of the identifier
  */
 
-export interface JSIdentifierReference extends JSIdentifierRoot {
+export interface JSIdentifierReference extends JSIdentifierBase {
     type: JSNodeType.IdentifierReference;
 
 }
@@ -77,13 +68,12 @@ export interface JSIdentifierReference extends JSIdentifierRoot {
  * > identifier
  * >```
  *
- * This node does not have extended members.
  *
  * This node has the regular property:
  *
  * - @property {string} value - The name of the identifier
  */
-export interface JSIdentifierLabel extends JSIdentifierRoot {
+export interface JSIdentifierLabel extends JSIdentifierBase {
     type: JSNodeType.IdentifierLabel;
 }
 
@@ -96,13 +86,12 @@ export interface JSIdentifierLabel extends JSIdentifierRoot {
  * > identifier
  * >```
  *
- * This node does not have extended members.
  *
  * This node has the regular property:
  *
  * - @property {string} value - The name of the identifier
  */
-export interface JSIdentifierModule extends JSIdentifierRoot {
+export interface JSIdentifierModule extends JSIdentifierBase {
     type: JSNodeType.IdentifierModule;
 }
 
@@ -115,14 +104,13 @@ export interface JSIdentifierModule extends JSIdentifierRoot {
  * > identifier
  * >```
  *
- * This node does not have extended members.
  *
  * This node has the regular property:
  *
  * - @property {string} value - The name of the identifier
  */
 
-export interface JSIdentifierProperty extends JSIdentifierRoot {
+export interface JSIdentifierProperty extends JSIdentifierBase {
     type: JSNodeType.IdentifierProperty;
 }
 /**
@@ -133,7 +121,6 @@ export interface JSIdentifierProperty extends JSIdentifierRoot {
  * > identifier
  * >```
  *
- * This node does not have extended members.
  *
  * This node has the regular property:
  *
@@ -141,7 +128,20 @@ export interface JSIdentifierProperty extends JSIdentifierRoot {
  */
 
 
-export interface JSIdentifierDefault extends JSIdentifierRoot {
+export interface JSIdentifierDefault extends JSIdentifierBase {
     type: JSNodeType.IdentifierDefault;
 }
 
+
+
+
+
+
+export type JSIdentifierClass = JSIdentifier
+    | JSIdentifierName
+    | JSIdentifierBinding
+    | JSIdentifierReference
+    | JSIdentifierLabel
+    | JSIdentifierModule
+    | JSIdentifierProperty
+    | JSIdentifierDefault;

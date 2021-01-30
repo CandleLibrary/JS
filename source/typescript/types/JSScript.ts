@@ -1,14 +1,14 @@
-import { BaseJSNode } from "./node";
-import { JSStatementNode } from "./JSStatement";
+import { JSNodeBase } from "./JSBase";
+import { JSStatementClass } from "./JSStatement";
 import { JSNodeType } from "./node_type";
 
 
 /**
  * The root node of a JavaScript module or script.
  */
-export interface JSScript extends BaseJSNode {
+export interface JSScript extends JSNodeBase {
     type: JSNodeType.Script;
     source?: string;
-    nodes: JSStatementNode[];
+    nodes: JSStatementClass[];
 }
-export function JSNode_Is_Script(node: BaseJSNode): node is BaseJSNode { return node.type == JSNodeType.Module; }
+export function JSNode_Is_Script(node: JSNodeBase): node is JSNodeBase { return node.type == JSNodeType.Module; }
