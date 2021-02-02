@@ -63,7 +63,7 @@ export enum JSNodeTypeLU {
     InstanceOfExpression = JSNodeType.InstanceOfExpression,
     LabeledStatement = JSNodeType.LabeledStatement,
     LexicalBinding = JSNodeType.LexicalBinding,
-    LexicalDeclaration = JSNodeType.LexicalDeclaration,
+    LexicalDeclaration = JSNodeType.LexicalStatement,
     LogicalExpression = JSNodeType.LogicalExpression,
     MemberExpression = JSNodeType.MemberExpression,
     Method = JSNodeType.Method,

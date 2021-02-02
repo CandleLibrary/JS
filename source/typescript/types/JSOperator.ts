@@ -2,6 +2,7 @@ import { JSOperatorBase } from "./JSBase";
 import { JSArguments } from "./JSFunction";
 import { JSIdentifier, JSIdentifierName, JSIdentifierReference } from "./JSIdentifier";
 import { JSExpressionClass, JSLeftHandBindingClass, JSReferenceClass, JSRightHandExpressionClass } from "./JSNodeClasses";
+import { JSStringLiteral } from "./JSPrimitive";
 import { JSNodeType } from "./node_type";
 
 
@@ -448,6 +449,22 @@ export interface JSCallExpression extends JSOperatorBase {
     nodes: [JSReferenceClass, JSArguments];
 }
 
+/**
+ * Expression of the form:
+ *
+ * ```ts
+ * <JSReferenceClass> ( <JSStringLiteral | JS> )
+ * ```
+ * Extended members are:
+ * 1. **`identifier`**
+ * 1. **`arguments`**
+ */
+export interface JSImportCallExpression extends JSOperatorBase {
+    type: JSNodeType.ImportCall;
+    symbol: never;
+    TEMPLATE: boolean;
+    nodes: [JSRightHandExpressionClass];
+}
 
 
 /**
@@ -582,6 +599,8 @@ export interface JSParenthesized extends JSOperatorBase {
     type: JSNodeType.Parenthesized;
     nodes: [JSExpressionClass];
 }
+
+
 
 export type JSOperatorClass = JSBindingExpression
     | JSAssignmentExpression

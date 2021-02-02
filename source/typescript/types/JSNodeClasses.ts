@@ -23,6 +23,7 @@ import {
     JSDeleteExpression,
     JSEqualityExpression,
     JSExponentiationExpression,
+    JSImportCallExpression,
     JSInExpression,
     JSInstanceOfExpression,
     JSLogicalExpression,
@@ -72,6 +73,7 @@ export type JSRightHandExpressionClass =
     ;
 
 export type JSCallExpressionClass =
+    | JSImportCallExpression
     | JSCallExpression
     | JSSuperCall
     | JSNewInstanceExpression

@@ -370,6 +370,16 @@ export const JSNodeDefinitions: Array<JSNodeDefinition> = createNodeDefinitions(
         }
     },
     {
+        type: JSNodeType.ImportMeta,
+        ext_name: [],
+        template_pattern: "import.meta"
+    },
+    {
+        type: JSNodeType.ImportCall,
+        ext_name: [],
+        template_pattern: "import(%@1%)"
+    },
+    {
         type: JSNodeType.ImportClause,
         ext_name: [],
         template_pattern: "^1@...,^0"
@@ -400,7 +410,7 @@ export const JSNodeDefinitions: Array<JSNodeDefinition> = createNodeDefinitions(
         template_pattern: "@symbol ^1@...,",
     },
     {
-        type: JSNodeType.LexicalDeclaration,
+        type: JSNodeType.LexicalStatement,
         ext_name: [],
         template_pattern: "@symbol ^1@...,;",
     },

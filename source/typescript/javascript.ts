@@ -101,7 +101,8 @@ export {
 
     tools
 };
-
+export * from "./types/JSBase.js";
+export * from "./types/JSNodeClasses.js";
 export * from "./types/JSFunction.js";
 export * from "./types/JSIdentifier.js";
 export * from "./types/JSModule.js";
