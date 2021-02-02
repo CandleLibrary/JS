@@ -8,7 +8,8 @@ import { JSPrimitiveClass } from "./JSPrimitive";
 import { JSScript } from "./JSScript";
 import { JSStatementClass } from "./JSStatement";
 import { JSTemplateClass } from "./JSTemplate";
-export type JSNode = JSClassClass
+export type JSNode =
+    | JSClassClass
     | JSFunctionClass
     | JSIdentifierClass
     | JSModuleClass

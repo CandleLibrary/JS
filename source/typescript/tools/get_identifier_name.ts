@@ -19,9 +19,8 @@ export function getIdentifierName(node: JSNode): string {
         case JSNodeType.IdentifierLabel:
         case JSNodeType.IdentifierBinding:
         case JSNodeType.Identifier:
-            return <string>node.value;
+            return node.value;
         case JSNodeType.MemberExpression:
-        case JSNodeType.OptionalChain:
         case JSNodeType.CallExpression:
         case JSNodeType.ExpressionStatement:
             return getIdentifierName(node.nodes[0]);

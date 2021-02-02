@@ -29,7 +29,7 @@ function convertClassReferences(expression) {
 
     return traverse(expression, "nodes")
         .filter("type", JSNodeTypeLU.MemberExpression)
-        .mutate((node) => exp(`${(class_value_lookup.get(node.nodes[1].value)) || 0}`))
+        .mutate((node) => exp(`${(class_value_lookup.get(node.nodes[1].value))}`))
         .run();
 }
 let counter = 0, counter_shift = 23;

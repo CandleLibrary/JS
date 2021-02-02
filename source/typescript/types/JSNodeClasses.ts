@@ -58,29 +58,66 @@ export type JSExpressionClass = JSRightHandExpressionClass | JSLeftHandBindingCl
  */
 export type JSRightHandExpressionClass =
     //Operators
-    JSLogicalExpression | JSAssignmentExpression | JSCoalesceExpression
-    | JSBitwiseExpression | JSEqualityExpression | JSRelationalExpression
-    | JSInstanceOfExpression | JSInExpression | JSShiftExpression
-    | JSAdditiveExpression | JSMultiplicativeExpression | JSExponentiationExpression
-    | JSDeleteExpression | JSVoidExpression | JSTypeofExpression
-    | JSUnaryExpression | JSPostExpression | JSPreExpression
-    | JSConditionalExpression | JSYieldExpression | JSCallExpression
-    | JSSuperCall | JSNewInstanceExpression | JSNewTarget | JSAwaitExpression
+    | JSBinaryExpressionClass
+    | JSUnaryExpressionClass
+    | JSTernaryExpressionClass
+    | JSCallExpressionClass
     //Generic
-    | JSParenthesized | JSSuperExpression | JSImportMeta
+    | JSNewTarget
+    | JSParenthesized
     //Objects
-    | JSArrowFunction | JSClassExpression | JSObjectLiteral | JSArrayLiteral
-    | JSPrimitiveClass | JSTemplateClass | JSFunctionExpression
+    | JSObjectLiteralExpressionClass
     //References
-    | JSMemberExpression | JSIdentifierClass
+    | JSReferenceClass
     ;
 
+export type JSCallExpressionClass =
+    | JSCallExpression
+    | JSSuperCall
+    | JSNewInstanceExpression
+    ;
+export type JSObjectLiteralExpressionClass =
+    | JSObjectLiteral
+    | JSClassExpression
+    | JSFunctionExpressionClass
+    | JSPrimitiveClass
+    | JSTemplateClass
+    | JSArrayLiteral;
+export type JSFunctionExpressionClass =
+    | JSArrowFunction
+    | JSFunctionExpression;
 
+export type JSTernaryExpressionClass = JSConditionalExpression;
+export type JSBinaryExpressionClass =
+    | JSLogicalExpression
+    | JSAssignmentExpression
+    | JSCoalesceExpression
+    | JSBitwiseExpression
+    | JSEqualityExpression
+    | JSRelationalExpression
+    | JSAdditiveExpression
+    | JSMultiplicativeExpression
+    | JSExponentiationExpression
+    | JSInstanceOfExpression
+    | JSInExpression
+    | JSShiftExpression
+    ;
+
+export type JSUnaryExpressionClass =
+    | JSDeleteExpression
+    | JSVoidExpression
+    | JSTypeofExpression
+    | JSAwaitExpression
+    | JSUnaryExpression
+    | JSPostExpression
+    | JSYieldExpression
+    | JSPreExpression;
 
 /**
  * Expressions that can appear on the left hand side of an assignment expression
  */
-export type JSLeftHandBindingClass = JSReferenceClass
+export type JSLeftHandBindingClass =
+    | JSReferenceClass
     | JSObjectBinding
     | JSArrayBinding;
 
@@ -88,7 +125,9 @@ export type JSLeftHandBindingClass = JSReferenceClass
  * Expression that are references
  */
 export type JSReferenceClass = JSMemberExpression
+    | JSImportMeta
     | JSIdentifierClass
+    | JSSuperExpression
     | JSSuperExpression;
 
 export type JSHoistableDeclarationClass = JSFunctionDeclaration | JSVariableDeclaration;

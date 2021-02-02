@@ -1,4 +1,5 @@
 import { JSPrimitiveBase } from "./JSBase";
+import { JSTemplate } from "./JSTemplate";
 import { JSNodeType } from "./node_type";
 
 
@@ -144,6 +145,7 @@ export interface JSNewTarget extends JSPrimitiveBase {
 
 export type JSPrimitiveClass =
     JSNumericLiteral
+    | JSTemplate
     | JSBigIntLiteral
     | JSStringLiteral
     | JSBooleanLiteral

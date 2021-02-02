@@ -26,13 +26,13 @@ export interface JSTemplateMiddle extends JSPrimitiveBase {
 
 export interface JSTemplateTail extends JSPrimitiveBase {
     type: JSNodeType.TemplateTail;
-
     value: string;
 }
 
 
-export type JSTemplateClass = JSTemplate
+export type JSTemplateClass =
+    | JSTemplate
     | JSTemplateHead
     | JSTemplateMiddle
     | JSTemplateTail
-    | JSTemplate;
+    ;
