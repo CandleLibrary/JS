@@ -9,7 +9,7 @@ import { JSNodeClass } from "./types/node_class_type.js";
 import { JSNodeTypeLU } from "./types/node_type_lu.js";
 import { JSNodeType } from "./types/node_type.js";
 import { ext } from "./tools/extend.js";
-import { expression_parser, javascript_parser, statement_parser } from "./parser/parse.js";
+import { expression_parser, javascript_parser, statement_parser, javascript_parser_new } from "./parser/parse.js";
 import env, { JSParserEnv } from "./parser/env.js";
 import { getIdentifierName } from "./tools/get_identifier_name.js";
 
@@ -91,6 +91,7 @@ export {
 
     //Objects
     env as JSParserEnvironment,
+    javascript_parser_new as parser_new,
     javascript_parser as parser,
     expression_parser as exp,
     statement_parser as stmt,
