@@ -1,11 +1,11 @@
-import { parser, renderCompressed, extendAll } from "@candlefw/js";
+import { parser_new as parser, renderCompressed } from "@candlefw/js";
 
 const
     strA = `class A{js(){}}`,
     strB = `class A{js(){a;}}`,
     strC = `class A extends C{js(){a;}}`,
     strD = `class A extends C{js(){a;}get D(){}}`,
-    strE = `class A extends C{js(){a;}set E(d=0){}}`;
+    strE = `class A extends C{js(){a;}set E(d= 0){}}`;
 
 assert(renderCompressed(parser(strA).ast) == strA);
 assert(renderCompressed(parser(strB).ast) == strB);

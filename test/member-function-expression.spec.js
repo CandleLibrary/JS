@@ -1,4 +1,4 @@
-import { parser, renderCompressed, extendAll } from "@candlefw/js";
+import { parser_new as parser, renderCompressed, extendAll } from "@candlefw/js";
 
 const
     strA = `({ get: function(){ return hello; } })`,
