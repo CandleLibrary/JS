@@ -615,7 +615,7 @@ f:Spread{ { type:env.typ.Spread, nodes: [$sym2],  pos  } }
         │ logical_or_expression \|| logical_and_expression                                                      f:r { { type: env.typ.LogicalExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
 
     <> logical_and_expression > bitwise_or_expression 
-        │ logical_and_expression && bitwise_or_expression                                                       f:r { { type: env.typ.LogicalExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
+        │ logical_and_expression \&& bitwise_or_expression                                                       f:r { { type: env.typ.LogicalExpression, symbol:$$sym2, nodes:[$$sym1, $$sym3], pos } }
 
     ##
     # 2020 https://www.ecma-international.org/ecma-262/#prod-CoalesceExpression
