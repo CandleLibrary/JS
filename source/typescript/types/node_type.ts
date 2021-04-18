@@ -114,5 +114,5 @@ export const enum JSNodeType {
     VoidExpression = 905969922,
     WhileStatement = 914358276,
     WithStatement = 922746884,
-    YieldExpression = 9311357460
+    YieldExpression = 931135746
 }
