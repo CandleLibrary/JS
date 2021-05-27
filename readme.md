@@ -22,11 +22,11 @@ This library builds upon and extends the functionality found withing the followi
 
 ### Yarn
 ```sh
-yarn add @candlefw/js
+yarn add @candlelib/js
 ```
 ### NPM
 ```sh
-npm install --save @candlefw/js
+npm install --save @candlelib/js
 ```
 ### Usage
 
@@ -34,7 +34,7 @@ npm install --save @candlefw/js
 
 ```js
 
-import { parse as jsParse, render as jsRender } from "@candlefw/js";
+import { parse as jsParse, render as jsRender } from "@candlelib/js";
 
 const js_ast = jsRender(` console.log("Hello World") `);
 

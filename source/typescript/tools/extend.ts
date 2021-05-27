@@ -1,4 +1,4 @@
-import { extract, replace, traverse } from "@candlefw/conflagrate";
+import { extract, replace, traverse } from "@candlelib/conflagrate";
 
 import { JSNodeDefinitions } from "../render/rules.js";
 import { JSNodeDefinition } from "../types/node_definition.js";

@@ -1,5 +1,5 @@
 import { JSNodeType } from "./node_type";
-import { NodeRenderDefinition, FormatRule } from "@candlefw/conflagrate/build/types/render/render";
+import { NodeRenderDefinition, FormatRule } from "@candlelib/conflagrate/build/types/render/render";
 
 export class JSNodeDefinition implements NodeRenderDefinition {
     type: JSNodeType;

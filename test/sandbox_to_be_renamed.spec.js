@@ -1,4 +1,4 @@
-import { renderCompressed } from "@candlefw/js";
+import { renderCompressed } from "@candlelib/js";
 import { javascript_parser_new } from "../build/library/parser/parse.js";
 
 assert_group("Identifiers and Members", () => {

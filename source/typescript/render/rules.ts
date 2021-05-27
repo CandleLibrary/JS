@@ -1,4 +1,4 @@
-import { FormatRule, buildFormatRules, buildRenderers } from "@candlefw/conflagrate";
+import { FormatRule, buildFormatRules, buildRenderers } from "@candlelib/conflagrate";
 import { JSNodeDefinition } from "../types/node_definition.js";
 import { JSNodeType } from "../types/node_type";
 import { JSNodeTypeLU } from "../types/node_type_lu.js";

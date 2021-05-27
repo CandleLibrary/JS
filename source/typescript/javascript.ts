@@ -1,5 +1,5 @@
-import { Lexer } from "@candlefw/wind";
-import { traverse } from "@candlefw/conflagrate";
+import { Lexer } from "@candlelib/wind";
+import { traverse } from "@candlelib/conflagrate";
 
 import { createNodeDefinitions } from "./render/rules.js";
 import { JSNode, FullJSNode } from "./types/JSNode.js";

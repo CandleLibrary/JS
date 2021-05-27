@@ -1,6 +1,6 @@
-import { lrParse } from "@candlefw/hydrocarbon";
-import { Lexer } from "@candlefw/wind";
-import { traverse } from "@candlefw/conflagrate";
+import { lrParse } from "@candlelib/hydrocarbon/build/library/runtime.js";
+import { Lexer } from "@candlelib/wind";
+import { traverse } from "@candlelib/conflagrate";
 import { JSNode } from "../types/JSNode";
 import javascript_parser_data from "./javascript.js";
 import { JSNodeClass } from "../types/node_class_type.js";
@@ -92,7 +92,7 @@ export function expression_parser(expression: any | string | Lexer): JSNode {
  * @throws Throws an SyntaxError if the string cannot be parsed into a statement AST.
  */
 export function statement_parser(
-    /** Any string or @candlefw/wind Lexer that contains at least one TypeScript statement. **/
+    /** Any string or @candlelib/wind Lexer that contains at least one TypeScript statement. **/
     statement: any | string | Lexer
 ): JSNode {
 

@@ -1,5 +1,5 @@
-import { ParserEnvironment } from "@candlefw/hydrocarbon";
-import { Lexer } from "@candlefw/wind";
+import { ParserEnvironment } from "@candlelib/hydrocarbon/build/library/runtime.js";
+import { Lexer } from "@candlelib/wind";
 
 import { JSNodeClass } from "../types/node_class_type.js";
 import { JSNodeTypeLU } from "../types/node_type_lu.js";

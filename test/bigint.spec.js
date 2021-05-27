@@ -2,7 +2,7 @@
  * Parses bigint
  */
 
-import { parser, renderCompressed } from "@candlefw/js";
+import { parser, renderCompressed } from "@candlelib/js";
 
 let { ast } = parser("1n;");
 

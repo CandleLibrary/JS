@@ -5,7 +5,7 @@ import {
     renderWithSourceMap as CFLrenderWithSourceMap,
     renderWithFormattingAndSourceMap as CFLrenderWithFormattingAndSourceMap,
     FormatRule
-} from "@candlefw/conflagrate";
+} from "@candlelib/conflagrate";
 
 import { format_rules, renderers } from "./rules.js";
 import { JSNode } from "../types/JSNode.js";

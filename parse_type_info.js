@@ -1,9 +1,9 @@
 //Load class info
 
-import { parser, renderCompressed, renderWithFormatting, TSNodeTypeLU } from "@candlefw/ts";
-import { exp, JSNodeTypeLU } from "@candlefw/js";
-import URL from "@candlefw/url";
-import { traverse } from "@candlefw/conflagrate";
+import { parser, renderCompressed, renderWithFormatting, TSNodeTypeLU } from "@candlelib/ts";
+import { exp, JSNodeTypeLU } from "@candlelib/js";
+import URL from "@candlelib/url";
+import { traverse } from "@candlelib/conflagrate";
 import fs from "fs";
 
 await URL.server();

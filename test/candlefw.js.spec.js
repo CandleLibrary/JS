@@ -1,7 +1,7 @@
 import { JSNodeTypeLU, parser, exp, stmt, renderCompressed, ext } from "../build/library/javascript.js";
-import { traverse, bit_filter } from "@candlefw/conflagrate";
+import { traverse, bit_filter } from "@candlelib/conflagrate";
 
-"@candlefw/js test spec";
+"@candlelib/js test spec";
 
 const JSNodeType = JSNodeTypeLU;
 

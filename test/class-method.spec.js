@@ -1,4 +1,4 @@
-import { parser_new as parser, renderCompressed } from "@candlefw/js";
+import { parser_new as parser, renderCompressed } from "@candlelib/js";
 
 const
     strA = `class A{js(){}}`,
