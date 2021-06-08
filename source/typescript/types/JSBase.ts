@@ -1,7 +1,5 @@
 import { JSNodeType } from "./node_type";
-
-export interface JSNodeBase {
-    /**
+/**
      * An numeric identifier that encodes the
      * unique node type and additional meta class
      * information in a 32bit integer.
@@ -32,18 +30,12 @@ export interface JSNodeBase {
      *
      *
      *
+     type: number;
      */
-    type: number;
 
-    /**
-     * Children nodes
-     */
+export interface JSNodeBase {
+
     nodes?: JSNodeBase[];
-
-    /**
-     * Information on the character segment enclosed
-     * by this node.
-     */
     pos?: {
         line: number;
         column: number;

@@ -6,6 +6,7 @@ import javascript_parser_data from "./javascript.js";
 import { JSNodeClass } from "../types/node_class_type.js";
 import env from "./env.js";
 import js_parser from "./parser.js";
+import { JSStatementClass } from "../types/JSStatement";
 interface ParserResult {
     error: string;
     value: any;
@@ -94,12 +95,12 @@ export function expression_parser(expression: any | string | Lexer): JSNode {
 export function statement_parser(
     /** Any string or @candlelib/wind Lexer that contains at least one TypeScript statement. **/
     statement: any | string | Lexer
-): JSNode {
+): JSStatementClass {
 
     const { ast } = javascript_parser(statement);
 
     for (const { node } of traverse(ast, "nodes").bitFilter("type", JSNodeClass.STATEMENT))
-        return node;
+        return <JSStatementClass>node;
 
     throw new EvalError(`String [ ${statement.join("")} ] does not contain a statement.`);
 }
