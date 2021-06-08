@@ -7,8 +7,8 @@
     "type": "module",
     "scripts": {
         "prepublishOnly": "tsc -p ./tsconfig.json && yarn test",
-        "test": "cfw.test ./test/",
-        "test.watch": "cfw.test -w ./test/candlefw.js.spec.js",
+        "test": "candle.cure ./test/",
+        "test.watch": "candle.cure -w ./test/candlelibrary.js.spec.js",
         "build": "tsc",
         "build.watch": "rollup --config  ./build/config/config.js --watch",
         "build.ui.watch": "rollup --config  ./build/config/ui.config.js --watch",
@@ -17,7 +17,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/candlefw/js.git"
+        "url": "git+https://github.com/candlelibrary/js.git"
     },
     "keywords": [
         "ECMASCRIPT",
@@ -28,9 +28,9 @@
     "author": "Anthony Weathersby",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/candlefw/js/issues"
+        "url": "https://github.com/candlelibrary/js/issues"
     },
-    "homepage": "https://github.com/candlefw/js#readme",
+    "homepage": "https://github.com/candlelibrary/js#readme",
     "dependencies": {
         "@assemblyscript/loader": "^0.17.13",
         "@candlelib/conflagrate": "0.1.1",

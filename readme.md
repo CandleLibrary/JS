@@ -6,7 +6,7 @@
 
 <p align=center> <sub><b>v0.2.1-dev</b></sub> </p>
 
-cfw.JS is both a standalone **JavaScript** parser written in TypeScript, and a critical part of the CandleFW component system. It can be used independently within projects that require the capability to parse and generate a simple AST for JavaScript string inputs.
+cfw.JS is both a standalone **JavaScript** parser written in TypeScript, and a critical part of the CandleLibrary component system. It can be used independently within projects that require the capability to parse and generate a simple AST for JavaScript string inputs.
 
  cfw.JS AST's can be traversed using cfw.Conflagrate traversal functions, and rendered to string with customized formatting using Conflagrate's rendering functions. These functions are integrated within the library.
 
