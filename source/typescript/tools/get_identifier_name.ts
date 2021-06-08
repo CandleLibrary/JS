@@ -14,12 +14,14 @@ import { JSNodeType } from "../types/node_type";
  */
 export function getIdentifierName(node: JSNode): string {
 
-    switch (node.type) {
+    switch (node.type & 0xFFFFFFFF) {
         case JSNodeType.IdentifierReference:
         case JSNodeType.IdentifierLabel:
         case JSNodeType.IdentifierBinding:
         case JSNodeType.Identifier:
             return node.value;
+        case JSNodeType.Specifier:
+        case JSNodeType.ObjectBinding:
         case JSNodeType.MemberExpression:
         case JSNodeType.CallExpression:
         case JSNodeType.ExpressionStatement:
