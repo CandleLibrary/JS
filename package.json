@@ -35,7 +35,7 @@
         "@assemblyscript/loader": "^0.17.13",
         "@candlelib/conflagrate": "0.1.1",
         "@candlelib/hydrocarbon": "0.8.1-alpha-2",
-        "@candlelib/url": "0.1.5",
+        "@candlelib/uri": "0.1.5",
         "@candlelib/wind": "0.4.4"
     },
     "devDependencies": {

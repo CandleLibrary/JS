@@ -2,7 +2,7 @@
 
 import { parser, renderCompressed, renderWithFormatting, TSNodeTypeLU } from "@candlelib/ts";
 import { exp, JSNodeTypeLU } from "@candlelib/js";
-import URL from "@candlelib/url";
+import URL from "@candlelib/uri";
 import { traverse } from "@candlelib/conflagrate";
 import fs from "fs";
 
