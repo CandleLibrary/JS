@@ -51,8 +51,7 @@ const env = <JSParserEnv>{
     comments: [],
     functions: {
         parseIdentifier: (a, b, lex: Lexer) => {
-            // lex.next();
-            // console.log("AAAAAAA", lex.tx);
+
             const IWScache = lex.IWS;
 
             lex.IWS = false;
@@ -217,7 +216,7 @@ const env = <JSParserEnv>{
             /*Automatic Semicolon Insertion*/
             if (env.ASI && lex.tx !== ")" && !lex.END) {
 
-                let ENCOUNTERED_END_CHAR = (lex.tx == "}" || lex.END);
+                let ENCOUNTERED_END_CHAR = (lex.tx == "}" || lex.END || lex.tx == "<");
 
                 while (!ENCOUNTERED_END_CHAR && !prv_lex.END && prv_lex.off < lex.off) {
                     prv_lex.next();
