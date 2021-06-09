@@ -1,5 +1,5 @@
-import { renderCompressed } from "@candlelib/js";
-import { javascript_parser_new } from "../build/library/parser/parse.js";
+import { renderCompressed, parser as javascript_parser_new } from "@candlelib/js";
+//import { javascript_parser_new } from "../build/library/parser/parse.js";
 
 assert_group("Identifiers and Members", () => {
 
@@ -99,31 +99,16 @@ assert_group("Ternary Expression", () => {
 assert_group("Arrow Function", () => {
 
     assert("Simple arrow function expression [_=>_]",
-        renderCompressed(javascript_parser_new("_=>_").ast) == "_=>_");
+        renderCompressed(javascript_parser_new("_=>_").ast) == "_=>_;");
 
     assert("Simple arrow function expression with no arguments [()=>a]",
-        renderCompressed(javascript_parser_new("()=>a").ast) == "()=>a");
+        renderCompressed(javascript_parser_new("()=>a").ast) == "()=>a;");
 
     assert("Simple arrow function expression with two arguments [(a,b)=>a+b]",
-        renderCompressed(javascript_parser_new("(a,b)=>a+b").ast) == "(a,b)=>a+b");
+        renderCompressed(javascript_parser_new("(a,b)=>a+b").ast) == "(a,b)=>a+b;");
 
     assert("Simple arrow function expression with block body [(a,b)=>{ a+b }]",
-        renderCompressed(javascript_parser_new("(a,b)=>{ a+b }").ast) == "(a,b)=>{ a+b }");
-});
-
-assert_group("Import Call", () => {
-
-    assert("Simple arrow function expression [_=>_]",
-        renderCompressed(javascript_parser_new("_=>_").ast) == "_=>_");
-
-    assert("Simple arrow function expression with no arguments [()=>a]",
-        renderCompressed(javascript_parser_new("()=>a").ast) == "()=>a");
-
-    assert("Simple arrow function expression with two arguments [(a,b)=>a+b]",
-        renderCompressed(javascript_parser_new("(a,b)=>a+b").ast) == "(a,b)=>a+b");
-
-    assert("Simple arrow function expression with block body [(a,b)=>{ a+b }]",
-        renderCompressed(javascript_parser_new("(a,b)=>{ a+b }").ast) == "(a,b)=>{ a+b }");
+        renderCompressed(javascript_parser_new("(a,b)=>{ a+b }").ast) == "(a,b)=>{a+b;};");
 });
 
 assert_group("Expressions", () => {

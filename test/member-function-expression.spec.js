@@ -1,4 +1,4 @@
-import { parser_new as parser, renderCompressed, extendAll } from "@candlelib/js";
+import { parser, renderCompressed, extendAll } from "@candlelib/js";
 
 const
     strA = `({ get: function(){ return hello; } })`,

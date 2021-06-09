@@ -1,4 +1,4 @@
-import { parser_new as parser, renderCompressed, extendAll, ext } from "@candlelib/js";
+import { parser, renderCompressed, extendAll, ext } from "@candlelib/js";
 
 const
     strA = `yield this;`,

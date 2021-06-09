@@ -4308,7 +4308,6 @@ const recognizer =
 		31:87 statement=>• debugger_statement - 
             compile time: 569.137ms*/;
         function $statement(l, state) {
-            set_debug_data(number_of_items, l.off,);
 
 
 
