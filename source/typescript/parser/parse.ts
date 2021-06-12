@@ -1,4 +1,4 @@
-import { lrParse } from "@candlelib/hydrocarbon/build/library/runtime.js";
+import { lrParse } from "@candlelib/hydrocarbon/build/library/entry/runtime.js";
 import { Lexer } from "@candlelib/wind";
 import { traverse } from "@candlelib/conflagrate";
 import { JSNode } from "../types/JSNode";
