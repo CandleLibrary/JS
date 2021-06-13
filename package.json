@@ -1,6 +1,6 @@
 {
     "name": "@candlelib/js",
-    "version": "0.4.0",
+    "version": "0.5.0",
     "description": "Javascript Parser",
     "main": "./build/library/javascript.js",
     "types": "./build/types/javascript.d.ts",
@@ -33,10 +33,10 @@
     "homepage": "https://github.com/candlelibrary/js#readme",
     "dependencies": {
         "@assemblyscript/loader": "^0.17.13",
-        "@candlelib/conflagrate": "0.1.1",
-        "@candlelib/hydrocarbon": "0.8.1-alpha-2",
-        "@candlelib/uri": "0.1.5",
-        "@candlelib/wind": "0.4.4"
+        "@candlelib/conflagrate": "0.3.0",
+        "@candlelib/hydrocarbon": "0.9.0",
+        "@candlelib/uri": "0.2.0",
+        "@candlelib/wind": "0.5.0"
     },
     "devDependencies": {
         "@candlelib/cure": "0.5.0"
