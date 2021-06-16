@@ -6,7 +6,7 @@
     "types": "./build/types/javascript.d.ts",
     "type": "module",
     "scripts": {
-        "prepublishOnly": "tsc -p ./tsconfig.json && yarn test",
+        "prepublish": "rm -rf ./build && tsc & sleep 10",
         "test": "candle.cure ./test/",
         "test.watch": "candle.cure -w ./test/candlelibrary.js.spec.js",
         "build": "tsc",
