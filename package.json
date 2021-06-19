@@ -19,6 +19,12 @@
         "type": "git",
         "url": "git+https://github.com/candlelibrary/js.git"
     },
+    "files": [
+        "/build",
+        "/README.md",
+        "/CHANGELOG.md",
+        "/LICENSE"
+    ],
     "keywords": [
         "ECMASCRIPT",
         "ecma",
