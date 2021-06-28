@@ -25,7 +25,7 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 <> comments > \/* ( g:ws | g:nl | g:id | g:num | g:sym )(*) \*/
 | \// ( g:ws | g:id | g:num | g:sym )(*) g:nl
 
-<> asi > ( \; | ?={ | ?=g:nl | ?=$eof )
+<> asi > \; | ?=\} | ?=g:nl | ?=$eof 
 
 ###############################################################################################################
 ###############################################################################################################
@@ -41,22 +41,22 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 
 <> module_body > module_item(+)                                                                         
 
-<> module_item > import_declaration                                                                         ↦ { env.IS_MODULE = true }
-    | export_declaration                                                                                    ↦ { env.IS_MODULE = true }
-    | statement_list_item
+<> module_item > import_declaration                                                                         f:r{ env.IS_MODULE = true, $1 }
+| export_declaration                                                                                    f:r{ env.IS_MODULE = true, $1 }
+| statement_list_item
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/11.0/index.html#prod-ImportDeclaration
 ###############################################################################################################
 
 <> import_declaration > t:import import_clause from_clause asi                                              f:r { { type:env.typ.ImportDeclaration, nodes:[$2, $3], pos } }
-    | t:import module_specifier asi                                                                         f:r { { type:env.typ.ImportDeclaration, nodes:[null, $2], pos } }
+| t:import module_specifier asi                                                                         f:r { { type:env.typ.ImportDeclaration, nodes:[null, $2], pos } }
 
 <> import_clause > imported_default_binding                                                                 f:r { { type:env.typ.ImportClause, nodes:[$$1], pos } }
-    | name_space_import                                                                                     f:r { { type:env.typ.ImportClause, nodes:[$$1], pos } }
-    | named_imports                                                                                         f:r { { type:env.typ.ImportClause, nodes:[$$1], pos } }
-    | imported_default_binding , name_space_import                                                          f:r { { type:env.typ.ImportClause, nodes:[$$1, $$3], pos } }
-    | imported_default_binding , named_imports                                                              f:r { { type:env.typ.ImportClause, nodes:[$$1, $$3], pos } }
+| name_space_import                                                                                     f:r { { type:env.typ.ImportClause, nodes:[$$1], pos } }
+| named_imports                                                                                         f:r { { type:env.typ.ImportClause, nodes:[$$1], pos } }
+| imported_default_binding , name_space_import                                                          f:r { { type:env.typ.ImportClause, nodes:[$$1, $$3], pos } }
+| imported_default_binding , named_imports                                                              f:r { { type:env.typ.ImportClause, nodes:[$$1, $$3], pos } }
 
 <> imported_default_binding > imported_binding                                                              f:r { $1.type = env.typ.IdentifierDefault, $1 }
 
@@ -67,7 +67,7 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 <> from_clause > t:from module_specifier                                                                     f:r { { type:env.typ.FromClause, nodes:[$2], pos } }
 
 <> import_specifier > imported_binding                                                                      f:r { { type:env.typ.Specifier, nodes:[$1], pos } }
-    | identifier t:as imported_binding                                                                       f:r { { type:env.typ.Specifier, nodes:[$1, $3], pos } }
+| identifier t:as imported_binding                                                                       f:r { { type:env.typ.Specifier, nodes:[$1, $3], pos } }
 
 <> module_specifier > string_literal                                                                        
 
@@ -77,24 +77,24 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 # https://www.ecma-international.org/ecma-262/11.0/index.html#sec-exports
 ###############################################################################################################
 
-    <> export_declaration > t:export * from_clause asi                                                    f:r { { type:env.typ.ExportDeclaration, nodes:[null, $3], DEFAULT:false, pos } }
-        │ t:export export_clause from_clause? asi                                                         f:r { { type:env.typ.ExportDeclaration, nodes:[$2, $$3], DEFAULT:false, pos } }
-        │ t:export variable_statement                                                                            f:r { { type:env.typ.ExportDeclaration, nodes:[$2], DEFAULT:false, pos } }
-        │ t:export declaration                                                                                   f:r { { type:env.typ.ExportDeclaration, nodes:[$2], DEFAULT:false, pos } }
-        │ t:export t:default hoistable_declaration                                                                f:r { { type:env.typ.ExportDeclaration, nodes:[$3], DEFAULT:true, pos } }
-        │ t:export t:default class_declaration                                                                    f:r { { type:env.typ.ExportDeclaration, nodes:[$3], DEFAULT:true, pos } }
-        │ t:export t:default                                                                                      
+<> export_declaration > t:export * from_clause asi                                                    f:r { { type:env.typ.ExportDeclaration, nodes:[null, $3], DEFAULT:false, pos } }
+    | t:export export_clause from_clause? asi                                                         f:r { { type:env.typ.ExportDeclaration, nodes:[$2, $$3], DEFAULT:false, pos } }
+    | t:export variable_statement                                                                            f:r { { type:env.typ.ExportDeclaration, nodes:[$2], DEFAULT:false, pos } }
+    | t:export declaration                                                                                   f:r { { type:env.typ.ExportDeclaration, nodes:[$2], DEFAULT:false, pos } }
+    | t:export t:default hoistable_declaration                                                                f:r { { type:env.typ.ExportDeclaration, nodes:[$3], DEFAULT:true, pos } }
+    | t:export t:default class_declaration                                                                    f:r { { type:env.typ.ExportDeclaration, nodes:[$3], DEFAULT:true, pos } }
+    | t:export t:default                                                                                      
 
-            (EXC t:function )
-            (EXC t:class )
-            (EXC t:async t:function )
-        
-            assignment_expression asi                                                                           f:r { { type:env.typ.ExportDeclaration, nodes:[$3], DEFAULT:true, pos } }
+        (EXC t:function )
+        (EXC t:class )
+        (EXC t:async t:function )
+    
+        assignment_expression asi                                                                           f:r { { type:env.typ.ExportDeclaration, nodes:[$3], DEFAULT:true, pos } }
 
-    <> export_clause > { export_specifier(*\, ) ,? }                                                            f:r { { type:env.typ.ExportClause, nodes:$$2||[], pos } }
+<> export_clause > { export_specifier(*\, ) ,? }                                                            f:r { { type:env.typ.ExportClause, nodes:$$2||[], pos } }
 
-    <> export_specifier >  identifier                                                                           f:r { { type:env.typ.Specifier, nodes:[$1], pos } }
-        │ identifier t:as identifier                                                                             f:r { { type:env.typ.Specifier, nodes:[$1, $3], pos } }
+<> export_specifier >  identifier                                                                           f:r { { type:env.typ.Specifier, nodes:[$1], pos } }
+    | identifier t:as identifier                                                                             f:r { { type:env.typ.Specifier, nodes:[$1, $3], pos } }
 
 ###############################################################################################################
 ###############################################################################################################
@@ -120,47 +120,47 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 # https://www.ecma-international.org/ecma-262/11.0/index.html#prod-Statement
 ###############################################################################################################
 
-    <> statement_list > statement_list_item                                                                     f:r { [ $1 ] }
-        │ statement_list statement_list_item                                                                    f:r { [ ...$1, $2 ] }                             
+<> statement_list > statement_list_item                                                                     f:r { [ $1 ] }
+    | statement_list statement_list_item                                                                    f:r { [ ...$1, $2 ] }                             
 
-    <> statement_list_item > statement 
-        │ declaration
+<> statement_list_item > statement 
+    | declaration
 
 
-    <> statement > block_statement 
-        │ 
-            (EXC \{ )
-            (EXC t:function )
-            (EXC t:class )
-            (EXC t:let \[ )
-            (EXC t:async t:function )
+<> statement > block_statement 
+    | 
+        (EXC \{ )
+        (EXC t:function )
+        (EXC t:class )
+        (EXC t:let \[ )
+        (EXC t:async t:function )
 
-            expression_statement                           
+        expression_statement                           
 
-        │ labeled_statement
-        │ variable_statement
-        │ empty_statement
-        │ if_statement
-        │ breakable_statement 
-        │ continue_statement
-        │ break_statement
-        │ return_statement
-        │ with_statement
-        │ throw_statement
-        │ try_statement
-        │ debugger_statement
+    | labeled_statement
+    | variable_statement
+    | empty_statement
+    | if_statement
+    | breakable_statement 
+    | continue_statement
+    | break_statement
+    | return_statement
+    | with_statement
+    | throw_statement
+    | try_statement
+    | debugger_statement
 
-    <> declaration > class_declaration
-        │ hoistable_declaration
-        │ lexical_declaration
+<> declaration > class_declaration
+    | hoistable_declaration
+    | lexical_declaration
 
-    <> hoistable_declaration > function_declaration
-        #│ generator_declaration
-        #│ async_function_declaration
-        #│ async_generator_declaration
+<> hoistable_declaration > function_declaration
+    #| generator_declaration
+    #| async_function_declaration
+    #| async_generator_declaration
 
-    <> breakable_statement > iteration_statement
-        │ switch_statement
+<> breakable_statement > iteration_statement
+    | switch_statement
 
 
 ###############################################################################################################
@@ -195,29 +195,29 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 
 <> iteration_statement > t:do statement t:while \( expression \) asi                                         f:r { { type: env.typ.DoStatement, nodes:[$$2, $$5], pos } }
 
-    | t:while \( expression \) statement                                                                     f:r { { type: env.typ.WhileStatement, nodes:[$$3, $$5], pos } }
-    
-    | t:for \( (  expression 
-        | t:var variable_declaration_list f:r { { type:env.typ.VariableDeclaration, nodes:$2, pos } }
-        )? ; expression? ; expression? \)  statement                                                 
-                                                                                                            f:r { { type: env.typ.ForStatement, nodes:[$$3, $$5, $$7, $$9], LEX:false, pos } }
+| t:while \( expression \) statement                                                                     f:r { { type: env.typ.WhileStatement, nodes:[$$3, $$5], pos } }
 
-    | t:for \( lexical_declaration expression? ; expression? \) statement                                   f:r { { type: env.typ.ForStatement, nodes:[$$3, $$4, $$6, $$8], LEX:true, pos } }                                                                           
-                                                                                                                                                                                                                                                                        
-    | t:for \( (  left_hand_side_expression
-            | t:var for_binding f:r { { type:env.typ.VariableDeclaration, nodes:[$1], pos }  }
-            | for_declaration
-        ) t:in expression \) statement                                                                      f:r { { type: env.typ.ForInStatement, nodes:[$$3, $$5, $$7], pos } } 
+| t:for \( (  expression 
+    | t:var variable_declaration_list f:r { { type:env.typ.VariableDeclaration, nodes:$2, pos } }
+    )? ; expression? ; expression? \)  statement                                                 
+                                                                                                        f:r { { type: env.typ.ForStatement, nodes:[$$3, $$5, $$7, $$9], LEX:false, pos } }
 
-    | t:for t:await? \( (  left_hand_side_expression
-            | t:var for_binding f:r { { type:env.typ.VariableDeclaration, nodes:[$1],lex }  }
-            | for_declaration
-        ) t:of expression \) statement                                                                      f:r { { type: env.typ.ForOfStatement, nodes:[$$4, $$6, $$8], pos, AWAIT:!!$$2 } }
+| t:for \( lexical_declaration expression? ; expression? \) statement                                   f:r { { type: env.typ.ForStatement, nodes:[$$3, $$4, $$6, $$8], LEX:true, pos } }                                                                           
+                                                                                                                                                                                                                                                                    
+| t:for \( (  left_hand_side_expression
+        | t:var for_binding f:r { { type:env.typ.VariableDeclaration, nodes:[$1], pos }  }
+        | for_declaration
+    ) t:in expression \) statement                                                                      f:r { { type: env.typ.ForInStatement, nodes:[$$3, $$5, $$7], pos } } 
+
+| t:for t:await? \( (  left_hand_side_expression
+        | t:var for_binding f:r { { type:env.typ.VariableDeclaration, nodes:[$1],pos }  }
+        | for_declaration
+    ) t:of expression \) statement                                                                      f:r { { type: env.typ.ForOfStatement, nodes:[$$4, $$6, $$8], pos, AWAIT:!!$$2 } }
 
 <> for_declaration > let_or_const for_binding                                                               f:r { { type: env.typ.LexicalBinding, nodes:[$$2], symbol:$$1, pos } }
 
 <> for_binding > binding_identifier 
-    | binding_pattern 
+| binding_pattern 
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/11.0/index.html#sec-continue-statement
@@ -271,22 +271,22 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 <> labeled_statement > label_identifier : labeled_item                                                    f:r { { type:env.typ.LabeledStatement, nodes:[$$1, $$3], pos } }
 
 <> labeled_item > statement
-    | function_declaration
+| function_declaration
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/11.0/index.html#sec-try-statement
 ###############################################################################################################
 
 <> try_statement > t:try block catch                                                                         f:r { { type:env.typ.TryStatement, nodes:[$$2,$$3,null], pos } }
-    | t:try block finally                                                                                    f:r { { type:env.typ.TryStatement, nodes:[$$2,null,$$3], pos } }
-    | t:try block catch  finally                                                                             f:r { { type:env.typ.TryStatement, nodes:[$$2,$$3,$$4], pos } }
+| t:try block finally                                                                                    f:r { { type:env.typ.TryStatement, nodes:[$$2,null,$$3], pos } }
+| t:try block catch  finally                                                                             f:r { { type:env.typ.TryStatement, nodes:[$$2,$$3,$$4], pos } }
 
 <> catch > t:catch \( catch_parameter \) block                                                               f:r { { type:env.typ.CatchClause, nodes:[$$3, $$5], pos } }
 
 <> finally > t:finally block                                                                                 f:r { { type:env.typ.FinallyClause, nodes:[$$2], pos } }
 
 <> catch_parameter > binding_identifier 
-    | binding_pattern
+| binding_pattern
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/11.0/index.html#sec-debugger-statement
@@ -309,24 +309,24 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 <> variable_declaration_list > variable_declaration(+\, )                                                         
 
 <> variable_declaration > binding_identifier initializer                                                    f:r => BindingExpression
-    | binding_identifier                                        
-    | binding_pattern initializer                                                                           f:r => BindingExpression
+| binding_identifier                                        
+| binding_pattern initializer                                                                           f:r => BindingExpression
 
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/11.0/index.html#sec-let-and-const-declarations
 ###############################################################################################################
 
-    <> lexical_declaration > let_or_const binding_list asi                                                    f:r { { type:env.typ.LexicalDeclaration, symbol:$1, nodes:$2, pos } }
+<> lexical_declaration > let_or_const binding_list asi                                                    f:r { { type:env.typ.LexicalDeclaration, symbol:$1, nodes:$2, pos } }
 
-    <> let_or_const > t:let                                                                                  f:r { "let" }
-        | t:const                                                                                            f:r { "const" }
+<> let_or_const > t:let                                                                                  f:r { "let" }
+    | t:const                                                                                            f:r { "const" }
 
-    <> binding_list > lexical_binding(+\, )                                                                            
+<> binding_list > lexical_binding(+\, )                                                                            
 
-    <> lexical_binding > binding_identifier
-        | binding_identifier initializer                                                                    f:r => BindingExpression
-        | binding_pattern initializer                                                                       f:r => BindingExpression
+<> lexical_binding > binding_identifier
+    | binding_identifier initializer                                                                    f:r => BindingExpression
+    | binding_pattern initializer                                                                       f:r => BindingExpression
 
 ###############################################################################################################
 ###############################################################################################################
@@ -341,15 +341,15 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 ## Modified to include async and function generator elements
 
 <> function_declaration > t:async? t:function \* ? binding_identifier? 
-                            \( formal_parameters? \) { function_body }                                     f:r { { type:env.typ.FunctionDeclaration, ASYNC:!!$$1, GENERATOR:!!$$3, nodes:[$$4,$$6,$$9], pos } }
+                        \( formal_parameters? \) { function_body }                                     f:r { { type:env.typ.FunctionDeclaration, ASYNC:!!$$1, GENERATOR:!!$$3, nodes:[$$4,$$6,$$9], pos } }
 
 <> function_expression > function_declaration                                                              f:r { ( sym1.type = env.typ.FunctionExpression, sym1 ) }
 
 <> unique_formal_parameters > formal_parameters
 
 <> formal_parameters > function_rest_parameter                                                              f:r { { type:env.typ.FormalParameters, nodes:[$1], pos } }
-        | formal_parameter_list ,?                                                                             f:r { { type:env.typ.FormalParameters, nodes:$1, pos } }
-        | formal_parameter_list , function_rest_parameter                                                      f:r { { type:env.typ.FormalParameters, nodes:[...$1,$$3], pos } }
+    | formal_parameter_list ,?                                                                             f:r { { type:env.typ.FormalParameters, nodes:$1, pos } }
+    | formal_parameter_list , function_rest_parameter                                                      f:r { { type:env.typ.FormalParameters, nodes:[...$1,$$3], pos } }
 
 <> formal_parameter_list > formal_parameter(+\, )                                                                     
 
@@ -398,20 +398,20 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 # <> generator_body > function_body
 
 <> yield_expression > t:yield g:nl                                                                          f:r { { type: env.typ.YieldExpression, nodes:[], pos } }
-    | t:yield ( \* )? assignment_expression                                                                 f:r { { type: env.typ.YieldExpression, nodes:[$$3], pos, GENERATOR:!!$$2 } }
+| t:yield ( \* )? assignment_expression                                                                 f:r { { type: env.typ.YieldExpression, nodes:[$$3], pos, GENERATOR:!!$$2 } }
 
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/11.0/index.html#sec-arrow-function-definitions
 ###############################################################################################################
 
-<> arrow_function > t:async? arrow_parameters => concise_body                                                f:r { { type:env.typ.ArrowFunction, ASYNC:!!$$1, nodes:[$$2,$$4], pos } }
+<> arrow_function > t:async? arrow_parameters \=> concise_body                                                f:r { { type:env.typ.ArrowFunction, ASYNC:!!$$1, nodes:[$$2,$$4], pos } }
 
 <> arrow_parameters > identifier_reference                                                                  f:r { $1.type = env.typ.IdentifierBinding, $1 }    
-    | cover_parenthesized_expression_and_arrow_parameter_list                                               f:r ^reinterpretArrowParameters
+| cover_parenthesized_expression_and_arrow_parameter_list                                               f:r ^reinterpretArrowParameters
 
 <> concise_body > (EXC \{ ) assignment_expression 
-    | { function_statement_list }                                                                           f:r { { type: env.typ.BlockStatement, nodes: $2, pos } }
+| { function_statement_list }                                                                           f:r { { type: env.typ.BlockStatement, nodes: $2, pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/11.0/index.html#sec-async-arrow-function-definitions
@@ -444,21 +444,21 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 <> class_heritage > t:extends left_hand_side_expression                          
 
 <> class_body > class_element                                                                               f:r { [$1 ] } 
-    | class_body class_element                                                                              f:r { $1.concat($2) } 
-    | class_body asi                                                                                        f:r { $1 }
-    | ;                                                                                                     f:r { [] }
+| class_body class_element                                                                              f:r { $1.concat($2) } 
+| class_body asi                                                                                        f:r { $1 }
+| ;                                                                                                     f:r { [] }
 
 <> class_element > method_definition 
-    | t:static method_definition                                                                             f:r { ( $2.STATIC = true, $2) }
-    
+| t:static method_definition                                                                             f:r { ( $2.STATIC = true, $2) }
+
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/11.0/index.html#prod-MethodDefinition
 ###############################################################################################################
 
 <> method_definition > t:async? (\* )? property_name \( unique_formal_parameters? \) { function_body? }      f:r { { type:env.typ.Method, ASYNC:!!$$1, GENERATOR:!!$$2, nodes:[$$3, $$5, $$8], pos } } 
-    | t:get property_name \( \) { function_body? }                                                           f:r { { type:env.typ.GetterMethod, nodes:[$$2, $6], pos } }
-    | t:set property_name \( property_set_parameter_list \) { function_body? }                               f:r { { type:env.typ.SetterMethod, nodes:[$$2, $$4, $7], pos } }
+| t:get property_name \( \) { function_body? }                                                           f:r { { type:env.typ.GetterMethod, nodes:[$$2, $6], pos } }
+| t:set property_name \( property_set_parameter_list \) { function_body? }                               f:r { { type:env.typ.SetterMethod, nodes:[$$2, $$4, $7], pos } }
 
 <> property_set_parameter_list > formal_parameter 
 
@@ -467,33 +467,33 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 ###############################################################################################################
 
 <> expression > expression , assignment_expression                                                          f:r { ( $1.type == env.typ.ExpressionList ? ( $1.nodes.push($3) , $1 )
-                                                                                                            : { type: env.typ.ExpressionList, nodes: [$1, $3], pos } ) }
-    | assignment_expression                                                                                 
-                
+                                                                                                        : { type: env.typ.ExpressionList, nodes: [$1, $3], pos } ) }
+| assignment_expression                                                                                 
+            
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/11.0/index.html#sec-left-hand-side-expressions
 ###############################################################################################################
 
 <> left_hand_side_expression > new_expression       
-    | call_expression         
-    | optional_expression                      
+| call_expression         
+| optional_expression                      
 
 <> new_expression > member_expression 
-    | t:new new_expression                                                                                   f:r { { type: env.typ.NewExpression, nodes:[$$2], pos } }
+| t:new new_expression                                                                                   f:r { { type: env.typ.NewExpression, nodes:[$$2], pos } }
 
 <> member_expression > primary_expression                   
-    | member_expression \[ expression \]                                                                    f:r { { type: env.typ.MemberExpression, nodes:[$$1, $$3], pos, COMPUTED:true } }
-    | member_expression . identifier_name                                                                   f:r { ($3.type |= env.cls.PROPERTY_NAME, { type: env.typ.MemberExpression, nodes:[$$1, $$3], pos, COMPUTED:false }) }
-    | member_expression template_literal                                                                    f:r { { type: env.typ.CallExpression, nodes:[$$1, $$2], pos, TEMPLATE:true } }
-    | super_property
-    | meta_property
-    | t:new member_expression arguments                                                                      f:r { { type: env.typ.NewInstanceExpression, nodes:[$$2, $$3], pos } }
+| member_expression \[ expression \]                                                                    f:r { { type: env.typ.MemberExpression, nodes:[$$1, $$3], pos, COMPUTED:true } }
+| member_expression . identifier_name                                                                   f:r { ($3.type |= env.cls.PROPERTY_NAME, { type: env.typ.MemberExpression, nodes:[$$1, $$3], pos, COMPUTED:false }) }
+| member_expression template_literal                                                                    f:r { { type: env.typ.CallExpression, nodes:[$$1, $$2], pos, TEMPLATE:true } }
+| super_property
+| meta_property
+| t:new member_expression arguments                                                                      f:r { { type: env.typ.NewInstanceExpression, nodes:[$$2, $$3], pos } }
 
 <> super_property > t:super . identifier_name                                                                f:r { ($3.type |= env.cls.PROPERTY_NAME,{ type: env.typ.SuperExpression, nodes:[$$3], pos, COMPUTED:false } ) }
-    | t:super \[ expression \]                                                                               f:r { { type: env.typ.SuperExpression, nodes:[$$3], pos, COMPUTED:true } }
+| t:super \[ expression \]                                                                               f:r { { type: env.typ.SuperExpression, nodes:[$$3], pos, COMPUTED:true } }
 
 <> meta_property > new_target
-    | import_meta
+| import_meta
 
 ##
 # 2020 https://www.ecma-international.org/ecma-262/#prod-ImportMeta
@@ -503,12 +503,12 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 <> new_target > t:new . t:target                                                                              f:r { { type: env.typ.NewTarget, pos } }
 
 <> call_expression > call_expression . identifier_name                                                      f:r { ($3.type |= env.cls.PROPERTY_NAME,{ type: env.typ.MemberExpression, nodes:[$$1, $$3], pos, COMPUTED:false } )}
-    | super_call
-    | import_call
-    | call_expression arguments                                                                             f:r { { type: env.typ.CallExpression, nodes:[$$1, $$2], pos, TEMPLATE:false } }
-    | call_expression \[ expression \]                                                                      f:r { { type: env.typ.MemberExpression, nodes:[$$1, $$3], pos, COMPUTED:true } }
-    | cover_call_expression_and_async_arrow_head                                                            
-    | call_expression template_literal                                                                      f:r { { type: env.typ.CallExpression, nodes:[$$1, $$3], pos, TEMPLATE:true } }
+| super_call
+| import_call
+| call_expression arguments                                                                             f:r { { type: env.typ.CallExpression, nodes:[$$1, $$2], pos, TEMPLATE:false } }
+| call_expression \[ expression \]                                                                      f:r { { type: env.typ.MemberExpression, nodes:[$$1, $$3], pos, COMPUTED:true } }
+| cover_call_expression_and_async_arrow_head                                                            
+| call_expression template_literal                                                                      f:r { { type: env.typ.CallExpression, nodes:[$$1, $$3], pos, TEMPLATE:true } }
 
 <> super_call > t:super arguments                                                                            f:r { { type: env.typ.SuperCall, nodes:[$$2], pos } }
 
@@ -524,20 +524,20 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 ###############################################################################################################
 # 2020 https://www.ecma-international.org/ecma-262/#prod-OptionalExpression
 ###############################################################################################################
-                            
+                        
 <> optional_expression > member_expression optional_chain                                                   f:r { { type: env.typ.OptionalMemberExpression, nodes:[$$1, $$2], pos, COMPUTED:false } }
-    | call_expression optional_chain                                                                        f:r { { type: env.typ.OptionalMemberExpression, nodes:[$$1, $$2], pos, COMPUTED:false } }
-    | optional_expression optional_chain                                                                    f:r { { type: env.typ.OptionalMemberExpression, nodes:[$$1, $$2], pos, COMPUTED:false } }
+| call_expression optional_chain                                                                        f:r { { type: env.typ.OptionalMemberExpression, nodes:[$$1, $$2], pos, COMPUTED:false } }
+| optional_expression optional_chain                                                                    f:r { { type: env.typ.OptionalMemberExpression, nodes:[$$1, $$2], pos, COMPUTED:false } }
 
 <> optional_chain > \?. arguments                                                                           
-    | \?. \[ expression \]                                                                                   f:r { $3 }
-    | \?. identifier_name                                                                                  
-    | \?. template_literal                                                                                  
-    | optional_chain arguments                                                                              f:r { { type: env.typ.CallExpression, nodes:[$$1, $$2], pos, TEMPLATE:false } }
-    | optional_chain \[ expression \]                                                                       f:r { { type: env.typ.MemberExpression, nodes:[$$1, $$3], pos, COMPUTED:true } }
-    | optional_chain \. identifier_name                                                                     f:r { ($3.type |= env.cls.PROPERTY_NAME, { type: env.typ.MemberExpression, nodes:[$$1, $$3], pos, COMPUTED:false }) }
-    | optional_chain template_literal                                                                       f:r { { type: env.typ.CallExpression, nodes:[$$1, $$2], pos, TEMPLATE:true } }
-    
+| \?. \[ expression \]                                                                                   f:r { $3 }
+| \?. identifier_name                                                                                  
+| \?. template_literal                                                                                  
+| optional_chain arguments                                                                              f:r { { type: env.typ.CallExpression, nodes:[$$1, $$2], pos, TEMPLATE:false } }
+| optional_chain \[ expression \]                                                                       f:r { { type: env.typ.MemberExpression, nodes:[$$1, $$3], pos, COMPUTED:true } }
+| optional_chain \. identifier_name                                                                     f:r { ($3.type |= env.cls.PROPERTY_NAME, { type: env.typ.MemberExpression, nodes:[$$1, $$3], pos, COMPUTED:false }) }
+| optional_chain template_literal                                                                       f:r { { type: env.typ.CallExpression, nodes:[$$1, $$2], pos, TEMPLATE:true } }
+
 
 
 
@@ -546,19 +546,19 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 ###############################################################################################################
 
 <> primary_expression > t:this                                                                               f:r { { type: env.typ.ThisLiteral, pos } }
-    | identifier_reference
-    | literal
-    | array_literal                                             
-    | object_literal                                            
-    | function_expression
-    | class_expression
-    | regular_expression_literal
-    | template_literal
-    | parenthesized                                                                                         f:r ^reinterpretParenthesized
+| identifier_reference
+| literal
+| array_literal                                             
+| object_literal                                            
+| function_expression
+| class_expression
+| regular_expression_literal
+| template_literal
+| parenthesized                                                                                         f:r ^reinterpretParenthesized
 
-    #| generator_expression
-    #| async_function_expression
-    #| async_generator_expression
+#| generator_expression
+#| async_function_expression
+#| async_generator_expression
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/11.0/index.html#prod-AwaitExpression
@@ -571,12 +571,12 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 ###############################################################################################################
 
 <> assignment_expression > conditional_expression 
-    | yield_expression
-    | arrow_function
-    | left_hand_side_expression = assignment_expression                                                     f:r { { type: env.typ.AssignmentExpression, symbol:"=",  nodes:[$1,$3], pos } }
-    | left_hand_side_expression assignment_operator assignment_expression                                   f:r { { type: env.typ.AssignmentExpression, symbol:$2,  nodes:[$1,$3], pos } }
-    
-    #| async_arrow_function
+| yield_expression
+| arrow_function
+| left_hand_side_expression = assignment_expression                                                     f:r { { type: env.typ.AssignmentExpression, symbol:"=",  nodes:[$1,$3], pos } }
+| left_hand_side_expression assignment_operator assignment_expression                                   f:r { { type: env.typ.AssignmentExpression, symbol:$2,  nodes:[$1,$3], pos } }
+
+#| async_arrow_function
 
 <> assignment_operator > *=                                                        
     | \/=                                                                        
@@ -589,28 +589,31 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
     | \&=                                                                        
     | \^=                                                                        
     | \|=                                                                        
-    | \**=                                                                       
+    | \**=  
+
+    | \??=
+    | \&&=                                                                     
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/11.0/index.html#prod-ConditionalExpression
 ###############################################################################################################
 
 <> conditional_expression > short_circuit_expression
-    | short_circuit_expression \? assignment_expression : assignment_expression                            f:r { { type: env.typ.ConditionalExpression, nodes:[$$1, $$3, $$5], pos } }
+| short_circuit_expression \? assignment_expression : assignment_expression                            f:r { { type: env.typ.ConditionalExpression, nodes:[$$1, $$3, $$5], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/11.0/index.html#sec-binary-logical-operators
 ###############################################################################################################
 
 <> short_circuit_expression > logical_or_expression
-    | coalesce_expression
+| coalesce_expression
 
 
 <> logical_or_expression > logical_and_expression 
-    | logical_or_expression \|| logical_and_expression                                                      f:r { { type: env.typ.LogicalExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
+| logical_or_expression \|| logical_and_expression                                                      f:r { { type: env.typ.LogicalExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
 
 <> logical_and_expression > bitwise_or_expression 
-    | logical_and_expression \&& bitwise_or_expression                                                       f:r { { type: env.typ.LogicalExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
+| logical_and_expression \&& bitwise_or_expression                                                       f:r { { type: env.typ.LogicalExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
 
 ##
 # 2020 https://www.ecma-international.org/ecma-262/#prod-CoalesceExpression
@@ -628,104 +631,104 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 ###############################################################################################################
 
 <> bitwise_or_expression > bitwise_xor_expression 
-    | bitwise_or_expression \| bitwise_xor_expression                                                        f:r { { type: env.typ.BitwiseExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
+| bitwise_or_expression \| bitwise_xor_expression                                                        f:r { { type: env.typ.BitwiseExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
 
 <> bitwise_xor_expression > bitwise_and_expression 
-    | bitwise_xor_expression ^ bitwise_and_expression                                                       f:r { { type: env.typ.BitwiseExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
+| bitwise_xor_expression ^ bitwise_and_expression                                                       f:r { { type: env.typ.BitwiseExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
 
 <> bitwise_and_expression > equality_expression 
-    | bitwise_and_expression & equality_expression                                                          f:r { { type: env.typ.BitwiseExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
+| bitwise_and_expression & equality_expression                                                          f:r { { type: env.typ.BitwiseExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
 
 <> equality_expression > relational_expression 
-    | equality_expression \== relational_expression                                                          f:r { { type: env.typ.EqualityExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
-    | equality_expression \!= relational_expression                                                          f:r { { type: env.typ.EqualityExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
-    | equality_expression \=== relational_expression                                                         f:r { { type: env.typ.EqualityExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
-    | equality_expression \!== relational_expression                                                         f:r { { type: env.typ.EqualityExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
+| equality_expression \== relational_expression                                                          f:r { { type: env.typ.EqualityExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
+| equality_expression \!= relational_expression                                                          f:r { { type: env.typ.EqualityExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
+| equality_expression \=== relational_expression                                                         f:r { { type: env.typ.EqualityExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
+| equality_expression \!== relational_expression                                                         f:r { { type: env.typ.EqualityExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/11.0/index.html#sec-relational-operators
 ###############################################################################################################
 
 <> relational_expression > shift_expression 
-    | relational_expression < shift_expression                                                              f:r { { type: env.typ.RelationalExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
-    | relational_expression \>  shift_expression                                                            f:r { { type: env.typ.RelationalExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
-    | relational_expression \<= shift_expression                                                             f:r { { type: env.typ.RelationalExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
-    | relational_expression \>= shift_expression                                                             f:r { { type: env.typ.RelationalExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
-    | relational_expression t:instanceof shift_expression                                                    f:r { { type: env.typ.InstanceOfExpression,  nodes:[$$1, $$3], pos } }
-    | relational_expression t:in shift_expression                                                            f:r { { type: env.typ.InExpression,  nodes:[$$1, $$3], pos } }   
+| relational_expression < shift_expression                                                              f:r { { type: env.typ.RelationalExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
+| relational_expression \>  shift_expression                                                            f:r { { type: env.typ.RelationalExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
+| relational_expression \<= shift_expression                                                             f:r { { type: env.typ.RelationalExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
+| relational_expression \>= shift_expression                                                             f:r { { type: env.typ.RelationalExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
+| relational_expression t:instanceof shift_expression                                                    f:r { { type: env.typ.InstanceOfExpression,  nodes:[$$1, $$3], pos } }
+| relational_expression t:in shift_expression                                                            f:r { { type: env.typ.InExpression,  nodes:[$$1, $$3], pos } }   
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/11.0/index.html#sec-bitwise-shift-operators
 ###############################################################################################################
 
 <> shift_expression > additive_expression 
-    | shift_expression \<< additive_expression                                                               f:r { { type: env.typ.ShiftExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
-    | shift_expression \>> additive_expression                                                               f:r { { type: env.typ.ShiftExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
-    | shift_expression \>>> additive_expression                                                              f:r { { type: env.typ.ShiftExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
+| shift_expression \<< additive_expression                                                               f:r { { type: env.typ.ShiftExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
+| shift_expression \>> additive_expression                                                               f:r { { type: env.typ.ShiftExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
+| shift_expression \>>> additive_expression                                                              f:r { { type: env.typ.ShiftExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/11.0/index.html#sec-additive-operators
 ###############################################################################################################
 
 <> additive_expression > multiplicative_expression 
-    | additive_expression + multiplicative_expression                                                       f:r { { type: env.typ.AdditiveExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
-    | additive_expression - multiplicative_expression                                                       f:r { { type: env.typ.AdditiveExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
+| additive_expression + multiplicative_expression                                                       f:r { { type: env.typ.AdditiveExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
+| additive_expression - multiplicative_expression                                                       f:r { { type: env.typ.AdditiveExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/11.0/index.html#sec-multiplicative-operators
 ###############################################################################################################
 
 <> multiplicative_expression > exponentiation_expression 
-    | multiplicative_expression * exponentiation_expression                                                 f:r { { type: env.typ.MultiplicativeExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
-    | multiplicative_expression / exponentiation_expression                                                 f:r { { type: env.typ.MultiplicativeExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
-    | multiplicative_expression % exponentiation_expression                                                 f:r { { type: env.typ.MultiplicativeExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
+| multiplicative_expression * exponentiation_expression                                                 f:r { { type: env.typ.MultiplicativeExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
+| multiplicative_expression / exponentiation_expression                                                 f:r { { type: env.typ.MultiplicativeExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
+| multiplicative_expression % exponentiation_expression                                                 f:r { { type: env.typ.MultiplicativeExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/11.0/index.html#sec-exp-operator
 ###############################################################################################################
 
 <> exponentiation_expression > unary_expression 
-    | update_expression \** exponentiation_expression                                                        f:r { { type: env.typ.ExponentiationExpression, nodes:[$$1, $$3], pos } }
+| update_expression \** exponentiation_expression                                                        f:r { { type: env.typ.ExponentiationExpression, nodes:[$$1, $$3], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/11.0/index.html#sec-unary-operators
 ###############################################################################################################
 
 <> unary_expression > update_expression 
-    | t:delete unary_expression                                                                              f:r { { type: env.typ.DeleteExpression, nodes:[$$2], pos } }
-    | t:void unary_expression                                                                                f:r { { type: env.typ.VoidExpression, nodes:[$$2], pos } }
-    | t:typeof unary_expression                                                                              f:r { { type: env.typ.TypeofExpression, nodes:[$$2], pos } }
-    | + unary_expression                                                                                    f:r { { type: env.typ.UnaryExpression, symbol:$1, nodes:[$$2], pos } }
-    | ~ unary_expression                                                                                    f:r { { type: env.typ.UnaryExpression, symbol:$1, nodes:[$$2], pos } }
-    | ! unary_expression                                                                                    f:r { { type: env.typ.UnaryExpression, symbol:$1, nodes:[$$2], pos } }
-    | - unary_expression                                                                                    f:r { 
-                                                                                                                    ($$2.type == env.typ.NumericLiteral || $$2.type == env.typ.BigIntLiteral)
-                                                                                                                    ? ($$2.NEGATIVE = true, $$2)
-                                                                                                                    : ({ type: env.typ.UnaryExpression, symbol:$1, nodes:[$$2], pos }) 
-                                                                                                            }
-    | await_expression
+| t:delete unary_expression                                                                              f:r { { type: env.typ.DeleteExpression, nodes:[$$2], pos } }
+| t:void unary_expression                                                                                f:r { { type: env.typ.VoidExpression, nodes:[$$2], pos } }
+| t:typeof unary_expression                                                                              f:r { { type: env.typ.TypeofExpression, nodes:[$$2], pos } }
+| + unary_expression                                                                                    f:r { { type: env.typ.UnaryExpression, symbol:$1, nodes:[$$2], pos } }
+| ~ unary_expression                                                                                    f:r { { type: env.typ.UnaryExpression, symbol:$1, nodes:[$$2], pos } }
+| ! unary_expression                                                                                    f:r { { type: env.typ.UnaryExpression, symbol:$1, nodes:[$$2], pos } }
+| - unary_expression                                                                                    f:r { 
+                                                                                                                ($$2.type == env.typ.NumericLiteral || $$2.type == env.typ.BigIntLiteral)
+                                                                                                                ? ($$2.NEGATIVE = true, $$2)
+                                                                                                                : ({ type: env.typ.UnaryExpression, symbol:$1, nodes:[$$2], pos }) 
+                                                                                                        }
+| await_expression
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/11.0/index.html#sec-update-expressions
 ###############################################################################################################
 
 <> update_expression >  left_hand_side_expression 
-    | left_hand_side_expression  \++                                                                         f:r { { type: env.typ.PostExpression, symbol:$$2, nodes:[$$1], pos } }
-    | left_hand_side_expression  \--                                                                         f:r { { type: env.typ.PostExpression, symbol:$$2, nodes:[$$1], pos } }
-    | \++ unary_expression                                                                                   f:r { { type: env.typ.PreExpression, symbol:$$1, nodes:[$$2], pos } }
-    | \-- unary_expression                                                                                   f:r { { type: env.typ.PreExpression, symbol:$$1, nodes:[$$2], pos } }
+| left_hand_side_expression  \++                                                                         f:r { { type: env.typ.PostExpression, symbol:$$2, nodes:[$$1], pos } }
+| left_hand_side_expression  \--                                                                         f:r { { type: env.typ.PostExpression, symbol:$$2, nodes:[$$1], pos } }
+| \++ unary_expression                                                                                   f:r { { type: env.typ.PreExpression, symbol:$$1, nodes:[$$2], pos } }
+| \-- unary_expression                                                                                   f:r { { type: env.typ.PreExpression, symbol:$$1, nodes:[$$2], pos } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/11.0/index.html#prod-CoverParenthesizedExpressionAndArrowParameterList
 ###############################################################################################################
 
 <> cover_parenthesized_expression_and_arrow_parameter_list > \( \)                                           f:r { { type: env.typ.Parenthesized, nodes:[], pos } }
-    | \( expression , \)                                                                                     f:r { { type: env.typ.Parenthesized, nodes:[$$2], pos } }
-    | \( ( \... binding_identifier f:r=>Spread)  \)                                                          f:r { { type: env.typ.Parenthesized, nodes:[$$2], pos } }
-    | \( ( \... binding_pattern f:r=>Spread) \)                                                              f:r { { type: env.typ.Parenthesized, nodes:[$$2], pos } }
-    | \( expression , ( \... binding_identifier f:r=>Spread)  \)                                             f:r { { type: env.typ.Parenthesized, nodes:[$$2, $$4], pos } }
-    | \( expression , ( \... binding_pattern f:r=>Spread)  \)                                                f:r { { type: env.typ.Parenthesized, nodes:[$$2, $$4], pos } }                                                                                       
-    | parenthesized                                                                                         
+| \( expression , \)                                                                                     f:r { { type: env.typ.Parenthesized, nodes:[$$2], pos } }
+| \( ( \... binding_identifier f:r=>Spread)  \)                                                          f:r { { type: env.typ.Parenthesized, nodes:[$$2], pos } }
+| \( ( \... binding_pattern f:r=>Spread) \)                                                              f:r { { type: env.typ.Parenthesized, nodes:[$$2], pos } }
+| \( expression , ( \... binding_identifier f:r=>Spread)  \)                                             f:r { { type: env.typ.Parenthesized, nodes:[$$2, $$4], pos } }
+| \( expression , ( \... binding_pattern f:r=>Spread)  \)                                                f:r { { type: env.typ.Parenthesized, nodes:[$$2, $$4], pos } }                                                                                       
+| parenthesized                                                                                         
 
 <> parenthesized > \( expression \)                                                                         f:r { { type: env.typ.Parenthesized, nodes:[$$2], pos } }
 
@@ -734,44 +737,44 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 ###############################################################################################################
 
 <> binding_pattern > object_binding_pattern
-    |   array_binding_pattern
+|   array_binding_pattern
 
 <> object_binding_pattern > { }                                                                             f:r { { type: env.typ.ObjectBinding, nodes:[], pos } }
-    | { binding_rest_property }                                                                             f:r { { type: env.typ.ObjectBinding, nodes:[$2], pos } }
-    | { binding_property_list  }                                                                            f:r { { type: env.typ.ObjectBinding, nodes:[...$2], pos } }    
-    | { binding_property_list , binding_rest_property? }                                                    f:r { { type: env.typ.ObjectBinding, nodes:[...$2, $4], pos } }    
+| { binding_rest_property }                                                                             f:r { { type: env.typ.ObjectBinding, nodes:[$2], pos } }
+| { binding_property_list  }                                                                            f:r { { type: env.typ.ObjectBinding, nodes:[...$2], pos } }    
+| { binding_property_list , binding_rest_property? }                                                    f:r { { type: env.typ.ObjectBinding, nodes:[...$2, $4], pos } }    
 
 <> array_binding_pattern > 
-    \[ elision? binding_rest_element? \]                                                                    f:r { { type: env.typ.ArrayBinding, nodes:[$2, $3], pos } }
-    | \[ binding_element_list \]                                                                            f:r { { type: env.typ.ArrayBinding, nodes:[...$2], pos } }    
-    | \[ binding_element_list , elision? binding_rest_element? \]                                            f:r { { type: env.typ.ArrayBinding, nodes:[...$2, $4, $5], pos } }    
+\[ elision? binding_rest_element? \]                                                                    f:r { { type: env.typ.ArrayBinding, nodes:[$2, $3], pos } }
+| \[ binding_element_list \]                                                                            f:r { { type: env.typ.ArrayBinding, nodes:[...$2], pos } }    
+| \[ binding_element_list , elision? binding_rest_element? \]                                            f:r { { type: env.typ.ArrayBinding, nodes:[...$2, $4, $5], pos } }    
 
 <> binding_property_list > binding_property                                                                 f:r { [$$1] }
-    | binding_property_list \, binding_property                                                             f:r { [...$$1, $3] }
+| binding_property_list \, binding_property                                                             f:r { [...$$1, $3] }
 
 <> binding_element_list > binding_elision_element                                                           
-    | binding_element_list \, binding_elision_element                                                       f:r { [...$$1, ...$3] }
+| binding_element_list \, binding_elision_element                                                       f:r { [...$$1, ...$3] }
 
 <> binding_elision_element > elision? binding_element                                                       f:r { [$1, $2] }                                                    
 
 <> binding_property > single_name_binding 
-    | property_name : binding_element                                                                       f:r { { type:env.typ.PropertyBinding, nodes:[$1, $3],  pos  } }  
+| property_name : binding_element                                                                       f:r { { type:env.typ.PropertyBinding, nodes:[$1, $3],  pos  } }  
 
 <> binding_element > single_name_binding
-    | binding_pattern initializer?                                                                           f:r { $$2 ? { type:env.typ.BindingExpression, nodes: [$1, $2],  pos  } : $1 }
+| binding_pattern initializer?                                                                           f:r { $$2 ? { type:env.typ.BindingExpression, nodes: [$1, $2],  pos  } : $1 }
 
 <> single_name_binding > binding_identifier initializer?                                                     f:r { $$2 ? { type:env.typ.BindingExpression, nodes: [$1, $2],  pos  } : $1 }
 
 <> binding_rest_property > \... binding_identifier                                                           f:r=>Spread
 <> binding_rest_element > \... binding_identifier                                                            f:r=>Spread
-    | \... binding_pattern                                                                                   f:r=>Spread                                                                                              
+| \... binding_pattern                                                                                   f:r=>Spread                                                                                              
 
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/11.0/index.html#prod-RegularExpressionLiteral
 ###############################################################################################################
 
-<> regular_expression_literal > ↦^parseRegex \/ \/ def::js_identifier?                                      f:r { { type:env.typ.RegexLiteral, value:$1, flags:$3,  pos  } }
+<> regular_expression_literal > \/ \/ def::js_identifier?                                                   f:r { { type:env.typ.RegexLiteral, value:$1, flags:$3,  pos  } }
 
 <> regular_expression_flags > identifier_name  
 
@@ -780,23 +783,23 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 ###############################################################################################################
 
 <> object_literal >  { }                                                                                    f:r { { type:env.typ.ObjectLiteral, nodes:[],  pos  } }
-    | { property_definition_list ,? }                                                                       f:r { { type:env.typ.ObjectLiteral, nodes:$2,  pos  } }
+| { property_definition_list ,? }                                                                       f:r { { type:env.typ.ObjectLiteral, nodes:$2,  pos  } }
 
 <> property_definition_list > property_definition                                                           f:r { [$1] }
-    | property_definition_list , property_definition                                                        f:r { $1.push($3), $1 }       
+| property_definition_list , property_definition                                                        f:r { $1.push($3), $1 }       
 
 <> property_definition >  cover_initialized_name                
-    | identifier_reference                                                                                  f:r { $1.type |= env.cls.PROPERTY_NAME, $1 }
-    | method_definition                                                                                     
-    | \... assignment_expression                                                                            f:r =>Spread
-    | property_name : assignment_expression                                                                 f:r { { type:env.typ.PropertyBinding, nodes:[$1, $3],  pos  } }       
+| identifier_reference                                                                                  f:r { $1.type |= env.cls.PROPERTY_NAME, $1 }
+| method_definition                                                                                     
+| \... assignment_expression                                                                            f:r =>Spread
+| property_name : assignment_expression                                                                 f:r { { type:env.typ.PropertyBinding, nodes:[$1, $3],  pos  } }       
 
 <> property_name > literal_property_name                                                                    f:r { $1.type |= env.cls.PROPERTY_NAME, $1 }
-    | computed_property_name                                                                                f:r { $1.type |= env.cls.PROPERTY_NAME, $1 }
+| computed_property_name                                                                                f:r { $1.type |= env.cls.PROPERTY_NAME, $1 }
 
 <> literal_property_name > identifier_name                                                                  
-    | string_literal
-    | numeric_literal
+| string_literal
+| numeric_literal
 
 <> computed_property_name > \[ assignment_expression \]                                                     f:r { { type: env.typ.ComputedProperty, nodes:[$2], pos } }
 
@@ -810,16 +813,16 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 ###############################################################################################################
 
 <> array_literal > \[ elision? \]                                                                           f:r { { type: env.typ.ArrayLiteral, nodes:[$2], pos } }
-    | \[ element_list \]                                                                                    f:r { { type: env.typ.ArrayLiteral, nodes:$$2, pos } }
-    | \[ element_list , elision? \]                                                                         f:r { { type: env.typ.ArrayLiteral, nodes:[...$$2, $4], pos } }
+| \[ element_list \]                                                                                    f:r { { type: env.typ.ArrayLiteral, nodes:$$2, pos } }
+| \[ element_list , elision? \]                                                                         f:r { { type: env.typ.ArrayLiteral, nodes:[...$$2, $4], pos } }
 
 <> element_list > elision? assignment_expression                                                            f:r { [$1, $2 ] }
-    | elision? spread_element                                                                               f:r { [ $1,$2 ] }
-    | element_list , elision? assignment_expression                                                         f:r { [ ...$1, $3, $4 ] }
-    | element_list , elision? spread_element                                                                f:r { [ ...$1, $3, $4 ] }
+| elision? spread_element                                                                               f:r { [ $1,$2 ] }
+| element_list , elision? assignment_expression                                                         f:r { [ ...$1, $3, $4 ] }
+| element_list , elision? spread_element                                                                f:r { [ ...$1, $3, $4 ] }
 
 <> elision > ,                                                                                              f:r { { type: env.typ.Elision, count:0, pos } }
-    | elision ,                                                                                             f:r { { type: env.typ.Elision, count:$1.count+1, pos } }
+| elision ,                                                                                             f:r { { type: env.typ.Elision, count:$1.count+1, pos } }
 
 <> spread_element > \... assignment_expression                                                              f:r=>Spread
 
@@ -828,17 +831,17 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 ###############################################################################################################
 
 <> template_literal > no_substitute_template
-    | substitute_template 
+| substitute_template 
 
 <> no_substitute_template > \``                                                                             f:r { { type: env.typ.Template, nodes:[ { quote_type:"", type: env.typ.StringLiteral, value:$1,  pos  }], NO_SUBSTITUTE:true, pos } }
 
 <> substitute_template > template_head expression template_spans                                            f:r { $3.unshift($1, $2), { type: env.typ.Template, nodes:$$3, pos } }
 
 <> template_spans > template_tail                                                                           f:r { [ $1 ] }
-    | template_middle_list template_tail                                                                    f:r { $1.push($2), $1 }           
+| template_middle_list template_tail                                                                    f:r { $1.push($2), $1 }           
 
 <> template_middle_list > template_middle expression                                                        f:r { [ $1, $2 ] }
-    | template_middle_list template_middle expression                                                       f:r { $1.push($2, $3), $1 }
+| template_middle_list template_middle expression                                                       f:r { $1.push($2, $3), $1 }
 
 <> template_head >       ` string_data(*\" ) \${                                                             f:r { { type:env.typ.TemplateHead, value:$2, pos  } }
 
@@ -847,25 +850,25 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 <> template_tail >      \} string_data(*\" ) `                                                               f:r { { type:env.typ.TemplateTail, value:$2,  pos  } }
 
 <> template_string_data >  g:nl | g:ws | g:sym | g:num | g:id escaped_sequence                                      
-                                                                                                            
+                                                                                                        
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/11.0/index.html#sec-ecmascript-language-lexical-grammar
 ###############################################################################################################
 
 <> literal > boolean_literal                
-    | null_literal
-    | string_literal                    
-    | numeric_literal
-    | bigint       
+| null_literal
+| string_literal                    
+| numeric_literal
+| bigint       
 
 <> string_literal > \" string_data(*\" ) \"                                                                       f:r { { quote_type:$1, type: env.typ.StringLiteral, value:$$2,  pos  } }
-    | \' string_data(*\" ) \'                                                                                     f:r { { quote_type:$1, type: env.typ.StringLiteral, value:$$2,  pos  } }
+| \' string_data(*\" ) \'                                                                                     f:r { { quote_type:$1, type: env.typ.StringLiteral, value:$$2,  pos  } }
 
 <> string_data >   g:nl | g:ws | g:sym | g:num | g:id | escaped_sequence                     
 
 <> escaped_sequence > \\ (  g:nl | g:ws | g:sym | g:num | g:id  )
-                                                                                                            f:r { $1 + $2}
+                                                                                                        f:r { $1 + $2}
 
 #<> hex_escape_sequence > t:x g:num                                                                        f:r { $1 + $2 + $3 }
 
@@ -879,88 +882,88 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 <> null_literal >  t:null                                                                                    f:r { { type: env.typ.NullLiteral, pos  } }
 
 <> boolean_literal > t:true                                                                                  f:r { { type: env.typ.BooleanLiteral, value: $$1,  pos  } }
-    | t:false                                                                                                f:r { { type: env.typ.BooleanLiteral, value: $$1,  pos  } }
+| t:false                                                                                                f:r { { type: env.typ.BooleanLiteral, value: $$1,  pos  } }
 
 ###############################################################################################################
 # https://www.ecma-international.org/ecma-262/11.0/index.html#sec-names-and-keywords
 ###############################################################################################################
 
 <> label_identifier > identifier                                                                            f:r { $1.type = env.typ.IdentifierLabel, $1 }   
-        #| t:yield                          
-        #| t:await                           
+    #| t:yield                          
+    #| t:await                           
 
 <> identifier_reference > identifier                                                                        f:r { $1.type = env.typ.IdentifierReference, $1 }
-        #| t:yield                               
-        #| t:await                               
+    #| t:yield                               
+    #| t:await                               
 
 <> binding_identifier > identifier                                                                          f:r { $1.type = env.typ.IdentifierBinding, $1 }
-        #| t:yield                               
-        #| t:await                               
+    #| t:yield                               
+    #| t:await                               
 
 <> identifier > composite_identifier                                                                        f:r { { type: env.typ.Identifier, value:$1,  pos  } }   
-    | unreserved_word                                                                                       f:r { { type: env.typ.Identifier, value:$1,  pos  } }   
+| unreserved_word                                                                                       f:r { { type: env.typ.Identifier, value:$1,  pos  } }   
 
 <> identifier_name > composite_identifier                                                                    f:r { { type: env.typ.IdentifierName, value:$1,  pos  } }              
-    | reserved_word                                                                                         f:r { { type: env.typ.IdentifierName, value:$1,  pos  } } 
-    | unreserved_word                                                                                       f:r { { type: env.typ.IdentifierName, value:$1,  pos  } }
+| reserved_word                                                                                         f:r { { type: env.typ.IdentifierName, value:$1,  pos  } } 
+| unreserved_word                                                                                       f:r { { type: env.typ.IdentifierName, value:$1,  pos  } }
 
 <> unreserved_word > t:async
-    | t:get
-    | t:set
-    | t:target
-    | t:as
-    | t:from
+| t:get
+| t:set
+| t:target
+| t:as
+| t:from
 
 
 <> reserved_word >  keyword
-    | future_reserved_word
-    | t:null
-    | t:true 
-    | t:false                                                                                                               
+| future_reserved_word
+| t:null
+| t:true 
+| t:false                                                                                                               
 
 <> future_reserved_word > t:implements 
-    | t:package 
-    | t:protected 
-    | t:interface
-    | t:private
-    | t:public
+| t:package 
+| t:protected 
+| t:interface
+| t:private
+| t:public
 
 <> composite_identifier > def::js_identifier 
 
 <> keyword > t:await
-    | t:break
-    | t:case
-    | t:catch
-    | t:class
-    | t:const
-    | t:continue
-    | t:debugger
-    | t:default
-    | t:delete
-    | t:do
-    | t:else
-    | t:export
-    | t:extends
-    | t:finally
-    | t:for
-    | t:function
-    | t:if
-    | t:import
-    | t:in
-    | t:instanceof
-    | t:new
-    | t:return
-    | t:super
-    | t:switch
-    | t:this
-    | t:throw
-    | t:try
-    | t:typeof
-    | t:var
-    | t:void
-    | t:while
-    | t:with
-    | t:yield
+| t:break
+| t:case
+| t:catch
+| t:class
+| t:const
+| t:continue
+| t:debugger
+| t:default
+| t:delete
+| t:do
+| t:else
+| t:export
+| t:extends
+| t:finally
+| t:for
+| t:function
+| t:if
+| t:import
+| t:in
+| t:instanceof
+| t:new
+| t:return
+| t:super
+| t:switch
+| t:this
+| t:throw
+| t:try
+| t:typeof
+| t:var
+| t:void
+| t:while
+| t:with
+| t:yield
 
 
 
