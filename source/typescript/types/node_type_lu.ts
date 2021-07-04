@@ -58,6 +58,7 @@ export enum JSNodeTypeLU {
     IdentifierReference = JSNodeType.IdentifierReference,
     IfStatement = JSNodeType.IfStatement,
     ImportClause = JSNodeType.ImportClause,
+    ImportMeta = JSNodeType.ImportMeta,
     ImportDeclaration = JSNodeType.ImportDeclaration,
     InExpression = JSNodeType.InExpression,
     InstanceOfExpression = JSNodeType.InstanceOfExpression,
