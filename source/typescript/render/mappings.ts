@@ -11,6 +11,7 @@ import {
     JSAwaitExpression,
     JSBindingExpression,
     JSBitwiseExpression,
+    JSCoalesceExpression,
     JSConditionalExpression,
     JSDeleteExpression,
     JSEqualityExpression,
@@ -309,6 +310,10 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
         <NodeMapping<JSExponentiationExpression>>{
             type: JSNodeType.ExponentiationExpression,
             template: "@nodes[0] o:s ** o:s @nodes[1] "
+        },
+        <NodeMapping<JSCoalesceExpression>>{
+            type: JSNodeType.CoalesceExpression,
+            template: "@nodes[0] o:s ?? o:s @nodes[1] "
         },
 
         <NodeMapping<JSMultiplicativeExpression>>{
