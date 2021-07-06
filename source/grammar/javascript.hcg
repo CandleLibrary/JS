@@ -673,7 +673,7 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
     | \^=
     | \|=
     | \**=
-    | \??
+    | \??=
     | \&&=
     | \||=
 
