@@ -407,7 +407,7 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
                                                     f:r { { type:env.typ.FunctionDeclaration, ASYNC:!!$$1, GENERATOR:!!$$3, nodes:[$$4,$$6,$$9], pos } }
 
 <> function_expression > function_declaration
-                                                    f:r { ( sym1.type = env.typ.FunctionExpression, sym1 ) }
+                                                    f:r { ( $1.type = env.typ.FunctionExpression, $1 ) }
 
 <> unique_formal_parameters > formal_parameters
 
@@ -889,12 +889,11 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
     | { binding_property_list , binding_rest_property? }
                                                     f:r { { type: env.typ.ObjectBinding, nodes:[...$2, $4], pos } }    
 
-<> array_binding_pattern > 
-\[ elision? binding_rest_element? \]
+<> array_binding_pattern >  \[ elision? binding_rest_element? \]
                                                     f:r { { type: env.typ.ArrayBinding, nodes:[$2, $3], pos } }
     | \[ binding_element_list \]
                                                     f:r { { type: env.typ.ArrayBinding, nodes:[...$2], pos } }    
-    | \[ binding_element_list , elision? binding_rest_element? \]
+    | \[ binding_element_list \, elision? binding_rest_element? \]
                                                     f:r { { type: env.typ.ArrayBinding, nodes:[...$2, $4, $5], pos } }    
 
 <> binding_property_list > binding_property
@@ -914,7 +913,7 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
                                                     f:r { { type:env.typ.PropertyBinding, nodes:[$1, $3],  pos  } }  
 
 <> binding_element > single_name_binding
-    | binding_pattern initializer
+    | binding_pattern initializer?
                                                     f:r { $$2 ? { type:env.typ.BindingExpression, symbol:"=",  nodes: [$1, $2],  pos  } : $1 }
 
 <> single_name_binding > binding_identifier initializer?
@@ -955,7 +954,7 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
     | computed_property_name
                                                     f:r { $1.type |= env.cls.PROPERTY_NAME, $1 }
 
-<> literal_property_name > identifier_name                                                                  
+<> literal_property_name > identifier_property_name                                                                  
     | string_literal
     | numeric_literal
 
@@ -963,7 +962,10 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
                                                     f:r { { type: env.typ.ComputedProperty, nodes:[$2], pos } }
 
 <> cover_initialized_name > identifier_reference initializer
-                                                    f:r { sym[sym.length-2].type |= env.cls.PROPERTY_NAME } 
+                                                    f:r { 
+                                                            $1.type |= env.cls.PROPERTY_NAME, 
+                                                            { type:env.typ.BindingExpression, symbol:"=",  nodes: [$1, $2],  pos  }
+                                                    }
 
 <> initializer > = assignment_expression
                                                     f:r { $2 }
@@ -1038,7 +1040,7 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 # https://262.ecma-international.org/12.0/#prod-RegularExpressionLiteral
 ###############################################################################################################
 
-<> regular_expression_literal > \/ string_data(*\" ) \/ def::js_identifier?
+<> regular_expression_literal > \/ (g:nl | g:ws | g:sym | g:num | g:id | escaped_sequence | \\/ )(*\" ) \/ def::js_identifier?
                                                     f:r { { type:env.typ.RegexLiteral, value:$2, flags:$4,  pos  } }
 
 <> regular_expression_flags > identifier_name  
@@ -1052,12 +1054,12 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
     | string_literal                    
     | numeric_literal    
 
-<> string_literal > \" string_data(*\" ) \"
+<> string_literal > \" (g:nl | g:ws | g:sym | g:num | g:id | escaped_sequence | \\\" )(*\" ) \"
                                                     f:r { { quote_type:$1, type: env.typ.StringLiteral, value:$$2,  pos  } }
-    | \' string_data(*\" ) \'
+    | \' (g:nl | g:ws | g:sym | g:num | g:id | escaped_sequence | \\\' )(*\" ) \'
                                                     f:r { { quote_type:$1, type: env.typ.StringLiteral, value:$$2,  pos  } }
 
-<> string_data >   g:nl | g:ws | g:sym | g:num | g:id | escaped_sequence                     
+                   
 
 <> escaped_sequence > \\ ( g:nl | g:ws | g:sym | g:num | g:id  )
                                                     f:r { $1 + $2}
@@ -1121,8 +1123,14 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 <> identifier >  composite_identifier
                                                     f:r { { type: env.typ.Identifier, value:$1,  pos  } }   
 
-<> identifier_name > composite_identifier
+<> identifier_property_name > composite_identifier 
                                                     f:r { { type: env.typ.IdentifierName, value:$1,  pos  } }       
+    | unreserved_word
+                                                    f:r { { type: env.typ.IdentifierName, value:$1,  pos  } }       
+
+<> identifier_name > composite_identifier 
+                                                    f:r { { type: env.typ.IdentifierName, value:$1,  pos  } }        
+                                                    
 
 <> unreserved_word > t:async
     | t:get
