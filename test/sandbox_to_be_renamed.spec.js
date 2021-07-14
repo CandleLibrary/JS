@@ -1,4 +1,4 @@
-import { renderCompressed, parser as javascript_parser_new } from "@candlelib/js";
+import { renderCompressed, parser as javascript_parser_new } from "../build/library/javascript.js";
 //import { javascript_parser_new } from "../build/library/parser/parse.js";
 
 assert_group("Identifiers and Members", () => {
@@ -70,8 +70,8 @@ assert_group("Binding declarations", () => {
 
     assert("let Lexical declaration with mixture of array & object destructuring & regular primitive assignments",
         renderCompressed(
-            javascript_parser_new("const [test,,,,test] = a, d = 0, r = null, {test:g, b:[test,,test] } = g;").ast)
-        == "const [test,,,,test]=a,d=0,r=null,{test:g,b:[test,,test]}=g;"
+            javascript_parser_new("let [test,,,,test] = a, d = 0, r = null, {test:g, b:[test,,test ] } = g;").ast)
+        == "let [test,,,,test]=a,d=0,r=null,{test:g,b:[test,,test]}=g;"
     );
 
     assert("const Lexical declaration with mixture of array & object destructuring & regular primitive assignments",

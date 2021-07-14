@@ -1,4 +1,4 @@
-import { ParserEnvironment } from "@candlelib/hydrocarbon/build/library/runtime.js";
+import { ParserEnvironment } from "@candlelib/hydrocarbon";
 import { Lexer } from "@candlelib/wind";
 
 import { JSNodeClass } from "../types/node_class_type.js";
@@ -37,8 +37,8 @@ type JSParserEnv = ParserEnvironment & {
     functions: {
         parseString: (a, b, lex: Lexer) => void,
         parseTemplate: (a, b, lex: Lexer) => void,
-        reinterpretArrowParameters: (symbol: any) => JSNode;
-        reinterpretParenthesized: (symbol: any) => JSNode;
+        reinterpretArrowParameters: (_: any, symbol: any) => JSNode;
+        reinterpretParenthesized: (_: any, symbol: any) => JSNode;
     };
 };
 
@@ -121,7 +121,7 @@ const env = <JSParserEnv>{
             lex.tl = pk.off - lex.off;
         },
 
-        reinterpretArrowParameters: (symbols) => {
+        reinterpretArrowParameters: (_, symbols) => {
 
 
             const
@@ -138,7 +138,7 @@ const env = <JSParserEnv>{
             return node;
         },
 
-        reinterpretParenthesized: (symbols) => {
+        reinterpretParenthesized: (_, symbols) => {
 
             const
                 node = <JSNode>symbols[0],

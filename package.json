@@ -12,8 +12,7 @@
         "build": "tsc",
         "build.watch": "rollup --config  ./build/config/config.js --watch",
         "build.ui.watch": "rollup --config  ./build/config/ui.config.js --watch",
-        "compile.debug": "hydrocarbon compile --workers 10 --output_dir ./source/typescript/parser/ --annotations --debug  ./source/grammar/javascript.hcg",
-        "compile.release": "hydrocarbon compile --workers 10 --output_dir ./source/typescript/parser/ --recognizer_type wasm  ./source/grammar/javascript.hcg"
+        "compile": "hydrocarbon compile --threads 6 --out_path ./source/typescript/parser/parser.ts --recognizer wasm ./source/grammar/javascript.hcg"
     },
     "repository": {
         "type": "git",

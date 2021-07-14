@@ -5,8 +5,10 @@ import { JSNode } from "../types/JSNode";
 import javascript_parser_data from "./javascript.js";
 import { JSNodeClass } from "../types/node_class_type.js";
 import env from "./env.js";
-import js_parser from "./parser.js";
+import loader from "./parser.js";
 import { JSStatementClass } from "../types/JSStatement";
+
+const js_parser = await loader;
 interface ParserResult {
     error: string;
     value: any;
@@ -27,46 +29,13 @@ export function javascript_parser(arg: any | string | Lexer, debug_info = null):
     if (!(lexer instanceof Lexer))
         throw new ReferenceError("Invalid argument. lex is not a string or a Lexer.");
 
-    const
-        result: ParserResult = lrParse<JSNode>(lexer, javascript_parser_data, env, debug_info),
-        comments = env.comments.slice();
-
-    env.comments = null;
-
-    if (result.error)
-        throw new SyntaxError(result.error);
-
-    return { ast: <JSNode>result.value, comments };
-}
-/**
- * Parses an input string and returns a MinTree AST data structure. 
- * @throws it will throw a SyntaxError if the input could be completely parsed.
- * @param lex Either a string or a cfw.wind Lexer that contains the string data to be parsed.
- */
-export function javascript_parser_new(arg: any | string | Lexer, debug_info = null): { ast: JSNode, comments: Lexer[]; } {
-    //*
-    let str = arg,
-        lexer = str;
-
-    if (typeof str === "string")
-        lexer = new Lexer(str);
-
-    if (!(lexer instanceof Lexer))
-        throw new ReferenceError("Invalid argument. lex is not a string or a Lexer.");
-
-    const { FAILED, result, error_message } = js_parser(str, env);
+    const ast = js_parser(str, env).result[0];
 
     const comments = [];
 
     env.comments = null;
 
-    if (FAILED)
-        throw new SyntaxError(error_message);
-
-    const node = result[0];
-
-    return { ast: <JSNode>node, comments };
-    //*/
+    return { ast, comments };
 }
 
 /**

@@ -1,16 +1,9 @@
-import { assert } from "console";
-import env from "./build/library/parser/env.js";
-import { ext } from "./build/library/javascript.js";
-import { renderCompressed } from "./build/library/render/render.js";
-import loader from "./parser.js";
 import { experimentalRender } from "@candlelib/conflagrate";
-import { javascript_mappings, renderers } from "./build/library/render/mappings.js";
-
-const parser = await loader;
-
+import { assert } from "console";
+import { ext, parser } from "../build/library/javascript.js";
+import { javascript_mappings, renderers } from "../build/library/render/mappings.js";
 function parseAndRender(str) {
-    console.log(0, 100, ext(parser(str, env).result[0], true));
-    return experimentalRender((parser(str, env).result[0]), javascript_mappings, renderers);
+    return experimentalRender(parser(str).ast, javascript_mappings, renderers);
 }
 
 assert_group("Should parse statements", () => {

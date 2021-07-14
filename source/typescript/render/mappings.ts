@@ -1,6 +1,6 @@
 import { experimentalConstructRenderers, NodeMapping, NodeMappings } from "@candlelib/conflagrate";
 import { JSClassDeclaration } from "../types/JSClass.js";
-import { JSArguments, JSArrowFunction, JSFunctionDeclaration, JSFunctionExpression, JSGetterMethod, JSMethod, JSSetterMethod } from "../types/JSFunction.js";
+import { JSArguments, JSArrowFunction, JSFormalParameters, JSFunctionBody, JSFunctionDeclaration, JSFunctionExpression, JSGetterMethod, JSMethod, JSSetterMethod } from "../types/JSFunction.js";
 import { JSIdentifier, JSIdentifierBinding, JSIdentifierDefault, JSIdentifierLabel, JSIdentifierModule, JSIdentifierName, JSIdentifierReference } from "../types/JSIdentifier.js";
 import { JSExportClause, JSExportDeclaration, JSFromClause, JSImportClause, JSImportDeclaration, JSImportMeta, JSModuleSpecifier, JSNamedImports, JSNameSpaceImport } from "../types/JSModule.js";
 import { JSNode } from "../types/JSNode";
@@ -71,7 +71,7 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
 
         <NodeMapping<JSModuleSpecifier>>{
             type: JSNodeType.Specifier,
-            template: "@nodes...[m:s as m:s]"
+            template: "@nodes[0] {nodes[1] : m:s as m:s @nodes[1]}"
         },
 
         <NodeMapping<JSFromClause>>{
@@ -124,13 +124,24 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
         //Functions
         <NodeMapping<JSFunctionDeclaration>>{
             type: JSNodeType.FunctionDeclaration,
-            template: "{ASYNC: async m:s} function {GENERATOR: m:s \\* } m:s @nodes[0] ( @nodes[1] ) \\{ @nodes[2] \\} "
+            template: "{ASYNC: async m:s} function {GENERATOR: m:s \\* } m:s @nodes[0] { nodes[1] : @nodes[1] or \() } @nodes[2]"
         },
 
         <NodeMapping<JSFunctionExpression>>{
             type: JSNodeType.FunctionExpression,
-            template: "{ASYNC: async m:s} function {GENERATOR: m:s \\* } m:s @nodes[0] ( @nodes[1] ) \\{ @nodes[2] \\} "
+            template: "{ASYNC: async m:s} function {GENERATOR: m:s \\* } m:s @nodes[0] { nodes[1] : @nodes[1] or \() } @nodes[2] "
         },
+
+        <NodeMapping<JSFunctionBody>>{
+            type: JSNodeType.FunctionBody,
+            template: "\\{ i:s @nodes[0] i:e \\} "
+        },
+
+        <NodeMapping<JSFormalParameters>>{
+            type: JSNodeType.FormalParameters,
+            template: "( @nodes...[, o:n] )"
+        },
+
 
         //Classes
         <NodeMapping<JSClassDeclaration>>{

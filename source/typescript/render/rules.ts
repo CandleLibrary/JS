@@ -252,7 +252,7 @@ export const JSNodeDefinitions: Array<JSNodeDefinition> = createNodeDefinitions(
         template_pattern: {
             default: "export @1 @2;",
             DEFAULT: "export default @1;",
-            $not_2: "export @1;",
+            $not_2: "export @1",
             $not_1: "export * @2;"
         }
     },
@@ -549,7 +549,7 @@ export const JSNodeDefinitions: Array<JSNodeDefinition> = createNodeDefinitions(
         ext_name: ["original", "transformed"],
         template_pattern: {
             default: "@1 as @2",
-            $node_2: "@1"
+            $not_2: "@1"
         },
     },
     {

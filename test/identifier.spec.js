@@ -2,7 +2,7 @@
  * Parses and renders identifiers
  */
 
-import { parser, renderCompressed, exp, JSNodeTypeLU } from "@candlelib/js";
+import { parser, renderCompressed, exp, JSNodeTypeLU } from "../build/library/javascript.js";
 
 let { ast } = parser("$identifier;");
 
