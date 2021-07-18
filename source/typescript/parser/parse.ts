@@ -1,12 +1,10 @@
-import { lrParse } from "@candlelib/hydrocarbon/build/library/entry/runtime.js";
-import { Lexer } from "@candlelib/wind";
 import { traverse } from "@candlelib/conflagrate";
+import { Lexer } from "@candlelib/wind";
 import { JSNode } from "../types/JSNode";
-import javascript_parser_data from "./javascript.js";
+import { JSStatementClass } from "../types/JSStatement";
 import { JSNodeClass } from "../types/node_class_type.js";
 import env from "./env.js";
 import loader from "./parser.js";
-import { JSStatementClass } from "../types/JSStatement";
 
 const js_parser = await loader;
 interface ParserResult {
@@ -56,6 +54,7 @@ export function expression_parser(expression: any | string | Lexer): JSNode {
 
     throw new EvalError(`String [ ${expression.join("")} ] does not contain an expression.`);
 }
+
 /**
  * Parses an input string and returns the AST of the first JSNode identified as a MinTreeTypeClass STATEMENT
  * @param statement 
