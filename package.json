@@ -12,7 +12,7 @@
         "build": "tsc",
         "build.watch": "rollup --config  ./build/config/config.js --watch",
         "build.ui.watch": "rollup --config  ./build/config/ui.config.js --watch",
-        "compile": "hydrocarbon compile --threads 6 --out_path ./source/typescript/parser/parser.ts --recognizer wasm ./source/grammar/javascript.hcg"
+        "compile": "./scripts/compile.sh"
     },
     "repository": {
         "type": "git",
