@@ -12,6 +12,7 @@ import { ext } from "./tools/extend.js";
 import { expression_parser, javascript_parser, statement_parser } from "./parser/parse.js";
 import env, { JSParserEnv } from "./parser/env.js";
 import { getIdentifierName } from "./tools/get_identifier_name.js";
+import { javascript_mappings } from "./render/mappings.js";
 
 function mergeComments<NodeType>(ast: NodeType & { nodes: NodeType[]; pos: Lexer; }, comments: Lexer[]) {
 
@@ -97,6 +98,9 @@ export {
 
     ext,
     extendAll,
+
+    //Mappings
+    javascript_mappings as render_mappings,
 
     tools
 };
