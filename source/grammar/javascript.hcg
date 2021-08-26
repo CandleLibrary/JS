@@ -1,4 +1,4 @@
-@IGNORE g:ws g:nl tk:comments
+@IGNORE g:sp g:nl tk:comment
 
 @IMPORT default-productions as def
 
@@ -24,10 +24,10 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 
 ### Meta
 
-<> comments > \/* ( g:ws | g:nl | g:id | g:num | g:sym )(*) \*/
-    | \// ( g:ws | g:id | g:num | g:sym )(*) g:nl
+<> comment > \/* ( g:sp | g:nl | g:id | g:num | g:sym )(*) \*/
+    | \// ( g:sp | g:id | g:num | g:sym )(*) g:nl
 
-<> asi > \; | ?=\} | ?=g:nl | ?=$eof 
+<> asi > \; | ?=\} | <=g:nl | ?=$eof 
 
 ###############################################################################################################
 ###############################################################################################################
@@ -109,8 +109,11 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
                                                     f:r { { type:env.typ.ExportDeclaration, nodes:[$3], DEFAULT:true, pos } }
     | t:export t:default                                                                                      
 
+        (EXC \function )
+        (EXC \class )
         (EXC t:function )
         (EXC t:class )
+        (EXC \async \function )
         (EXC t:async t:function )
     
         assignment_expression asi
@@ -161,9 +164,12 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 <> statement > block_statement 
     | 
         (EXC \{ )
+        (EXC t:let \[ )
+        (EXC \function )
+        (EXC \class )
         (EXC t:function )
         (EXC t:class )
-        (EXC t:let \[ )
+        (EXC \async \function )
         (EXC t:async t:function )
 
         expression_statement                           
@@ -261,14 +267,14 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 # https://262.ecma-international.org/12.0/#sec-continue-statement
 ###############################################################################################################
 
-<> continue_statement > t:continue label_identifier? asi                                                    
+<> continue_statement > t:continue goto_label_identifier? asi                                                    
                                                     f:r { { type: env.typ.ContinueStatement, nodes:$$2 ? [$$2] : [], pos } }  
 
 ###############################################################################################################
 # https://262.ecma-international.org/12.0/#sec-break-statement
 ###############################################################################################################
 
-<> break_statement > t:break label_identifier? asi
+<> break_statement > t:break goto_label_identifier? asi
                                                     f:r { { type: env.typ.BreakStatement, nodes:[$$2], pos } }
 
 
@@ -497,7 +503,7 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 # https://262.ecma-international.org/12.0/#prod-MethodDefinition
 ###############################################################################################################
 
-<> method_definition > \async ? (\* )? property_name \( unique_formal_parameters? \) { function_body? }      
+<> method_definition > \async ? \* ? property_name \( unique_formal_parameters? \) { function_body? }      
                                                     f:r { { type:env.typ.Method, ASYNC:!!$$1, GENERATOR:!!$$2, nodes:[$$3, $$5, $$8], pos } } 
 
     | \get property_name \( \) { function_body? }                                                           
@@ -526,8 +532,9 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
     | optional_expression                      
 
 <> new_expression > member_expression 
-    | t:new new_expression
-                                                    f:r { { type: env.typ.NewExpression, nodes:[$$2], pos } }
+
+    # | t:new new_expression
+    #                                                f:r { { type: env.typ.NewExpression, nodes:[$$2], pos } }
 
 <> member_expression > primary_expression  
 
@@ -543,6 +550,8 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 
     | t:new member_expression arguments
                                                     f:r { { type: env.typ.NewInstanceExpression, nodes:[$$2, $$3], pos } }
+    | t:new member_expression
+                                                    f:r { { type: env.typ.NewExpression, nodes:[$$2], pos } }
 
 <> super_property > t:super . identifier_name
                                                     f:r { ($3.type |= env.cls.PROPERTY_NAME,{ type: env.typ.SuperExpression, nodes:[$$3], pos, COMPUTED:false } ) }
@@ -940,7 +949,7 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
                                                     f:r { $1.push($3), $1 }       
 
 <> property_definition >  cover_initialized_name                
-    | identifier_reference
+    | identifier_property_name
                                                     f:r { $1.type |= env.cls.PROPERTY_NAME, $1 }
     | method_definition                                                                                     
     | \... assignment_expression                                                                   f:r =>Spread
@@ -959,7 +968,7 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 <> computed_property_name > \[ assignment_expression \]
                                                     f:r { { type: env.typ.ComputedProperty, nodes:[$2], pos } }
 
-<> cover_initialized_name > identifier_reference initializer
+<> cover_initialized_name > identifier_property_name initializer
                                                     f:r { 
                                                             $1.type |= env.cls.PROPERTY_NAME, 
                                                             { type:env.typ.BindingExpression, symbol:"=",  nodes: [$1, $2],  pos  }
@@ -1029,18 +1038,18 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 <> template_tail >      \} tk:template_string \`                                                               
                                                     f:r { { type:env.typ.TemplateTail, value:$2,  pos  } }
 
-<> template_string > template_string_data(*\" )
+<> template_string > template_string_data(*\" ) (  ?=\` | ?=\${  ) 
 
-<> template_string_data >  g:nl | g:ws | g:sym | g:num | g:id | template_escaped_sequence  
+<> template_string_data >  g:nl | g:sp | g:sym | g:num | g:id | template_escaped_sequence  
 
 
-<> template_escaped_sequence > \\ ( g:ws | g:sym | g:num | g:id ) f:r { $1 + $2}
+<> template_escaped_sequence > \\ ( g:sp | g:sym | g:num | g:id ) f:r { $1 + $2}
 
 ###############################################################################################################
 # https://262.ecma-international.org/12.0/#prod-RegularExpressionLiteral
 ###############################################################################################################
 
-<> regular_expression_literal > \/ (g:nl | g:ws | g:sym | g:num | g:id | escaped_sequence | \\/ )(*\" ) \/ def::js_identifier?
+<> regular_expression_literal > \/ (g:nl | g:sp | g:sym | g:num | g:id | escaped_sequence | \\/ )(*\" ) \/ def::js_identifier?
                                                     f:r { { type:env.typ.RegexLiteral, value:$2, flags:$4,  pos  } }
 
 <> regular_expression_flags > identifier_name  
@@ -1054,14 +1063,14 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
     | string_literal                    
     | numeric_literal    
 
-<> string_literal > \" (g:nl | g:ws | g:sym | g:num | g:id | escaped_sequence | \\\" )(*\" ) \"
-                                                    f:r { { quote_type:$1, type: env.typ.StringLiteral, value:$$2,  pos  } }
-    | \' (g:nl | g:ws | g:sym | g:num | g:id | escaped_sequence | \\\' )(*\" ) \'
-                                                    f:r { { quote_type:$1, type: env.typ.StringLiteral, value:$$2,  pos  } }
+<> string_literal > \" (g:nl | g:sp | g:sym | g:num | g:id | escaped_sequence | \\\" )(*\" ) \"
+                                                    f:r { { quote_type:$1, type: env.typ.StringLiteral, value:$$2 || "",  pos  } }
+    | \' (g:nl | g:sp | g:sym | g:num | g:id | escaped_sequence | \\\' )(*\" ) \'
+                                                    f:r { { quote_type:$1, type: env.typ.StringLiteral, value:$$2 || "",  pos  } }
 
                    
 
-<> escaped_sequence > \\ ( g:nl | g:ws | g:sym | g:num | g:id  )
+<> escaped_sequence > \\ ( g:nl | g:sp | g:sym | g:num | g:id  )
                                                     f:r { $1 + $2}
 
 <> numeric_literal > scientific_token
@@ -1111,22 +1120,25 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 # https://262.ecma-international.org/12.0/#sec-names-and-keywords
 ###############################################################################################################
 
-<> label_identifier > identifier
-                                                    f:r { $1.type = env.typ.IdentifierLabel, $1 }   
+<> label_identifier > tk:composite_identifier
+                                                    f:r { {type: env.typ.IdentifierLabel, value:$1 } }
 
-<> identifier_reference > identifier
-                                                    f:r { $1.type = env.typ.IdentifierReference, $1 }                           
+<> goto_label_identifier > label_identifier
+                                                    f:r { {type: env.typ.IdentifierLabel, value:$1 } }
 
-<> binding_identifier > identifier
-                                                    f:r { $1.type = env.typ.IdentifierBinding, $1 }                            
+<> identifier_reference > tk:composite_identifier
+                                                    f:r { {type: env.typ.IdentifierReference, value:$1 } }
 
-<> identifier >  composite_identifier
+<> binding_identifier > tk:composite_identifier
+                                                    f:r { {type: env.typ.IdentifierBinding, value:$1 } }
+
+<> identifier >  tk:composite_identifier
                                                     f:r { { type: env.typ.Identifier, value:$1,  pos  } }   
 
-<> identifier_property_name > composite_identifier 
+<> identifier_property_name > tk:composite_identifier 
                                                     f:r { { type: env.typ.IdentifierName, value:$1,  pos  } }         
 
-<> identifier_name > composite_identifier 
+<> identifier_name > tk:composite_identifier 
                                                     f:r { { type: env.typ.IdentifierName, value:$1,  pos  } }                                     
 
 <> unreserved_word > t:async
@@ -1150,12 +1162,10 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
     | t:private
     | t:public
 
-<> composite_identifier > tk:js_id_symbols    
-
-<> js_id_symbols >  js_id_symbols (RST g:ws g:nl) g:id
-    | js_id_symbols (RST g:ws g:nl) \_
-    | js_id_symbols (RST g:ws g:nl) \$
-    | js_id_symbols (RST g:ws g:nl) g:num
+<> composite_identifier > composite_identifier (RST g:sp g:nl) g:id
+    | composite_identifier (RST g:sp g:nl) \_
+    | composite_identifier (RST g:sp g:nl) \$
+    | composite_identifier (RST g:sp g:nl) g:num
     | \_ 
     | \$ 
     | g:id

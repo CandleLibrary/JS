@@ -6,6 +6,7 @@ import { JSNodeClass } from "../types/node_class_type.js";
 import env from "./env.js";
 import loader from "./parser.js";
 
+//@ts-ignore
 const js_parser = await loader;
 interface ParserResult {
     error: string;
@@ -18,20 +19,13 @@ interface ParserResult {
  */
 export function javascript_parser(arg: any | string | Lexer, debug_info = null): { ast: JSNode, comments: Lexer[]; } {
 
-    let str = arg,
-        lexer = str;
-
-    if (typeof str === "string")
-        lexer = new Lexer(str);
-
-    if (!(lexer instanceof Lexer))
-        throw new ReferenceError("Invalid argument. lex is not a string or a Lexer.");
-
-    const ast = js_parser(str, env).result[0];
+    let str = arg;
 
     const comments = [];
 
     env.comments = null;
+
+    const ast = js_parser(str, env).result[0];
 
     return { ast, comments };
 }
@@ -50,7 +44,11 @@ export function expression_parser(expression: any | string | Lexer): JSNode {
             JSNodeClass.EXPRESSION
             | JSNodeClass.LITERAL
             | JSNodeClass.IDENTIFIER)
-    ) return node;
+    ) {
+        return node;
+    }
+
+    console.log({ expression, ast, d: js_parser(expression, env, js_parser.expression).result[0] });
 
     throw new EvalError(`String [ ${expression.join("")} ] does not contain an expression.`);
 }
@@ -72,3 +70,4 @@ export function statement_parser(
 
     throw new EvalError(`String [ ${statement.join("")} ] does not contain a statement.`);
 }
+
