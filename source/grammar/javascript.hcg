@@ -718,9 +718,10 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 # 2020 https://262.ecma-international.org/12.0/#prod-CoalesceExpression
 ##
 
-<> coalesce_expression >  coalesce_expression \?? bitwise_or_expression
+<> coalesce_expression >  bitwise_or_expression \?? bitwise_or_expression
                                                     f:r { { type: env.typ.CoalesceExpression, nodes:[$$1, $$3], pos } }
-    | bitwise_or_expression
+    | coalesce_expression \?? bitwise_or_expression
+                                                    f:r { { type: env.typ.CoalesceExpression, nodes:[$$1, $$3], pos } }
 
 
 ###############################################################################################################
