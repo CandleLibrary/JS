@@ -4,13 +4,14 @@ import { JSArguments, JSArrowFunction, JSFormalParameters, JSFunctionBody, JSFun
 import { JSIdentifier, JSIdentifierBinding, JSIdentifierDefault, JSIdentifierLabel, JSIdentifierModule, JSIdentifierName, JSIdentifierReference } from "../types/JSIdentifier.js";
 import { JSExportClause, JSExportDeclaration, JSFromClause, JSImportClause, JSImportDeclaration, JSImportMeta, JSModuleSpecifier, JSNamedImports, JSNameSpaceImport } from "../types/JSModule.js";
 import { JSNode } from "../types/JSNode";
-import { JSArrayLiteral, JSBindingProperty, JSComputedProperty, JSElision, JSObjectLiteral } from "../types/JSObject.js";
+import { JSArrayBinding, JSArrayLiteral, JSBindingProperty, JSComputedProperty, JSElision, JSObjectBinding, JSObjectLiteral } from "../types/JSObject.js";
 import {
     JSAdditiveExpression,
     JSAssignmentExpression,
     JSAwaitExpression,
     JSBindingExpression,
     JSBitwiseExpression,
+    JSCallExpression,
     JSCoalesceExpression,
     JSConditionalExpression,
     JSDeleteExpression,
@@ -34,7 +35,7 @@ import {
     JSSuperExpression,
     JSTypeofExpression, JSUnaryExpression, JSVoidExpression, JSYieldExpression
 } from "../types/JSOperator.js";
-import { JSBigIntLiteral, JSBooleanLiteral, JSNewTarget, JSNullLiteral, JSNumericLiteral, JSRegexLiteral, JSStringLiteral } from "../types/JSPrimitive.js";
+import { JSBigIntLiteral, JSBooleanLiteral, JSNewTarget, JSNullLiteral, JSNumericLiteral, JSRegexLiteral, JSStringLiteral, JSThisLiteral } from "../types/JSPrimitive.js";
 import { JSScript } from "../types/JSScript.js";
 import { JSBlockStatement, JSBreakStatement, JSCaseBlock, JSCaseClause, JSCatchClause, JSContinueStatement, JSDefaultClause, JSDoStatement, JSEmptyStatement, JSExpressionStatement, JSFinallyClause, JSForInStatement, JSForOfStatement, JSForStatement, JSIfStatement, JSLabeledStatement, JSLexicalBinding, JSLexicalDeclaration, JSReturnStatement, JSSwitchStatement, JSTryStatement, JSVariableDeclaration, JSVariableStatement, JSWhileStatement } from "../types/JSStatement.js";
 import { JSTemplate, JSTemplateHead, JSTemplateMiddle, JSTemplateTail } from "../types/JSTemplate.js";
@@ -71,7 +72,7 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
 
         <NodeMapping<JSModuleSpecifier>>{
             type: JSNodeType.Specifier,
-            template: "@nodes[0] {nodes[1] : m:s as m:s @nodes[1]}"
+            template: "@nodes[0] { nodes[1] : m:s as m:s @nodes[1] }",
         },
 
         <NodeMapping<JSFromClause>>{
@@ -81,7 +82,7 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
 
         <NodeMapping<JSNameSpaceImport>>{
             type: JSNodeType.NameSpaceImport,
-            template: "* m:s as m:s @nodes[0]"
+            template: "\\* m:s as m:s @nodes[0]"
         },
 
         <NodeMapping<JSNamedImports>>{
@@ -124,22 +125,22 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
         //Functions
         <NodeMapping<JSFunctionDeclaration>>{
             type: JSNodeType.FunctionDeclaration,
-            template: "{ASYNC: async m:s} function {GENERATOR: m:s \\* } m:s @nodes[0] { nodes[1] : @nodes[1] or \() } @nodes[2]"
+            template: "{ASYNC: async m:s} function {GENERATOR: m:s \\* } m:s @nodes[0]? \\(  @nodes[1]? \\) \\{ @nodes[2]? \\} "
         },
 
         <NodeMapping<JSFunctionExpression>>{
             type: JSNodeType.FunctionExpression,
-            template: "{ASYNC: async m:s} function {GENERATOR: m:s \\* } m:s @nodes[0] { nodes[1] : @nodes[1] or \() } @nodes[2] "
+            template: "{ASYNC: async m:s} function {GENERATOR: m:s \\* } m:s @nodes[0]? \\(  @nodes[1]? \\) \\{ @nodes[2]? \\} "
         },
 
         <NodeMapping<JSFunctionBody>>{
             type: JSNodeType.FunctionBody,
-            template: "\\{ i:s @nodes[0] i:e \\} "
+            template: "i:s @nodes...[o:n] i:e"
         },
 
         <NodeMapping<JSFormalParameters>>{
             type: JSNodeType.FormalParameters,
-            template: "( @nodes...[, o:n] )"
+            template: "@nodes...[, o:s]"
         },
 
 
@@ -153,7 +154,7 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
 
         <NodeMapping<JSEmptyStatement>>{
             type: JSNodeType.EmptyStatement,
-            template: ";"
+            template: "\\; "
         },
         <NodeMapping<JSBlockStatement>>{
             type: JSNodeType.BlockStatement,
@@ -163,7 +164,7 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
         //Iterators
         <NodeMapping<JSForStatement>>{
             type: JSNodeType.ForStatement,
-            template: "for(@nodes[0]; o:s @nodes[1]; o:s @nodes[2]) @nodes[3]"
+            template: "for(@nodes[0] o:s @nodes[1]; o:s @nodes[2]) @nodes[3]"
         },
 
         <NodeMapping<JSForOfStatement>>{
@@ -260,12 +261,18 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
 
         <NodeMapping<JSArguments>>{
             type: JSNodeType.Arguments,
-            template: "( @nodes...[, o:n] )"
+            template: "( @nodes...[, o:s] )"
         },
 
         <NodeMapping<JSSuperCall>>{
             type: JSNodeType.SuperCall,
             template: "super @nodes[0]"
+        },
+
+
+        <NodeMapping<JSCallExpression>>{
+            type: JSNodeType.CallExpression,
+            template: "@nodes[0] @nodes[1]"
         },
         <NodeMapping<JSAwaitExpression>>{
             type: JSNodeType.AwaitExpression,
@@ -300,7 +307,7 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
 
         <NodeMapping<JSMemberExpression>>{
             type: JSNodeType.MemberExpression,
-            template: "@nodes[0] {COMPUTED: \[  @nodes[1] \] or . @nodes[1] }"
+            template: "@nodes[0] {COMPUTED: \[  @nodes[1] \] or \\. @nodes[1] }"
         },
 
         <NodeMapping<JSBindingExpression>>{
@@ -407,17 +414,17 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
 
         <NodeMapping<JSGetterMethod>>{
             type: JSNodeType.GetterMethod,
-            template: "get m:s @nodes[0] o:s \\( \\) \\{ i:s @nodes[1] i:e \\} "
+            template: "get m:s @nodes[0] o:s \\( \\)  \\{ @nodes[1]? \\} "
         },
 
         <NodeMapping<JSSetterMethod>>{
             type: JSNodeType.SetterMethod,
-            template: "set m:s @nodes[0] o:s \\( i:s @nodes[1] i:e \\) \\{ i:s @nodes[2] i:e \\} "
+            template: "set m:s @nodes[0] o:s \\( @nodes[1]? \\)  \\{ @nodes[2]? \\} "
         },
 
         <NodeMapping<JSMethod>>{
             type: JSNodeType.Method,
-            template: "@nodes[0] o:s \\( i:s @nodes[1] i:e \\) \\{ i:s @nodes[2] i:e \\} "
+            template: "{ASYNC: async m:s} @nodes[0] {GENERATOR: m:s \\* } o:s \\( @nodes[1]? \\)  \\{ @nodes[2]? \\} "
         },
 
         <NodeMapping<JSBindingProperty>>{
@@ -432,7 +439,7 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
 
         <NodeMapping<JSArrowFunction>>{
             type: JSNodeType.ArrowFunction,
-            template: "@nodes[0] \\=> @nodes[1]"
+            template: "{ASYNC: \\async o:s } \\( @nodes[0]? \\)  \\=> @nodes[1]",
         },
 
         <NodeMapping<JSConditionalExpression>>{
@@ -499,7 +506,7 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
         },
         <NodeMapping<JSRegexLiteral>>{
             type: JSNodeType.RegexLiteral,
-            template: '/ @value / @flags '
+            template: '/ @value / @flags? '
         },
 
         // Objects and Arrays
@@ -512,10 +519,26 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
             type: JSNodeType.ObjectLiteral,
             template: '\\{  @nodes...[ \\, o:s]  \\}'
         },
+
+        <NodeMapping<JSArrayBinding>>{
+            type: JSNodeType.ArrayBinding,
+            template: '\\[  @nodes...[ \\, o:s]  \\]'
+        },
+
+        <NodeMapping<JSObjectBinding>>{
+            type: JSNodeType.ObjectBinding,
+            template: '\\{  @nodes...[ \\, o:s]  \\}'
+        },
+
         <NodeMapping<JSElision>>{
             type: JSNodeType.Elision,
             custom_render: (state) => { return ",".repeat(state.node.count); },
-            template: '\\[  @nodes...[ \\, o:s]  \\]'
+            template: '\\,'
+        },
+
+        <NodeMapping<JSThisLiteral>>{
+            type: JSNodeType.ThisLiteral,
+            template: "\\this"
         },
 
 
