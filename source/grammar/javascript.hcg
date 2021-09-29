@@ -1011,6 +1011,15 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
                                                     f:r=>Spread
 
 ###############################################################################################################
+# https://262.ecma-international.org/12.0/#prod-RegularExpressionLiteral
+###############################################################################################################
+
+<> regular_expression_literal > \/ (g:nl | g:sp | g:sym | g:num | g:id | escaped_sequence | \\/ )(*\" ) \/ def::js_identifier?
+                                                    f:r { { type:env.typ.RegexLiteral, value:$2, flags:$4,  pos  } }
+
+<> regular_expression_flags > identifier_name  
+
+###############################################################################################################
 #https://262.ecma-international.org/12.0/#prod-TemplateLiteral
 ###############################################################################################################
 
@@ -1033,13 +1042,13 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
     | template_middle_list template_middle expression                                                       
                                                     f:r { $1.push($2, $3), $1 }
 
-<> template_head >       \` tk:template_string? \${                                                             
+<> template_head >       \` (RST g:sp g:nl tk:comment) tk:template_string? \${                                                             
                                                     f:r { { type:env.typ.TemplateHead, value:$2 || "", pos  } }
 
-<> template_middle >    \} tk:template_string? \${                                                             
+<> template_middle >    \} (RST g:sp g:nl tk:comment) tk:template_string? \${                                                             
                                                     f:r { { type:env.typ.TemplateMiddle, value:$2 || "",  pos  } }
 
-<> template_tail >      \} tk:template_string? \`                                                               
+<> template_tail >      \} (RST g:sp g:nl tk:comment) tk:template_string? \`                                                               
                                                     f:r { { type:env.typ.TemplateTail, value:$2 || "",  pos  } }
 
 <> template_string > template_string_data(+\" ) (  ?=\` | ?=\${  ) 
@@ -1049,14 +1058,6 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 
 <> template_escaped_sequence > \\ ( g:sp | g:sym | g:num | g:id ) f:r { $1 + $2}
 
-###############################################################################################################
-# https://262.ecma-international.org/12.0/#prod-RegularExpressionLiteral
-###############################################################################################################
-
-<> regular_expression_literal > \/ (g:nl | g:sp | g:sym | g:num | g:id | escaped_sequence | \\/ )(*\" ) \/ def::js_identifier?
-                                                    f:r { { type:env.typ.RegexLiteral, value:$2, flags:$4,  pos  } }
-
-<> regular_expression_flags > identifier_name  
 
 ###############################################################################################################
 # https://262.ecma-international.org/12.0/#sec-ecmascript-language-lexical-grammar
