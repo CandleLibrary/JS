@@ -18,6 +18,7 @@ import {
     JSEqualityExpression,
     JSExponentiationExpression,
     JSExpressionList,
+    JSImportCallExpression,
     JSInExpression,
     JSInstanceOfExpression,
     JSLogicalExpression,
@@ -267,6 +268,11 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
         <NodeMapping<JSSuperCall>>{
             type: JSNodeType.SuperCall,
             template: "super @nodes[0]"
+        },
+
+        <NodeMapping<JSImportCallExpression>>{
+            type: JSNodeType.ImportCall,
+            template: "import \( @nodes[0] \)"
         },
 
 
