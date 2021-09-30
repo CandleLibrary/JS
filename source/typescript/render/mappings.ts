@@ -39,7 +39,7 @@ import {
 } from "../types/JSOperator.js";
 import { JSBigIntLiteral, JSBooleanLiteral, JSNewTarget, JSNullLiteral, JSNumericLiteral, JSRegexLiteral, JSStringLiteral, JSThisLiteral } from "../types/JSPrimitive.js";
 import { JSScript } from "../types/JSScript.js";
-import { JSBlockStatement, JSBreakStatement, JSCaseBlock, JSCaseClause, JSCatchClause, JSContinueStatement, JSDebuggerStatement, JSDefaultClause, JSDoStatement, JSEmptyStatement, JSExpressionStatement, JSFinallyClause, JSForInStatement, JSForOfStatement, JSForStatement, JSIfStatement, JSLabeledStatement, JSLexicalBinding, JSLexicalDeclaration, JSReturnStatement, JSSwitchStatement, JSTryStatement, JSVariableDeclaration, JSVariableStatement, JSWhileStatement } from "../types/JSStatement.js";
+import { JSBlockStatement, JSBreakStatement, JSCaseBlock, JSCaseClause, JSCatchClause, JSContinueStatement, JSDebuggerStatement, JSDefaultClause, JSDoStatement, JSEmptyStatement, JSExpressionStatement, JSFinallyClause, JSForInStatement, JSForOfStatement, JSForStatement, JSIfStatement, JSLabeledStatement, JSLexicalBinding, JSLexicalDeclaration, JSReturnStatement, JSSwitchStatement, JSThrowStatement, JSTryStatement, JSVariableDeclaration, JSVariableStatement, JSWhileStatement } from "../types/JSStatement.js";
 import { JSTemplate, JSTemplateHead, JSTemplateMiddle, JSTemplateTail } from "../types/JSTemplate.js";
 import { JSNodeClass } from "../types/node_class_type.js";
 import { JSNodeType } from "../types/node_type.js";
@@ -59,7 +59,7 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
         //Import
         <NodeMapping<JSExpressionStatement>>{
             type: JSNodeType.ExpressionStatement,
-            template: "@nodes[0] \; "
+            template: "@nodes[0] \\; "
         },
 
         <NodeMapping<JSImportDeclaration>>{
@@ -74,7 +74,7 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
 
         <NodeMapping<JSModuleSpecifier>>{
             type: JSNodeType.Specifier,
-            template: "@nodes[0] { nodes[1] : m:s as m:s @nodes[1] }",
+            template: "@nodes[0] { nodes[1] : m:s as m:s @nodes[1] }"
         },
 
         <NodeMapping<JSFromClause>>{
@@ -95,7 +95,7 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
         //Export
         <NodeMapping<JSExportDeclaration>>{
             type: JSNodeType.ExportDeclaration,
-            template: "export {DEFAULT: m:s default} m:s {not nodes[0]: \\* } @nodes...[m:s] {DEFAULT: ;}"
+            template: "export {DEFAULT: m:s default} m:s {not nodes[0]: \\* } @nodes...[m:s] ;"
         },
         <NodeMapping<JSExportClause>>{
             type: JSNodeType.ExportClause,
@@ -206,6 +206,11 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
             template: "\\break { nodes[0] : m:s @nodes[0] } \\;"
         },
 
+        <NodeMapping<JSThrowStatement>>{
+            type: JSNodeType.ThrowStatement,
+            template: "\\throw { nodes[0] : m:s @nodes[0] } \\;"
+        },
+
         <NodeMapping<JSLabeledStatement>>{
             type: JSNodeType.LabeledStatement,
             template: "@nodes[0] : o:n @nodes[1]"
@@ -254,7 +259,7 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
 
         <NodeMapping<JSCaseClause>>{
             type: JSNodeType.CaseClause,
-            template: "case m:s @nodes[0] : i:s o:n @nodes[1] i:e "
+            template: "case m:s @nodes[0] : i:s o:n @nodes...[1,o:n] i:e "
         },
 
 
@@ -441,7 +446,7 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
 
         <NodeMapping<JSMethod>>{
             type: JSNodeType.Method,
-            template: "{ASYNC: async m:s} @nodes[0] {GENERATOR: o:s \\* } o:s { nodes[1]: @nodes[1] or \\() }  \\{ @nodes[2]? \\} "
+            template: "{STATIC: static m:s} {ASYNC: async m:s} @nodes[0] {GENERATOR: o:s \\* } o:s { nodes[1]: @nodes[1] or \\() }  \\{ @nodes[2]? \\} "
         },
 
         <NodeMapping<JSBindingProperty>>{
