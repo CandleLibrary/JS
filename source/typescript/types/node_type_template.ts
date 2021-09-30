@@ -4,7 +4,7 @@ import { JSNodeClass } from "./node_class_type";
 /**
  * Template Converted into Node Type const numbers
  */
-export const enum JSNodeType {
+export enum JSNodeType {
     AdditiveExpression = JSNodeClass.EXPRESSION | JSNodeClass.BINARY_EXPRESSION,
     Arguments = JSNodeClass.LIST,
     ArrayBinding,

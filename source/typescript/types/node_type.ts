@@ -1,4 +1,4 @@
-export const enum JSNodeType {
+export enum JSNodeType {
     AdditiveExpression = 130,
     Arguments = 8388616,
     ArrayBinding = 16777216,

@@ -1,6 +1,6 @@
 import { JSNodeBase } from "./JSBase";
 import { JSStatementClass } from "./JSStatement";
-import { JSNodeType } from "./node_type";
+import { JSNodeType } from "./node_type.js";
 
 
 /**

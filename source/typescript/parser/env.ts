@@ -2,8 +2,7 @@
 import { Lexer } from "@candlelib/wind";
 
 import { JSNodeClass } from "../types/node_class_type.js";
-import { JSNodeTypeLU } from "../types/node_type_lu.js";
-import { JSNodeType } from "../types/node_type";
+import { JSNodeType } from "../types/node_type.js";
 import { JSNode } from "../types/JSNode.js";
 
 function ConvertArrowParameters(node: JSNode) {
@@ -18,7 +17,7 @@ function ConvertArrowParameters(node: JSNode) {
             && sub.nodes[0].type & JSNodeClass.IDENTIFIER) {
             sub.nodes[0].type = JSNodeType.IdentifierBinding;
         } else if (type == JSNodeType.ObjectLiteral || type == JSNodeType.ArrayLiteral) { } else
-            sub.pos.throw(`Unexpected ${JSNodeTypeLU[sub.type]} in arrow function parameters`);
+            sub.pos.throw(`Unexpected ${JSNodeType[sub.type]} in arrow function parameters`);
     }
 }
 type JSParserEnv = {
@@ -46,7 +45,7 @@ export { JSParserEnv };
 
 const env = <JSParserEnv>{
     ASI: true,
-    typ: JSNodeTypeLU,
+    typ: JSNodeType,
     cls: { PROPERTY_NAME: JSNodeClass.PROPERTY_NAME },
     comments: [],
     functions: {
@@ -148,10 +147,10 @@ const env = <JSParserEnv>{
                 throw {};
 
             if (node.nodes.length > 1)
-                node.nodes[1].pos.throw(`Unexpected ${JSNodeTypeLU[node.nodes[1].type]}`);
+                node.nodes[1].pos.throw(`Unexpected ${JSNodeType[node.nodes[1].type]}`);
 
             if (sub.type == JSNodeType.Spread)
-                sub.pos.throw(`Unexpected ${JSNodeTypeLU[sub.type]}`);
+                sub.pos.throw(`Unexpected ${JSNodeType[sub.type]}`);
 
             return node;
         },

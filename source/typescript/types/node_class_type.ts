@@ -5,7 +5,7 @@
 
 
 // ######################################################################
-export const enum JSNodeClass {
+export enum JSNodeClass {
     /**
      * Any node that produces a block structure.
      * ```

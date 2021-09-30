@@ -1,7 +1,6 @@
 import { buildFormatRules, buildRenderers, FormatRule } from "@candlelib/conflagrate";
 import { JSNodeDefinition } from "../types/node_definition.js";
-import { JSNodeType } from "../types/node_type";
-import { JSNodeTypeLU } from "../types/node_type_lu.js";
+import { JSNodeType } from "../types/node_type.js";
 
 export function createNodeDefinitions(
     bd: JSNodeDefinition[] = [],
@@ -664,4 +663,4 @@ export const JSNodeDefinitions: Array<JSNodeDefinition> = createNodeDefinitions(
     }
 );
 
-export const renderers = buildRenderers(JSNodeDefinitions, JSNodeTypeLU);
+export const renderers = buildRenderers(JSNodeDefinitions, JSNodeType);

@@ -1,5 +1,5 @@
 import { JSNode } from "../types/JSNode.js";
-import { JSNodeType } from "../types/node_type";
+import { JSNodeType } from "../types/node_type.js";
 
 /**
  * Returns the root Identifier value when passed a
