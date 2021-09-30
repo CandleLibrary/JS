@@ -10,8 +10,6 @@
         "test": "candle.cure ./test/",
         "test.watch": "candle.cure -w ./test/candlelibrary.js.spec.js",
         "build": "tsc",
-        "build.watch": "rollup --config  ./build/config/config.js --watch",
-        "build.ui.watch": "rollup --config  ./build/config/ui.config.js --watch",
         "compile": "./scripts/compile.sh"
     },
     "repository": {
@@ -43,7 +41,8 @@
         "@candlelib/wind": "0.5.3"
     },
     "devDependencies": {
-        "@candlelib/cure": "0.5.0"
+        "@candlelib/cure": "0.5.0",
+        "@types/node": "^16.4.13"
     },
     "jshintConfig": {
         "esversion": 6,
