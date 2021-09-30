@@ -59,7 +59,7 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
         //Import
         <NodeMapping<JSExpressionStatement>>{
             type: JSNodeType.ExpressionStatement,
-            template: "@nodes... \; "
+            template: "@nodes[0] \; "
         },
 
         <NodeMapping<JSImportDeclaration>>{
@@ -127,12 +127,12 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
         //Functions
         <NodeMapping<JSFunctionDeclaration>>{
             type: JSNodeType.FunctionDeclaration,
-            template: "{ASYNC: async m:s} function {GENERATOR: m:s \\* } m:s @nodes[0]? \\(  @nodes[1]? \\) \\{ @nodes[2]? \\} "
+            template: "{ASYNC: async m:s} function {GENERATOR: m:s \\* } m:s @nodes[0]?  { nodes[1]: @nodes[1] or \\() } \\{ @nodes[2]? \\} "
         },
 
         <NodeMapping<JSFunctionExpression>>{
             type: JSNodeType.FunctionExpression,
-            template: "{ASYNC: async m:s} function {GENERATOR: m:s \\* } m:s @nodes[0]? \\(  @nodes[1]? \\) \\{ @nodes[2]? \\} "
+            template: "{ASYNC: async m:s} function {GENERATOR: m:s \\* } m:s @nodes[0]? { nodes[1]: @nodes[1] or \\() } \\{ @nodes[2]? \\} "
         },
 
         <NodeMapping<JSFunctionBody>>{
@@ -142,7 +142,7 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
 
         <NodeMapping<JSFormalParameters>>{
             type: JSNodeType.FormalParameters,
-            template: "@nodes...[, o:s]"
+            template: "\\( i:s @nodes...[, o:s] i:e \\) "
         },
 
 
@@ -215,7 +215,7 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
         //If Statement
         <NodeMapping<JSIfStatement>>{
             type: JSNodeType.IfStatement,
-            template: "if ( @nodes[0] ) i:s o:n @nodes[1] i:e { nodes[2] : o:n else i:s o:n @nodes[2] i:e } "
+            template: "if ( @nodes[0] ) i:s o:n @nodes[1] i:e { nodes[2] : o:n else i:s m:s o:n @nodes[2] i:e } "
         },
 
         //Try Statement
@@ -431,17 +431,17 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
 
         <NodeMapping<JSGetterMethod>>{
             type: JSNodeType.GetterMethod,
-            template: "get m:s @nodes[0] o:s \\( \\)  \\{ @nodes[1]? \\} "
+            template: "get m:s @nodes[0] o:s \\( \\)  \\{ @nodes[1]? \\}"
         },
 
         <NodeMapping<JSSetterMethod>>{
             type: JSNodeType.SetterMethod,
-            template: "set m:s @nodes[0] o:s \\( @nodes[1]? \\)  \\{ @nodes[2]? \\} "
+            template: "set m:s @nodes[0] o:s \\( @nodes[1]? \\)  \\{ @nodes[2]? \\}"
         },
 
         <NodeMapping<JSMethod>>{
             type: JSNodeType.Method,
-            template: "{ASYNC: async m:s} @nodes[0] {GENERATOR: m:s \\* } o:s \\( @nodes[1]? \\)  \\{ @nodes[2]? \\} "
+            template: "{ASYNC: async m:s} @nodes[0] {GENERATOR: o:s \\* } o:s { nodes[1]: @nodes[1] or \\() }  \\{ @nodes[2]? \\} "
         },
 
         <NodeMapping<JSBindingProperty>>{
@@ -456,7 +456,7 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
 
         <NodeMapping<JSArrowFunction>>{
             type: JSNodeType.ArrowFunction,
-            template: "{ASYNC: \\async o:s } \\( @nodes[0]? \\)  \\=> @nodes[1]",
+            template: "{ASYNC: \\async o:s }  { nodes[0] : @nodes[0] or \\( \\) }  \\=> @nodes[1]",
         },
 
         <NodeMapping<JSConditionalExpression>>{
@@ -554,6 +554,11 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
         },
 
         <NodeMapping<JSThisLiteral>>{
+            type: JSNodeType.ThisLiteral,
+            template: "\\this"
+        },
+
+        <NodeMapping<JSUndefin>>{
             type: JSNodeType.ThisLiteral,
             template: "\\this"
         },

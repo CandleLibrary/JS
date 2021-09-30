@@ -1,10 +1,17 @@
 import { experimentalRender } from "@candlelib/conflagrate";
 import { assert } from "console";
-import { ext, parser } from "../build/library/javascript.js";
+import { ext, parser, exp } from "../build/library/javascript.js";
 import { javascript_mappings, renderers } from "../build/library/render/mappings.js";
 function parseAndRender(str) {
+
     return experimentalRender(parser(str).ast, javascript_mappings, renderers);
 }
+
+function parseAndRenderExp(str) {
+
+    return experimentalRender(exp(str), javascript_mappings, renderers);
+}
+
 
 assert_group("Should parse statements", () => {
 
@@ -22,11 +29,11 @@ assert_group("Should parse statements", () => {
 
         assert("named imports renamed single", parseAndRender("import { A as B } from 'temp';") == "import {A as B} from 'temp';");
 
-        assert("named imports renamed multiple", parseAndRender("import { A as B, C as D, G as M } from 'temp';") == "import {A as B, C as D, G as M} from 'temp';");
+        assert("named imports renamed multiple", parseAndRender("import { A as B, C as D, G as M } from 'temp';") == "import {A as B,C as D,G as M} from 'temp';");
 
-        assert("default with namespace", parseAndRender("import g, * as n from 'temp';") == "import g, * as n from 'temp';");
+        assert("default with namespace", parseAndRender("import g, * as n from 'temp';") == "import g,* as n from 'temp';");
 
-        assert("default with named", parseAndRender("import g, { A as B} from 'temp';") == "import g, {A as B} from 'temp';");
+        assert("default with named", parseAndRender("import g, { A as B} from 'temp';") == "import g,{A as B} from 'temp';");
     });
 
 
@@ -34,62 +41,62 @@ assert_group("Should parse statements", () => {
 
         assert("default reference", parseAndRender("export default A") == "export default A;");
 
-        assert("export const statement", parseAndRender("export const d = 1") == "export const d = 1;");
+        assert("export const statement", parseAndRender("export const d = 1") == "export const d=1;");
 
         assert("export function statement", parseAndRender("export function A(){}") == "export function A(){}");
 
         assert("namespace re-export", parseAndRender("export * from \'test\'") == "export * from 'test';");
 
-        assert("named re-export", parseAndRender("export { A  as B, C } from \'test\'") == "export {A as B, C} from 'test';");
+        assert("named re-export", parseAndRender("export { A  as B, C } from \'test\'") == "export {A as B,C} from 'test';");
     });
 
 
     assert_group("FUNCTION", () => {
 
-        assert("basic", parseAndRender("function A(){}") == "function A(){};");
+        assert("basic", parseAndRender("function A(){}") == "function A(){}");
 
-        assert("basic \\w arg", parseAndRender("function A(b){}") == "function A(b){};");
+        assert("basic \\w arg", parseAndRender("function A(b){}") == "function A(b){}");
 
-        assert("basic \\w arg & default val", parseAndRender("function A(b = c){}") == "function A(b = c){};");
+        assert("basic \\w arg & default val", parseAndRender("function A(b = c){}") == "function A(b=c){}");
 
-        assert("async", parseAndRender("async function A(){}") == "async function A(){};");
+        assert("async", parseAndRender("async function A(){}") == "async function A(){}");
 
-        assert("generator", parseAndRender("function * A(){}") == "function * A(){};");
+        assert("generator", parseAndRender("function * A(){}") == "function * A(){}");
 
-        assert("async generator", parseAndRender("async function * A(){}") == "async function * A(){};");
+        assert("async generator", parseAndRender("async function * A(){}") == "async function * A(){}");
 
-        assert("expression - basic", parseAndRender("function (){}") == "function (){};");
+        assert("expression - basic", parseAndRenderExp("function (){}") == "function (){}");
 
-        assert("expression - basic \\w arg", parseAndRender("function(b){}") == "function (b){};");
+        assert("expression - basic \\w arg", parseAndRenderExp("function(b){}") == "function (b){}");
 
-        assert("expression - basic \\w arg & default val", parseAndRender("function(b=c){}") == "function (b = c){};");
+        assert("expression - basic \\w arg & default val", parseAndRenderExp("function(b=c){}") == "function (b=c){}");
 
-        assert("expression - async", parseAndRender("async function(){}") == "async function (){};");
+        assert("expression - async", parseAndRenderExp("async function(){}") == "async function (){}");
 
-        assert("expression - generator", parseAndRender("function *(){}") == "function * (){};");
+        assert("expression - generator", parseAndRenderExp("function *(){}") == "function * (){}");
 
-        assert("expression - async generator", parseAndRender("async function *(){}") == "async function * (){};");
+        assert("expression - async generator", parseAndRenderExp("async function *(){}") == "async function * (){}");
 
     });
 
     assert_group("CLASS", () => {
 
-        assert("basic", parseAndRender("class A{}") == "class A{};");
+        assert("basic", parseAndRender("class A{}") == "class A{}");
 
-        assert("basic \\w constructor", parseAndRender("class A{ constructor(){} }") == "class A{constructor (){}};");
+        assert("basic \\w constructor", parseAndRender("class A{ constructor(){} }") == "class A{constructor(){}}");
 
-        assert("basic \\w method", parseAndRender("class A{ D(){} }") == "class A{D (){}};");
+        assert("basic \\w method", parseAndRender("class A{ D(){} }") == "class A{D(){}}");
 
-        assert("extends", parseAndRender("class A extends B{}") == "class A extends B{};");
+        assert("extends", parseAndRender("class A extends B{}") == "class A extends B{}");
 
-        assert("expression", parseAndRender("class extends B{}") == "class extends B{};");
+        assert("expression", parseAndRenderExp("class extends B{}") == "class extends B{}");
 
-        assert("assignment expression", parseAndRender("var d = class extends B{}") == "var d = class extends B{};");
+        assert("assignment expression", parseAndRender("var d = class extends B{}") == "var d=class extends B{};");
     });
 
     assert_group("ITERATOR", () => {
 
-        assert("for", parseAndRender("for(a;b;c){}") == "for(a; b; c){}");
+        assert("for", parseAndRender("for(a;b;c){}") == "for(a;b;c){}");
 
         assert("for-in var", parseAndRender("for(var a in b){}") == "for(var a in b){}");
 
@@ -112,14 +119,14 @@ assert_group("Should parse statements", () => {
 
         assert("while", parseAndRender("while(x){}") == "while(x){}");
 
-        assert("do-while", parseAndRender("do {} while(x)") == "do {} while(x);");
+        assert("do-while", parseAndRender("do {} while(x);") == "do {} while(x);");
 
     });
 
 
     assert_group("LABELED", () => {
 
-        assert("labeled const", parseAndRender("test: a = 0") == "test:a = 0;");
+        assert("labeled const", parseAndRender("test: a = 0") == "test:a=0;");
 
     });
 
@@ -153,7 +160,7 @@ assert_group("Should parse statements", () => {
 
         assert("basic - case", parseAndRender("switch(x){case 2:r}") == "switch(x){case 2:r;}");
 
-        assert("basic - case & default", parseAndRender("switch(x){default:r;case 2:r}") == "switch(x){default:r; case 2:r;}");
+        assert("basic - case & default", parseAndRender("switch(x){default:r;case 2:r}") == "switch(x){default:r;case 2:r;}");
 
     });
     assert_group("BREAK", () => {
@@ -176,7 +183,7 @@ assert_group("Should parse statements", () => {
 
         assert("basic", parseAndRender("var a;") == "var a;");
 
-        assert("basic multiple", parseAndRender("var a,b,c;") == "var a, b, c;");
+        assert("basic multiple", parseAndRender("var a,b,c;") == "var a,b,c;");
 
     });
 
@@ -184,7 +191,7 @@ assert_group("Should parse statements", () => {
 
         assert("basic", parseAndRender("let a;") == "let a;");
 
-        assert("basic multiple", parseAndRender("let a,b,c;") == "let a, b, c;");
+        assert("basic multiple", parseAndRender("let a,b,c;") == "let a,b,c;");
 
     });
 
@@ -199,17 +206,17 @@ assert_group("Should parse statements", () => {
 
         assert("member optional", parseAndRender("$test?.$test") == "$test?.$test;");
 
-        assert("member dynamic", parseAndRender("$test[$test+1]") == "$test[$test + 1];");
+        assert("member dynamic", parseAndRender("$test[$test+1]") == "$test[$test+1];");
 
-        assert("member optional dynamic", parseAndRender("$test?.[$test+1]?.[0]") == "$test?.[$test + 1]?.[0];");
+        assert("member optional dynamic", parseAndRender("$test?.[$test+1]?.[0]") == "$test?.[$test+1]?.[0];");
 
         assert("new", parseAndRender("new $test.$test()") == "new $test.$test();");
 
-        assert("yield", parseAndRender("yield $test + $test;") == "yield $test + $test;");
+        assert("yield", parseAndRender("yield $test + $test;") == "yield $test+$test;");
 
-        assert("yield generator", parseAndRender("yield * $test + $test;") == "yield * $test + $test;");
+        assert("yield generator", parseAndRender("yield * $test + $test;") == "yield * $test+$test;");
 
-        assert("await", parseAndRender("await $test + $test;") == "await $test + $test;");
+        assert("await", parseAndRender("await $test + $test;") == "await $test+$test;");
 
         assert("import meta", parseAndRender("import.meta;") == "import.meta;");
 
@@ -243,105 +250,105 @@ assert_group("Should parse statements", () => {
 
         assert("unary typeof", parseAndRender("typeof $test;") == "typeof $test;");
 
-        assert("logical ||", parseAndRender("$test || $test;") == "$test || $test;");
+        assert("logical ||", parseAndRender("$test || $test;") == "$test||$test;");
 
-        assert("logical ^", parseAndRender("$test ^ $test;") == "$test ^ $test;");
+        assert("logical ^", parseAndRender("$test ^ $test;") == "$test^$test;");
 
-        assert("logical &&", parseAndRender("$test && $test;") == "$test && $test;");
+        assert("logical &&", parseAndRender("$test && $test;") == "$test&&$test;");
 
-        assert("coalesce ??", parseAndRender("$test ?? $test;") == "$test ?? $test;");
+        assert("coalesce ??", parseAndRender("$test ?? $test;") == "$test??$test;");
 
-        assert("bitwise |", parseAndRender("$test | $test;") == "$test | $test;");
+        assert("bitwise |", parseAndRender("$test | $test;") == "$test|$test;");
 
-        assert("bitwise ^", parseAndRender("$test ^ $test;") == "$test ^ $test;");
+        assert("bitwise ^", parseAndRender("$test ^ $test;") == "$test^$test;");
 
-        assert("bitwise &", parseAndRender("$test & $test;") == "$test & $test;");
+        assert("bitwise &", parseAndRender("$test & $test;") == "$test&$test;");
 
-        assert("equality ==", parseAndRender("$test == $test;") == "$test == $test;");
+        assert("equality ==", parseAndRender("$test == $test;") == "$test==$test;");
 
-        assert("equality !=", parseAndRender("$test != $test;") == "$test != $test;");
+        assert("equality !=", parseAndRender("$test != $test;") == "$test!=$test;");
 
-        assert("equality ===", parseAndRender("$test === $test;") == "$test === $test;");
+        assert("equality ===", parseAndRender("$test === $test;") == "$test===$test;");
 
-        assert("equality !==", parseAndRender("$test !== $test;") == "$test !== $test;");
+        assert("equality !==", parseAndRender("$test !== $test;") == "$test!==$test;");
 
-        assert("relational <", parseAndRender("$test < $test;") == "$test < $test;");
+        assert("relational <", parseAndRender("$test < $test;") == "$test<$test;");
 
-        assert("relational >", parseAndRender("$test > $test;") == "$test > $test;");
+        assert("relational >", parseAndRender("$test > $test;") == "$test>$test;");
 
-        assert("relational <=", parseAndRender("$test <= $test;") == "$test <= $test;");
+        assert("relational <=", parseAndRender("$test <= $test;") == "$test<=$test;");
 
-        assert("relational >=", parseAndRender("$test >= $test;") == "$test >= $test;");
+        assert("relational >=", parseAndRender("$test >= $test;") == "$test>=$test;");
 
         assert("relational instanceof", parseAndRender("$test instanceof $test;") == "$test instanceof $test;");
 
         assert("relational in", parseAndRender("$test in $test;") == "$test in $test;");
 
-        assert("relational <", parseAndRender("$test < $test;") == "$test < $test;");
+        assert("relational <", parseAndRender("$test < $test;") == "$test<$test;");
 
-        assert("shift <<", parseAndRender("$test << $test;") == "$test << $test;");
+        assert("shift <<", parseAndRender("$test << $test;") == "$test<<$test;");
 
-        assert("shift >>", parseAndRender("$test >> $test;") == "$test >> $test;");
+        assert("shift >>", parseAndRender("$test >> $test;") == "$test>>$test;");
 
-        assert("shift >>>", parseAndRender("$test >>> $test;") == "$test >>> $test;");
+        assert("shift >>>", parseAndRender("$test >>> $test;") == "$test>>>$test;");
 
-        assert("additive +", parseAndRender("$test + $test;") == "$test + $test;");
+        assert("additive +", parseAndRender("$test + $test;") == "$test+$test;");
 
-        assert("additive -", parseAndRender("$test - $test;") == "$test - $test;");
+        assert("additive -", parseAndRender("$test - $test;") == "$test-$test;");
 
-        assert("multiplicative *", parseAndRender("$test * $test;") == "$test * $test;");
+        assert("multiplicative *", parseAndRender("$test * $test;") == "$test*$test;");
 
-        assert("multiplicative /", parseAndRender("$test / $test;") == "$test / $test;");
+        assert("multiplicative /", parseAndRender("$test / $test;") == "$test/$test;");
 
-        assert("multiplicative %", parseAndRender("$test % $test;") == "$test % $test;");
+        assert("multiplicative %", parseAndRender("$test % $test;") == "$test%$test;");
 
-        assert("exponentiation **", parseAndRender("$test ** $test;") == "$test ** $test;");
+        assert("exponentiation **", parseAndRender("$test ** $test;") == "$test**$test;");
 
-        assert("assignment =", parseAndRender("$test = $test;") == "$test = $test;");
+        assert("assignment =", parseAndRender("$test = $test;") == "$test=$test;");
 
-        assert("assignment *=", parseAndRender("$test *= $test;") == "$test *= $test;");
+        assert("assignment *=", parseAndRender("$test *= $test;") == "$test*=$test;");
 
-        assert("assignment /=", parseAndRender("$test /= $test;") == "$test /= $test;");
+        assert("assignment /=", parseAndRender("$test /= $test;") == "$test/=$test;");
 
-        assert("assignment %=", parseAndRender("$test %= $test;") == "$test %= $test;");
+        assert("assignment %=", parseAndRender("$test %= $test;") == "$test%=$test;");
 
-        assert("assignment +=", parseAndRender("$test += $test;") == "$test += $test;");
+        assert("assignment +=", parseAndRender("$test += $test;") == "$test+=$test;");
 
-        assert("assignment -=", parseAndRender("$test -= $test;") == "$test -= $test;");
+        assert("assignment -=", parseAndRender("$test -= $test;") == "$test-=$test;");
 
-        assert("assignment <<=", parseAndRender("$test <<= $test;") == "$test <<= $test;");
+        assert("assignment <<=", parseAndRender("$test <<= $test;") == "$test<<=$test;");
 
-        assert("assignment >>=", parseAndRender("$test >>= $test;") == "$test >>= $test;");
+        assert("assignment >>=", parseAndRender("$test >>= $test;") == "$test>>=$test;");
 
-        assert("assignment >>>=", parseAndRender("$test >>>= $test;") == "$test >>>= $test;");
+        assert("assignment >>>=", parseAndRender("$test >>>= $test;") == "$test>>>=$test;");
 
-        assert("assignment &=", parseAndRender("$test &= $test;") == "$test &= $test;");
+        assert("assignment &=", parseAndRender("$test &= $test;") == "$test&=$test;");
 
-        assert("assignment ^=", parseAndRender("$test ^= $test;") == "$test ^= $test;");
+        assert("assignment ^=", parseAndRender("$test ^= $test;") == "$test^=$test;");
 
-        assert("assignment |=", parseAndRender("$test |= $test;") == "$test |= $test;");
+        assert("assignment |=", parseAndRender("$test |= $test;") == "$test|=$test;");
 
-        assert("assignment **=", parseAndRender("$test **= $test;") == "$test **= $test;");
+        assert("assignment **=", parseAndRender("$test **= $test;") == "$test**=$test;");
 
-        assert("assignment ??", parseAndRender("$test ?? $test;") == "$test ?? $test;");
+        assert("assignment ??", parseAndRender("$test ?? $test;") == "$test??$test;");
 
-        assert("assignment &&=", parseAndRender("$test &&= $test;") == "$test &&= $test;");
+        assert("assignment &&=", parseAndRender("$test &&= $test;") == "$test&&=$test;");
 
-        assert("assignment ||=", parseAndRender("$test ||= $test;") == "$test ||= $test;");
+        assert("assignment ||=", parseAndRender("$test ||= $test;") == "$test||=$test;");
 
-        assert("tenerery", parseAndRender("a ? b : c;") == "a ? b : c;");
+        assert("tenerery", parseAndRender("a ? b : c;") == "a?b:c;");
 
-        assert("parenthesized", parseAndRender("( a+ b )") == "(a + b);");
+        assert("parenthesized", parseAndRender("( a+ b )") == "(a+b);");
 
         assert("arrow basic", parseAndRender("_=>_") == "_=>_;");
 
-        assert("arrow param list", parseAndRender("(x,y,[z,w],t=0)=>_") == "(x,y,[z, w],t = 0)=>_;");
+        assert("arrow param list", parseAndRender("(x,y,[z,w],t=0)=>_") == "(x,y,[z,w],t=0)=>_;");
 
-        assert("arrow param list with block expression", parseAndRender("(x,y,[z,w],t=0)=>{ return true }") == "(x,y,[z, w],t = 0)=>{return true;};");
+        assert("arrow param list with block expression", parseAndRender("(x,y,[z,w],t=0)=>{ return true }") == "(x,y,[z,w],t=0)=>{return true;};");
 
     });
 
-    assert_group("PRIMITIVES", () => {
+    assert_group("PRIMITIVES", sequence, () => {
 
         assert("identifier", parseAndRender("$raggedy_man;") == "$raggedy_man;");
 
@@ -383,13 +390,25 @@ assert_group("Should parse statements", () => {
 
         assert("template string basic", parseAndRender("` some string `") == "` some string `;");
 
-        assert("template string with expression", parseAndRender("` some ${test + 2} string `") == "` some ${test + 2} string `;");
+        assert("template string with expression", parseAndRender("` some ${test + 2} string `") == "` some ${test+2} string `;");
 
         assert("regular expression", parseAndRender("/[^1234]*\\d/ig") == "/[^1234]*\\d/ig;");
 
-        assert("Array literal", parseAndRender("[1,,,2,,3,,2+3]") == "[1, ,, 2, , 3, , 2 + 3];");
+        assert("Array literal", parseAndRender("[1,,,2,,3,,2+3]") == "[1,,,2,,3,,2+3];");
 
-        assert("Object literal", parseAndRender('({"d":1,get r(){},set r(s){} , m(){}, [2+3]:[2] })') == '({"d":1, get r (){}, set r (s){}, m (){}, [2 + 3]:[2]});');
+        assert("Object literal", parseAndRender('({"d":1, get r (){}, set r (s){},  m(){}, [2+3]:[2] })') == '({"d":1,get r(){},set r(s){},m(){},[2+3]:[2]});');
+
+        assert("Object literal [get attribute]", parseAndRender('({"d":1, get : {}})') == '({"d":1,get:{}});');
+
+        assert("Object literal [set attribute]", parseAndRender('({"d":1, set : {}})') == '({"d":1,set:{}});');
+
+    });
+
+    assert_group("COMMENTS", () => {
+
+        assert("Trailing line comment", parseAndRender("$raggedy_man; //test\n") == "$raggedy_man;");
+
+        assert("Trailing line block comment", parseAndRender("$raggedy_man; /* Test \n Now \n Tested */") == "$raggedy_man;");
 
     });
 });

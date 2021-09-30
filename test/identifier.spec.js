@@ -4,10 +4,8 @@
 
 import { parser, renderCompressed, exp, JSNodeTypeLU } from "../build/library/javascript.js";
 
-let { ast } = parser("$identifier;");
+const expr = exp("$identifier");
 
-const expr = exp("$identifier;");
-
-assert(renderCompressed(ast) == "$identifier;");
+assert(renderCompressed(expr) == "$identifier");
 
 assert(expr.type == JSNodeTypeLU.IdentifierReference);

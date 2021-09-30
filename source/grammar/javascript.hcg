@@ -91,10 +91,10 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 # https://262.ecma-international.org/12.0/#sec-exports
 ###############################################################################################################
 
-<> export_declaration > t:export export_clause from_clause asi                                                          
+<> export_declaration > t:export ( namespace | \* f:r { null } ) from_clause asi                                                          
                                                     f:r { { type:env.typ.ExportDeclaration, nodes:[$2, $3], DEFAULT:false, pos } }
-    | t:export specifier_clause asi                                                                        
-                                                    f:r { { type:env.typ.ExportDeclaration, nodes:[$2], DEFAULT:false, pos } }
+    | ! t:export specifier_clause from_clause? asi                                                                        
+                                                    f:r { { type:env.typ.ExportDeclaration, nodes:[$2, $3], DEFAULT:false, pos } }
     | t:export variable_statement                                                                           
                                                     f:r { { type:env.typ.ExportDeclaration, nodes:[$2], DEFAULT:false, pos } }
     | ! t:export declaration                                                                                  
@@ -154,7 +154,7 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
     | ! declaration
 
 
-<> statement > block_statement 
+<> statement > ! block_statement 
     |  expression_statement
     | variable_statement
     | continue_statement
@@ -194,10 +194,12 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 # https://262.ecma-international.org/12.0/#sec-block
 ###############################################################################################################
 
-<> block_statement > block                          
+<> block_statement > ! block                          
 
-<> block > ! { statement_list? } 
-                                                    f:r { { type: env.typ.BlockStatement, nodes: $$2 || [], pos } }
+<> block > ! { statement_list } 
+                                                    f:r { { type: env.typ.BlockStatement, nodes: $$2, pos } }
+    | ! \{  \} 
+                                                    f:r { { type: env.typ.BlockStatement, nodes: [], pos } }
 
 ###############################################################################################################
 # https://262.ecma-international.org/12.0/#sec-empty-statement
@@ -512,10 +514,10 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
                                                     f:r { { type:env.typ.Method, ASYNC:!!$$1, GENERATOR:!!$$2, nodes:[$$3, $$5, $$8], pos } } 
 
     | \get property_name \( \) { function_body? }                                                           
-                                                    f:r { { type:env.typ.GetterMethod, nodes:[$$2, $6], pos } }
+                                                    f:r { { type:env.typ.GetterMethod, nodes:[$$2, $$6], pos } }
 
     | \set property_name \( property_set_parameter_list \) { function_body? }                               
-                                                    f:r { { type:env.typ.SetterMethod, nodes:[$$2, $$4, $7], pos } }
+                                                    f:r { { type:env.typ.SetterMethod, nodes:[$$2, $$4, $$7], pos } }
 
 <> property_set_parameter_list > formal_parameter 
 
@@ -944,7 +946,7 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 # https://262.ecma-international.org/12.0/#sec-object-initializer
 ###############################################################################################################
 
-<> object_literal >  { }
+<> object_literal >  \{  \}
                                                     f:r { { type:env.typ.ObjectLiteral, nodes:[],  pos  } }
     | { property_definition_list ,? }
                                                     f:r { { type:env.typ.ObjectLiteral, nodes:$2,  pos  } }
@@ -1123,6 +1125,9 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 
 <> null_literal >  t:null
                                                     f:r { { type: env.typ.NullLiteral, pos  } }
+
+<> undefined_literal >  t:undefined
+                                                    f:r { { type: env.typ.Undefined, pos  } }
 
 <> boolean_literal > t:true
                                                     f:r { { type: env.typ.BooleanLiteral, value: $$1,  pos  } }

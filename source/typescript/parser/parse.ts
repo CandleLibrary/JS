@@ -17,7 +17,7 @@ interface ParserResult {
  */
 export function javascript_parser(string: string, debug_info = null): { ast: JSNode, comments: Lexer[]; } {
 
-    const { result, err } = js_parser(string, env).result[0];
+    const { result, err } = js_parser(string, env);
 
     if (err)
         throw err;
