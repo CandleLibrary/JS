@@ -4,12 +4,14 @@ import {
     renderWithFormatting as CFLrenderWithFormatting,
     renderWithSourceMap as CFLrenderWithSourceMap,
     renderWithFormattingAndSourceMap as CFLrenderWithFormattingAndSourceMap,
-    FormatRule
+    FormatRule,
+    experimentalRender
 } from "@candlelib/conflagrate";
 
 import { format_rules, renderers } from "./rules.js";
 import { JSNode } from "../types/JSNode.js";
 import { JSNodeType } from "../javascript.js";
+import { javascript_mappings, renderers as js_mapping_renderers } from './mappings.js';
 
 export const FormatFunction: CustomFormatFunction<JSNode> = (val, prop_name, node) => {
 
@@ -23,7 +25,7 @@ export const FormatFunction: CustomFormatFunction<JSNode> = (val, prop_name, nod
 export function renderCompressed(
     node: JSNode
 ) {
-    return CFLrenderCompressed<JSNode>(node, renderers, FormatFunction);
+    return experimentalRender(node, javascript_mappings, js_mapping_renderers, false);
 }
 
 export function renderWithFormatting(
