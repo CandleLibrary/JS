@@ -70,50 +70,31 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 
 <> import_declaration > t:import import_clause from_clause asi                                              
                                                     f:r { { type:env.typ.ImportDeclaration, nodes:[$2, $3], pos } }
-    | t:import module_specifier asi                                                                             
+    | t:import string_literal asi                                                                             
                                                     f:r { { type:env.typ.ImportDeclaration, nodes:[$2], pos } }
 
 <> import_clause > imported_default_binding                                                                 
                                                     f:r { { type:env.typ.ImportClause, nodes:[$$1], pos } }
-    | name_space_import                                                                                         
+    | namespace                                                                                         
                                                     f:r { { type:env.typ.ImportClause, nodes:[$$1], pos } }
-    | named_imports                                                                                             
+    | specifier_clause                                                                                             
                                                     f:r { { type:env.typ.ImportClause, nodes:[$$1], pos } }
-    | imported_default_binding , name_space_import                                                              
+    | imported_default_binding , namespace                                                              
                                                     f:r { { type:env.typ.ImportClause, nodes:[$$1, $$3], pos } }
-    | imported_default_binding , named_imports                                                                  
+    | imported_default_binding , specifier_clause                                                                  
                                                     f:r { { type:env.typ.ImportClause, nodes:[$$1, $$3], pos } }
 
-<> imported_default_binding > imported_binding                                                              
+<> imported_default_binding > module_binding_identifier                                                              
                                                     f:r { $1.type = env.typ.IdentifierDefault, $1 }
-
-<> name_space_import > * t:as imported_binding                                                              
-                                                    f:r { { type:env.typ.NameSpaceImport, nodes:[$$3], pos } }
-
-<> named_imports > { import_specifier(*\, ) ,? }                                                            
-                                                    f:r { { type:env.typ.NamedImports, nodes:$$2 || [], pos } }
-
-<> from_clause > t:from module_specifier                                                                    
-                                                    f:r { { type:env.typ.FromClause, nodes:[$2], pos } }
-
-<> import_specifier > imported_binding                                                                      
-                                                    f:r { { type:env.typ.Specifier, nodes:[$1], pos } }
-    | identifier t:as imported_binding                                                                          
-                                                    f:r { { type:env.typ.Specifier, nodes:[$1, $3], pos } }
-
-<> module_specifier > string_literal                                                                        
-
-<> imported_binding > identifier                                                                            
-                                                    f:r { $1.type = env.typ.IdentifierModule, $1 }
 
 ###############################################################################################################
 # https://262.ecma-international.org/12.0/#sec-exports
 ###############################################################################################################
 
-<> export_declaration > t:export * from_clause asi                                                          
-                                                    f:r { { type:env.typ.ExportDeclaration, nodes:[null, $3], DEFAULT:false, pos } }
-    | t:export export_clause from_clause? asi                                                               
-                                                    f:r { { type:env.typ.ExportDeclaration, nodes:[$2, $$3], DEFAULT:false, pos } }
+<> export_declaration > t:export export_clause from_clause asi                                                          
+                                                    f:r { { type:env.typ.ExportDeclaration, nodes:[$2, $3], DEFAULT:false, pos } }
+    | t:export specifier_clause asi                                                                        
+                                                    f:r { { type:env.typ.ExportDeclaration, nodes:[$2], DEFAULT:false, pos } }
     | t:export variable_statement                                                                           
                                                     f:r { { type:env.typ.ExportDeclaration, nodes:[$2], DEFAULT:false, pos } }
     | ! t:export declaration                                                                                  
@@ -125,13 +106,34 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
     | t:export t:default  assignment_expression asi
                                                     f:r { { type:env.typ.ExportDeclaration, nodes:[$3], DEFAULT:true, pos } }
 
-<> export_clause > { export_specifier(*\, ) ,? }
-                                                    f:r { { type:env.typ.ExportClause, nodes:$$2||[], pos } }
+<> export_clause > 
 
-<> export_specifier >  identifier
+        specifier_clause
+
+    |   namespace
+
+    |   \*                                                            
+                                                    f:r { null }
+
+### Modified Module productions
+
+<> namespace > \* t:as module_binding_identifier                                                              
+                                                    f:r { { type:env.typ.NameSpace, nodes:[$$3], pos } }
+
+<> specifier_clause > { specifier(*\, ) ,? }                                                            
+                                                    f:r { { type:env.typ.Specifiers, nodes:$$2 || [], pos } }
+
+<> from_clause > t:from string_literal                                                                    
+                                                    f:r { { type:env.typ.FromClause, nodes:[$2], pos } }
+
+<> specifier > module_binding_identifier                                                                      
                                                     f:r { { type:env.typ.Specifier, nodes:[$1], pos } }
-    | identifier t:as identifier
-                                                    f:r { { type:env.typ.Specifier, nodes:[$1, $3], pos } }                                                                      
+    | identifier t:as module_binding_identifier                                                                          
+                                                    f:r { { type:env.typ.Specifier, nodes:[$1, $3], pos } }                                                                     
+
+<> module_binding_identifier > identifier                                                                            
+                                                    f:r { $1.type = env.typ.IdentifierModule, $1 }
+
 
 ############################################################################################################### 
 ###############################################################################################################
@@ -597,7 +599,7 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 <> arguments >  \( argument_list? ,? \)
                                                     f:r { { type: env.typ.Arguments, nodes:$$2 || [], pos } }
 
-<> argument_list > (assignment_expression | \... assignment_expression f:r=>Spread  )(+\, )
+<> argument_list > ( assignment_expression | \... assignment_expression f:r=>Spread  )(+\, )
 
 ###############################################################################################################
 # 2020 https://262.ecma-international.org/12.0/#prod-OptionalExpression
@@ -738,7 +740,7 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 
 <> bitwise_xor_expression > bitwise_and_expression 
 
-    | bitwise_xor_expression ^ bitwise_and_expression
+    | bitwise_xor_expression \^ bitwise_and_expression
                                                     f:r { { type: env.typ.BitwiseExpression, symbol:$$2, nodes:[$$1, $$3], pos } }
 
 <> bitwise_and_expression > equality_expression 

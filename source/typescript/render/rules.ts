@@ -1,4 +1,4 @@
-import { FormatRule, buildFormatRules, buildRenderers } from "@candlelib/conflagrate";
+import { buildFormatRules, buildRenderers, FormatRule } from "@candlelib/conflagrate";
 import { JSNodeDefinition } from "../types/node_definition.js";
 import { JSNodeType } from "../types/node_type";
 import { JSNodeTypeLU } from "../types/node_type_lu.js";
@@ -445,12 +445,12 @@ export const JSNodeDefinitions: Array<JSNodeDefinition> = createNodeDefinitions(
         template_pattern: "@1%@symbol%@2",
     },
     {
-        type: JSNodeType.NameSpaceImport,
+        type: JSNodeType.NameSpace,
         ext_name: [],
         template_pattern: "*%as @1",
     },
     {
-        type: JSNodeType.NamedImports,
+        type: JSNodeType.Specifiers,
         ext_name: [],
         template_pattern: "{^1@...,^0}",
     },

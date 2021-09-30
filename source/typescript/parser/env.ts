@@ -1,4 +1,4 @@
-import { ParserEnvironment } from "@candlelib/hydrocarbon";
+//import { ParserEnvironment } from "@candlelib/hydrocarbon";
 import { Lexer } from "@candlelib/wind";
 
 import { JSNodeClass } from "../types/node_class_type.js";
@@ -21,7 +21,7 @@ function ConvertArrowParameters(node: JSNode) {
             sub.pos.throw(`Unexpected ${JSNodeTypeLU[sub.type]} in arrow function parameters`);
     }
 }
-type JSParserEnv = ParserEnvironment & {
+type JSParserEnv = {
     ASI: boolean;
     /**
      * Test

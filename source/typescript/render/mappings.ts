@@ -32,13 +32,14 @@ import {
     JSPreExpression,
     JSRelationalExpression,
     JSShiftExpression,
+    JSSpread,
     JSSuperCall,
     JSSuperExpression,
     JSTypeofExpression, JSUnaryExpression, JSVoidExpression, JSYieldExpression
 } from "../types/JSOperator.js";
 import { JSBigIntLiteral, JSBooleanLiteral, JSNewTarget, JSNullLiteral, JSNumericLiteral, JSRegexLiteral, JSStringLiteral, JSThisLiteral } from "../types/JSPrimitive.js";
 import { JSScript } from "../types/JSScript.js";
-import { JSBlockStatement, JSBreakStatement, JSCaseBlock, JSCaseClause, JSCatchClause, JSContinueStatement, JSDefaultClause, JSDoStatement, JSEmptyStatement, JSExpressionStatement, JSFinallyClause, JSForInStatement, JSForOfStatement, JSForStatement, JSIfStatement, JSLabeledStatement, JSLexicalBinding, JSLexicalDeclaration, JSReturnStatement, JSSwitchStatement, JSTryStatement, JSVariableDeclaration, JSVariableStatement, JSWhileStatement } from "../types/JSStatement.js";
+import { JSBlockStatement, JSBreakStatement, JSCaseBlock, JSCaseClause, JSCatchClause, JSContinueStatement, JSDebuggerStatement, JSDefaultClause, JSDoStatement, JSEmptyStatement, JSExpressionStatement, JSFinallyClause, JSForInStatement, JSForOfStatement, JSForStatement, JSIfStatement, JSLabeledStatement, JSLexicalBinding, JSLexicalDeclaration, JSReturnStatement, JSSwitchStatement, JSTryStatement, JSVariableDeclaration, JSVariableStatement, JSWhileStatement } from "../types/JSStatement.js";
 import { JSTemplate, JSTemplateHead, JSTemplateMiddle, JSTemplateTail } from "../types/JSTemplate.js";
 import { JSNodeClass } from "../types/node_class_type.js";
 import { JSNodeType } from "../types/node_type.js";
@@ -82,12 +83,12 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
         },
 
         <NodeMapping<JSNameSpaceImport>>{
-            type: JSNodeType.NameSpaceImport,
+            type: JSNodeType.NameSpace,
             template: "\\* m:s as m:s @nodes[0]"
         },
 
         <NodeMapping<JSNamedImports>>{
-            type: JSNodeType.NamedImports,
+            type: JSNodeType.Specifiers,
             template: "\\{ @nodes...[, o:s] \\}"
         },
 
@@ -136,7 +137,7 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
 
         <NodeMapping<JSFunctionBody>>{
             type: JSNodeType.FunctionBody,
-            template: "i:s @nodes...[o:n] i:e"
+            template: "i:s o:n @nodes...[o:n] i:e o:n"
         },
 
         <NodeMapping<JSFormalParameters>>{
@@ -148,7 +149,7 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
         //Classes
         <NodeMapping<JSClassDeclaration>>{
             type: JSNodeType.ClassDeclaration,
-            template: "class {nodes[0] : m:s @nodes[0] } { nodes[1] : m:s extends m:s @nodes[1] } \\{ i:s @nodes...[2, o:n] i:e \\}"
+            template: "class {nodes[0] : m:s @nodes[0] } { nodes[1] : m:s extends m:s @nodes[1] } \\{ i:s o:n @nodes...[2, o:n] i:e o:n \\}"
         },
 
         //Statements
@@ -159,28 +160,28 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
         },
         <NodeMapping<JSBlockStatement>>{
             type: JSNodeType.BlockStatement,
-            template: "\\{ i:s @nodes...[o:n] i:e \\} "
+            template: "\\{ i:s o:n @nodes...[o:n] i:e o:n \\} "
         },
 
         //Iterators
         <NodeMapping<JSForStatement>>{
             type: JSNodeType.ForStatement,
-            template: "for(@nodes[0] o:s @nodes[1]; o:s @nodes[2]) @nodes[3]"
+            template: "for(@nodes[0] o:s @nodes[1]; o:s @nodes[2]) i:s o:n @nodes[3] i:e o:n"
         },
 
         <NodeMapping<JSForOfStatement>>{
             type: JSNodeType.ForOfStatement,
-            template: "for {AWAIT: m:s await} (@nodes[0] m:s of m:s @nodes[1]) @nodes[2]"
+            template: "for {AWAIT: m:s await} \\( @nodes[0] m:s of m:s @nodes[1] \\) i:s o:n @nodes[2] i:e o:n"
         },
 
         <NodeMapping<JSForInStatement>>{
             type: JSNodeType.ForInStatement,
-            template: "for  (@nodes[0] m:s in m:s @nodes[1]) @nodes[2]"
+            template: "for  (@nodes[0] m:s in m:s @nodes[1])  i:s o:n @nodes[2] i:e o:n"
         },
 
         <NodeMapping<JSWhileStatement>>{
             type: JSNodeType.WhileStatement,
-            template: "while ( @nodes[0] ) @nodes[1]"
+            template: "while ( @nodes[0] )  i:s o:n @nodes[1] i:e o:n"
         },
 
         <NodeMapping<JSDoStatement>>{
@@ -214,21 +215,21 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
         //If Statement
         <NodeMapping<JSIfStatement>>{
             type: JSNodeType.IfStatement,
-            template: "if ( @nodes[0] ) @nodes[1] { nodes[2] : else m:s @nodes[2] } "
+            template: "if ( @nodes[0] ) i:s o:n @nodes[1] i:e { nodes[2] : o:n else i:s o:n @nodes[2] i:e } "
         },
 
         //Try Statement
         <NodeMapping<JSTryStatement>>{
             type: JSNodeType.TryStatement,
-            template: "try  @nodes[0] { nodes[1] : o:n @nodes[1] } { nodes[2] : o:n @nodes[2] } "
+            template: "try  @nodes[0]  @nodes[1]?  @nodes[2]?",
         },
         <NodeMapping<JSCatchClause>>{
             type: JSNodeType.CatchClause,
-            template: "catch ( @nodes[0] )  @nodes[1]"
+            template: "catch ( @nodes[0] ) i:s @nodes[1] i:e"
         },
         <NodeMapping<JSFinallyClause>>{
             type: JSNodeType.FinallyClause,
-            template: "finally @nodes[1]"
+            template: "finally i:s @nodes[1] i:e"
         },
 
 
@@ -243,7 +244,7 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
 
         <NodeMapping<JSCaseBlock>>{
             type: JSNodeType.CaseBlock,
-            template: "\\{ i:s o:n @nodes...[ o:s o:n ] o:n i:e \\}"
+            template: "\\{ i:s o:n @nodes...[ o:s o:n ] i:e o:n  \\}"
         },
 
         <NodeMapping<JSDefaultClause>>{
@@ -259,6 +260,16 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
 
 
         //Expressions
+
+        <NodeMapping<JSSpread>>{
+            type: JSNodeType.Spread,
+            template: "\\... @nodes[0]"
+        },
+
+        <NodeMapping<JSDebuggerStatement>>{
+            type: JSNodeType.DebuggerStatement,
+            template: "debugger;"
+        },
 
         <NodeMapping<JSArguments>>{
             type: JSNodeType.Arguments,

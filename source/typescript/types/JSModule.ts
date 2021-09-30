@@ -134,7 +134,7 @@ export interface JSFromClause extends JSModuleBase {
  *
  */
 export interface JSNameSpaceImport extends JSModuleBase {
-    type: JSNodeType.NameSpaceImport;
+    type: JSNodeType.NameSpace;
     nodes: [JSIdentifierModule];
 }
 
@@ -149,7 +149,7 @@ export interface JSNameSpaceImport extends JSModuleBase {
  *
  */
 export interface JSNamedImports extends JSModuleBase {
-    type: JSNodeType.NamedImports;
+    type: JSNodeType.Specifiers;
     nodes: JSModuleSpecifier[];
 }
 

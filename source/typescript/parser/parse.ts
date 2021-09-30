@@ -1,13 +1,11 @@
-import { traverse } from "@candlelib/conflagrate";
 import { Lexer } from "@candlelib/wind";
 import { JSNode } from "../types/JSNode";
 import { JSStatementClass } from "../types/JSStatement";
-import { JSNodeClass } from "../types/node_class_type.js";
 import env from "./env.js";
-import loader from "./parser.js";
+import loader from "./parser_new.js";
 
 //@ts-ignore
-const js_parser = await loader;
+const { parse: js_parser, entry_points } = await loader;
 interface ParserResult {
     error: string;
     value: any;
@@ -17,17 +15,14 @@ interface ParserResult {
  * @throws it will throw a SyntaxError if the input could be completely parsed.
  * @param lex Either a string or a cfw.wind Lexer that contains the string data to be parsed.
  */
-export function javascript_parser(arg: any | string | Lexer, debug_info = null): { ast: JSNode, comments: Lexer[]; } {
+export function javascript_parser(string: string, debug_info = null): { ast: JSNode, comments: Lexer[]; } {
 
-    let str = arg;
+    const { result, err } = js_parser(string, env).result[0];
 
-    const comments = [];
+    if (err)
+        throw err;
 
-    env.comments = null;
-
-    const ast = js_parser(str, env).result[0];
-
-    return { ast, comments };
+    return { ast: result[0], comments: [] };
 }
 
 /**
@@ -37,20 +32,12 @@ export function javascript_parser(arg: any | string | Lexer, debug_info = null):
  */
 export function expression_parser(expression: any | string | Lexer): JSNode {
 
-    const { ast } = javascript_parser(expression);
+    const { result, err } = js_parser(expression, env, entry_points.exp);
 
-    for (const { node } of traverse(ast, "nodes")
-        .bitFilter("type",
-            JSNodeClass.EXPRESSION
-            | JSNodeClass.LITERAL
-            | JSNodeClass.IDENTIFIER)
-    ) {
-        return node;
-    }
+    if (err)
+        throw err;
 
-    console.log({ expression, ast, d: js_parser(expression, env, js_parser.expression).result[0] });
-
-    throw new EvalError(`String [ ${expression.join("")} ] does not contain an expression.`);
+    return result[0];
 }
 
 /**
@@ -63,11 +50,11 @@ export function statement_parser(
     statement: any | string | Lexer
 ): JSStatementClass {
 
-    const { ast } = javascript_parser(statement);
+    const { result, err } = js_parser(statement, env, entry_points.stmt);
 
-    for (const { node } of traverse(ast, "nodes").bitFilter("type", JSNodeClass.STATEMENT))
-        return <JSStatementClass>node;
+    if (err)
+        throw err;
 
-    throw new EvalError(`String [ ${statement.join("")} ] does not contain a statement.`);
+    return result[0];
 }
 

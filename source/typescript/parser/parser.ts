@@ -1,7 +1,7 @@
 
 import {
     ParserFactoryGamma as ParserFactory
-} from "@candlelib/hydrocarbon";
+} from "@candlelib/hydrocarbon/build/library/entry/runtime.js";
 import URI from "@candlelib/uri";;
 
 const wasm_recognizer = URI.resolveRelative("./parser.wasm", URI.getEXEURL(import.meta)),
@@ -17,9 +17,9 @@ const wasm_recognizer = URI.resolveRelative("./parser.wasm", URI.getEXEURL(impor
     (env, sym, pos) => ({ type: env.typ.ImportClause, nodes: [sym[0]], pos }) /*8*/,
     (env, sym, pos) => ({ type: env.typ.ImportClause, nodes: [sym[0], sym[2]], pos }) /*9*/,
     (env, sym, pos) => (sym[0].type = env.typ.IdentifierDefault, sym[0]) /*10*/,
-    (env, sym, pos) => ({ type: env.typ.NameSpaceImport, nodes: [sym[2]], pos }) /*11*/,
-    (env, sym, pos) => ({ type: env.typ.NamedImports, nodes: sym[1] || [], pos }) /*12*/,
-    (env, sym, pos) => ({ type: env.typ.NamedImports, nodes: null || [], pos }) /*13*/,
+    (env, sym, pos) => ({ type: env.typ.NameSpace, nodes: [sym[2]], pos }) /*11*/,
+    (env, sym, pos) => ({ type: env.typ.Specifiers, nodes: sym[1] || [], pos }) /*12*/,
+    (env, sym, pos) => ({ type: env.typ.Specifiers, nodes: null || [], pos }) /*13*/,
     (env, sym, pos) => ({ type: env.typ.FromClause, nodes: [sym[1]], pos }) /*14*/,
     (env, sym, pos) => ({ type: env.typ.Specifier, nodes: [sym[0]], pos }) /*15*/,
     (env, sym, pos) => ({ type: env.typ.Specifier, nodes: [sym[0], sym[2]], pos }) /*16*/,
