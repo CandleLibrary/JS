@@ -489,7 +489,7 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
         },
         <NodeMapping<JSNumericLiteral>>{
             type: JSNodeType.NumericLiteral,
-            template: "@value"
+            template: "{NEGATIVE: \\- } @value"
         },
         <NodeMapping<JSBigIntLiteral>>{
             type: JSNodeType.BigIntLiteral,
@@ -563,7 +563,7 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
             template: "\\this"
         },
 
-        <NodeMapping<JSUndefin>>{
+        <NodeMapping<JSUn>>{
             type: JSNodeType.ThisLiteral,
             template: "\\this"
         },
