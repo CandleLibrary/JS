@@ -99,12 +99,12 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
             custom_render: (a, b) => {
                 const str = b(a);
 
-                const end = str.slice(-1);
+                const nodes = a.node.nodes;
 
-                if (end != ";" && end != "}")
-                    return str + ";";
+                if (nodes[1] || (nodes[0]?.type & (JSNodeClass.STATEMENT | JSNodeClass.DECLARATION)))
+                    return str;
 
-                return str;
+                return str + ";";
             }
 
         },
