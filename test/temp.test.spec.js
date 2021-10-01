@@ -61,21 +61,21 @@ assert_group("Should parse statements", () => {
 
         assert("async", parseAndRender("async function A(){}") == "async function A(){}");
 
-        assert("generator", parseAndRender("function * A(){}") == "function * A(){}");
+        assert("generator", parseAndRender("function * A(){}") == "function*A(){}");
 
-        assert("async generator", parseAndRender("async function * A(){}") == "async function * A(){}");
+        assert("async generator", parseAndRender("async function * A(){}") == "async function*A(){}");
 
-        assert("expression - basic", parseAndRenderExp("function (){}") == "function (){}");
+        assert("expression - basic", parseAndRenderExp("function (){}") == "function(){}");
 
-        assert("expression - basic \\w arg", parseAndRenderExp("function(b){}") == "function (b){}");
+        assert("expression - basic \\w arg", parseAndRenderExp("function(b){}") == "function(b){}");
 
-        assert("expression - basic \\w arg & default val", parseAndRenderExp("function(b=c){}") == "function (b=c){}");
+        assert("expression - basic \\w arg & default val", parseAndRenderExp("function(b=c){}") == "function(b=c){}");
 
-        assert("expression - async", parseAndRenderExp("async function(){}") == "async function (){}");
+        assert("expression - async", parseAndRenderExp("async function(){}") == "async function(){}");
 
-        assert("expression - generator", parseAndRenderExp("function *(){}") == "function * (){}");
+        assert("expression - generator", parseAndRenderExp("function *(){}") == "function*(){}");
 
-        assert("expression - async generator", parseAndRenderExp("async function *(){}") == "async function * (){}");
+        assert("expression - async generator", parseAndRenderExp("async function *(){}") == "async function*(){}");
 
     });
 

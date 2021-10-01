@@ -95,7 +95,18 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
         //Export
         <NodeMapping<JSExportDeclaration>>{
             type: JSNodeType.ExportDeclaration,
-            template: "export {DEFAULT: m:s default} m:s {not nodes[0]: \\* } @nodes...[m:s] ;"
+            template: "export {DEFAULT: m:s default} m:s {not nodes[0]: \\* } @nodes...[m:s]",
+            custom_render: (a, b) => {
+                const str = b(a);
+
+                const end = str.slice(-1);
+
+                if (end != ";" && end != "}")
+                    return str + ";";
+
+                return str;
+            }
+
         },
         <NodeMapping<JSExportClause>>{
             type: JSNodeType.ExportClause,
@@ -127,12 +138,12 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
         //Functions
         <NodeMapping<JSFunctionDeclaration>>{
             type: JSNodeType.FunctionDeclaration,
-            template: "{ASYNC: async m:s} function {GENERATOR: m:s \\* } m:s @nodes[0]?  { nodes[1]: @nodes[1] or \\() } \\{ @nodes[2]? \\} "
+            template: "{ASYNC: async m:s} function  {GENERATOR: \\* or m:s } @nodes[0] { nodes[1]: @nodes[1] or \\() } \\{ @nodes[2]? \\} "
         },
 
         <NodeMapping<JSFunctionExpression>>{
             type: JSNodeType.FunctionExpression,
-            template: "{ASYNC: async m:s} function {GENERATOR: m:s \\* } m:s @nodes[0]? { nodes[1]: @nodes[1] or \\() } \\{ @nodes[2]? \\} "
+            template: "{ASYNC: async m:s} function {GENERATOR: o:s \\* o:s } { nodes[0] : m:s @nodes[0] o:s }{ nodes[1]: @nodes[1] or \\() } \\{ @nodes[2]? \\} "
         },
 
         <NodeMapping<JSFunctionBody>>{
