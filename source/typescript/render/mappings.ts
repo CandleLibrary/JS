@@ -472,7 +472,7 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
 
         <NodeMapping<JSArrowFunction>>{
             type: JSNodeType.ArrowFunction,
-            template: "{ASYNC: \\async o:s }  { nodes[0] : @nodes[0] or \\( \\) }  \\=> @nodes[1]",
+            template: "{ASYNC: \\async m:s }  { nodes[0] : @nodes[0] or \\( \\) }  \\=> @nodes[1]",
         },
 
         <NodeMapping<JSConditionalExpression>>{
