@@ -1,3 +1,4 @@
+import { Token } from '@candlelib/hydrocarbon';
 import { JSNodeType } from "./node_type";
 /**
      * An numeric identifier that encodes the
@@ -36,12 +37,7 @@ import { JSNodeType } from "./node_type";
 export interface JSNodeBase {
 
     nodes?: JSNodeBase[];
-    pos?: {
-        line: number;
-        column: number;
-        offset: number;
-        length: number;
-    };
+    pos?: Token;
 }
 
 export interface JSClauseBase extends JSNodeBase { }
