@@ -1139,16 +1139,16 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 ###############################################################################################################
 
 <> label_identifier > tk:composite_identifier
-                                                    f:r { {type: env.typ.IdentifierLabel, value:$1 } }
+                                                    f:r { {type: env.typ.IdentifierLabel, value:$1, pos } }
 
 <> goto_label_identifier > label_identifier
-                                                    f:r { {type: env.typ.IdentifierLabel, value:$1 } }
+                                                    f:r { {type: env.typ.IdentifierLabel, value:$1, pos } }
 
 <> identifier_reference > tk:composite_identifier
-                                                    f:r { {type: env.typ.IdentifierReference, value:$1 } }
+                                                    f:r { {type: env.typ.IdentifierReference, value:$1,pos } }
 
 <> binding_identifier > tk:composite_identifier
-                                                    f:r { {type: env.typ.IdentifierBinding, value:$1 } }
+                                                    f:r { {type: env.typ.IdentifierBinding, value:$1, pos } }
 
 <> identifier >  tk:composite_identifier
                                                     f:r { { type: env.typ.Identifier, value:$1,  pos  } }   
