@@ -232,10 +232,15 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
     | t:while \( expression \) statement 
                                                     f:r { { type: env.typ.WhileStatement, nodes:[$$3, $$5], pos } }
 
-    | t:for \( (  expression                        f:r { { type:env.typ.ExpressionStatement, nodes:[$1], pos } }
+    | t:for \( (  
+                expression
 
-    | t:var for_binding(+\, )                       f:r { { type:env.typ.VariableDeclaration, nodes:$2, pos } }
-    )? ; expression? ; expression? \)  statement                                                 
+            |   t:var variable_declaration_list                       
+                
+                f:r { { type:env.typ.VariableDeclaration, nodes:$2, pos } }
+        )? 
+
+    ; expression? ; expression? \)  statement                                                 
                                                     f:r { { type: env.typ.ForStatement, nodes:[$$3, $$5, $$7, $$9], LEX:false, pos } }
 
     | t:for \( lexical_declaration expression? ; expression? \) statement                                       
@@ -370,7 +375,8 @@ f:Spread{ { type:env.typ.Spread, nodes: [$2],  pos  } }
 
 <> variable_declaration > binding_identifier initializer
                                                     f:r=>BindingExpression
-    | binding_identifier                                        
+    | binding_identifier        
+                                    
     | binding_pattern initializer
                                                     f:r => BindingExpression
 
