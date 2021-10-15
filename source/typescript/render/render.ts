@@ -25,7 +25,7 @@ export const FormatFunction: CustomFormatFunction<JSNode> = (val, prop_name, nod
 export function renderCompressed(
     node: JSNode
 ) {
-    return experimentalRender(node, javascript_mappings, js_mapping_renderers, false);
+    return experimentalRender(node, javascript_mappings, js_mapping_renderers, false).string;
 }
 
 export function renderWithFormatting(
