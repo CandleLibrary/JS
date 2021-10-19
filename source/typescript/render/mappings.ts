@@ -2,7 +2,7 @@ import { experimentalConstructRenderers, NodeMapping, NodeMappings } from "@cand
 import { JSClassDeclaration } from "../types/JSClass.js";
 import { JSArguments, JSArrowFunction, JSFormalParameters, JSFunctionBody, JSFunctionDeclaration, JSFunctionExpression, JSGetterMethod, JSMethod, JSSetterMethod } from "../types/JSFunction.js";
 import { JSIdentifier, JSIdentifierBinding, JSIdentifierDefault, JSIdentifierLabel, JSIdentifierModule, JSIdentifierName, JSIdentifierReference } from "../types/JSIdentifier.js";
-import { JSExportClause, JSExportDeclaration, JSFromClause, JSImportClause, JSImportDeclaration, JSImportMeta, JSModuleSpecifier, JSNamedImports, JSNameSpaceImport } from "../types/JSModule.js";
+import { JSExportClause, JSExportDeclaration, JSFromClause, JSImportClause, JSImportDeclaration, JSImportMeta, JSModule, JSModuleSpecifier, JSNamedImports, JSNameSpaceImport } from "../types/JSModule.js";
 import { JSNode } from "../types/JSNode";
 import { JSArrayBinding, JSArrayLiteral, JSBindingProperty, JSComputedProperty, JSElision, JSObjectBinding, JSObjectLiteral } from "../types/JSObject.js";
 import {
@@ -55,7 +55,10 @@ export const javascript_mappings: NodeMappings<JSNode, "type"> = <NodeMappings<J
             template: "@nodes...[o:n]"
         },
         //Module
-
+        <NodeMapping<JSModule>>{
+            type: JSNodeType.Module,
+            template: "@nodes...[o:n]"
+        },
         //Import
         <NodeMapping<JSExpressionStatement>>{
             type: JSNodeType.ExpressionStatement,
